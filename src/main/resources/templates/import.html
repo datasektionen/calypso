@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
+<head>
+    <title>Importera från Facebook @ Calypso</title>
+    <script src="/bar.js"></script>
+    <link rel="stylesheet" href="/lol.css" />
+</head>
+<body>
+
+<div id="main">
+    <header>
+        <div class="header-inner">
+            <div class="row">
+                <div class="header-left col-md-2"></div>
+                <div class="col-md-8">
+                    <h2>Facebook-import</h2>
+                </div>
+                <div class="header-right col-md-2"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </header>
+    <div id="content">
+
+        <h3>Viktig information</h3>
+
+        <p>Du kan endast importera <strong>publika event</strong> som är synliga för alla Facebookanvändare.</p>
+        <p>
+            Importen kommer att automatiskt skapa ett utkast med samma bild, beskrivande text, plats och tid som
+            ditt Facebookevent, samt länk till själva eventet.
+        </p>
+        <p>
+            Om den beskrivande texten innehåller sex eller mer förekomster av ett och samma tecken (t.ex. ======),
+            eller en rad med "English:"/"In English" kommer detta att användas för att dela upp texten i svenska och engelska.
+        </p>
+
+        <form th:action="@{/admin/import}" method="post">
+            <div class="form-group form-horizontal">
+                <input name="url" width="100" />
+                <input type="submit" value="Importera" class="theme-color" />
+            </div>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

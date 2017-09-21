@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, links, scripts, content)">
+<head>
+    <meta charset="utf-8" />
+    <title th:replace="${title}">Calypso @ Datasektionen.se</title>
+    <link rel="stylesheet" href="//aurora.datasektionen.se" />
+    <link rel="stylesheet" href="/styles/importer.css" />
+    <script type="text/javascript">
+        window.methone_conf = {
+            system_name: "calypso",
+            color_scheme: "pink",
+            login_text: "Logga in",
+            login_href: "/login",
+            links: [
+                {
+                    str: "Redigera nyheter",
+                    href: "/admin/list?itemType=post"
+                },
+                {
+                    str: "Redigera event",
+                    href: "/admin/list?itemType=event"
+                },
+                {
+                    str: "Facebook-import",
+                    href: "/admin/import"
+                },
+                {
+                    str: "Ny post",
+                    href: "/calypso/create/post"
+                }
+            ]
+        };
+    </script>
+
+    <th:block th:replace="${scripts}" />
+    <th:block th:replace="${links}" />
+</head>
+<body>
+<div id="methone-container-replace"></div>
+<div id="application" class="pink">
+    <th:block th:replace="${content}" />
+</div>
+<script src="//methone.datasektionen.se/bar.js"></script>
+</body>
+</html>

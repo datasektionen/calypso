@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
+<head>
+    <title>Replace bing</title>
+    <script src="/bar.js"></script>
+    <link rel="stylesheet" href="/lol.css" />
+</head>
+<body>
+
+<div id="main">
+    <header>
+        <div class="header-inner">
+            <div class="row">
+                <div class="header-left col-md-2"></div>
+                <div class="col-md-8">
+                    <h2>Nyheter & Event</h2>
+                </div>
+                <div class="header-right col-md-2">
+                    <a href="/admin/new" class="primary-action">Skapa ny</a>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </header>
+    <div id="content">
+
+        <table width="100%" class="table table-striped">
+            <thead>
+            <tr>
+                <th width="5%"><i class="fa fa-newspaper-o"></i></th>
+                <th width="30%">Titel</th>
+                <th width="20%">Publicerad</th>
+                <th width="20%">Eventplats</th>
+                <th width="20%">Eventstart</th>
+                <th width="15%">Författare</th>
+            </tr>
+            </thead>
+            <tbody th:unless="${#lists.isEmpty(items)}">
+            <tr th:each="item : ${items}">
+                <td style="vertical-align: middle;">
+                    <span th:if="${item.publishDate}">
+                        <i class="fa fa-check-circle text-success"></i>
+                    </span>
+                    <span th:if="!${item.publishDate}">
+                        <i class="fa fa-circle-o"></i>
+                    </span>
+                </td>
+                <td>
+                    <a th:href="@{/admin/edit(id=${item.id})}">
+                        <strong th:text="${item.titleSwedish}"></strong><br />
+                        <small th:text="${item.titleEnglish}"></small>
+                    </a>
+                </td>
+                <td style="vertical-align: middle;">
+                    <span th:if="${item.publishDate}">
+                        <span th:text="${item.publishDate.format(formatter)}"></span>
+                    </span>
+                    <span th:if="!${item.publishDate}">
+                        <em>Utkast</em>
+                    </span>
+                </td>
+                <td style="vertical-align: middle;" th:text="${item.eventLocation}"></td>
+                <td style="vertical-align: middle;">
+                    <span th:if="${item.eventStartTime}">
+                        <span th:text="${item.eventStartTime.format(formatter)}"></span>
+                    </span>
+                </td>
+                <td style="vertical-align:middle;" th:text="${item.author}"></td>
+            </tr>
+            </tbody>
+            <tbody th:if="${#lists.isEmpty(items)}">
+            <tr>
+                <td colspan="4">
+                    <div class="text-center">
+                        <br>
+                        <h4>Inget innehåll hittades för de givna kriterierna</h4>
+                        <br>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>
