@@ -25,6 +25,8 @@
     </header>
     <div id="content">
 
+        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+
         <table width="100%" class="table table-striped">
             <thead>
             <tr>

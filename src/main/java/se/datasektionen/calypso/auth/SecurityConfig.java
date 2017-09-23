@@ -7,8 +7,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,41 +17,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-				.addFilterBefore(customAuthFilter(), AbstractPreAuthenticatedProcessingFilter.class)
+				.addFilterBefore(dAuthFilter(), BasicAuthenticationFilter.class)
 				.authorizeRequests()
 					.mvcMatchers("/admin/**").authenticated()
 					.and()
-				.formLogin()
-					.loginPage("/auth/login")
-					.permitAll()
-					.and()
-				.authenticationProvider(new DAuthenticationProvider());
+				.authenticationProvider(dAuthAuthProvider());
 	}
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(preauthAuthProvider());
+		auth.authenticationProvider(dAuthAuthProvider());
 	}
 
 	@Bean
-	public PreAuthenticatedAuthenticationProvider preauthAuthProvider() {
-		PreAuthenticatedAuthenticationProvider preauthAuthProvider =
-				new PreAuthenticatedAuthenticationProvider();
-		preauthAuthProvider.setPreAuthenticatedUserDetailsService(
-				userDetailsServiceWrapper());
-		return preauthAuthProvider;
+	public PreAuthenticatedAuthenticationProvider dAuthAuthProvider() {
+		DAuthProvider provider = new DAuthProvider();
+		provider.setPreAuthenticatedUserDetailsService(dAuthUserDetails());
+
+		return provider;
 	}
 
 	@Bean
-	public OnlyRolesPreAuthenticatedUserDetailsService userDetailsServiceWrapper() {
-		OnlyRolesPreAuthenticatedUserDetailsService service =
-				new MyPreAuthenticatedUserDetailsService();
-		return service;
+	public DAuthUserDetailsService dAuthUserDetails() {
+		return new DAuthUserDetailsService();
 	}
 
 	@Bean
-	public DAuthProcessingFilter customAuthFilter() throws Exception {
-		DAuthProcessingFilter filter = new DAuthProcessingFilter();
+	public DAuthFilter dAuthFilter() throws Exception {
+		DAuthFilter filter = new DAuthFilter();
 		filter.setAuthenticationManager(authenticationManager());
 		return filter;
 	}
