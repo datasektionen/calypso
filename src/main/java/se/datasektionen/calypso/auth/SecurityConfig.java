@@ -17,11 +17,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+				.csrf()
+				.disable()
 				.addFilterBefore(dAuthFilter(), BasicAuthenticationFilter.class)
 				.authorizeRequests()
 					.mvcMatchers("/admin/**").authenticated()
 					.and()
-				.authenticationProvider(dAuthAuthProvider());
+				.authenticationProvider(dAuthAuthProvider())
+				.exceptionHandling()
+				.authenticationEntryPoint(dAuthEntryPoint());
 	}
 
 	@Autowired
@@ -40,6 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public DAuthUserDetailsService dAuthUserDetails() {
 		return new DAuthUserDetailsService();
+	}
+
+	@Bean
+	public DAuthEntryPoint dAuthEntryPoint() {
+		return new DAuthEntryPoint();
 	}
 
 	@Bean

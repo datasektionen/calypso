@@ -1,11 +1,21 @@
 package se.datasektionen.calypso.auth;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Resolves {@link PreAuthenticatedAuthenticationToken}'s into {@link DAuthUserDetails} objects.</p>
@@ -33,13 +43,26 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 		if (response.getUser() == null || response.getFirst_name() == null)
 			throw new UsernameNotFoundException("Token rendered empty or malformed response");
 
+		String user = response.getUser();
+		String plsUrl = "http://pls.datasektionen.se/api/user/" + user + "/prometheus";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("User-Agent", "Spring Framework/Java " + System.getProperty("java.version"));
+
+		ResponseEntity<String[]> permissions = new RestTemplate()
+				.exchange(plsUrl, HttpMethod.GET, new HttpEntity<>(null, headers), String[].class);
+		List<GrantedAuthority> authorities = Arrays.stream(permissions.getBody())
+				.map(SimpleGrantedAuthority::new)
+				.collect(Collectors.toList());
+
 		// Successful login
 		return new DAuthUserDetails(
 				response.getUser(),
 				token.toString(),
 				response.getFirst_name(),
 				response.getLast_name(),
-				response.getEmails()
+				response.getEmails(),
+				authorities
 		);
 	}
 

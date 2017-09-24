@@ -11,18 +11,25 @@ public class DAuthUserDetails implements UserDetails {
 	private String firstName;
 	private String lastName;
 	private String email;
+	private Collection<? extends GrantedAuthority> authorities;
 
-	public DAuthUserDetails(String user, String token, String firstName, String lastName, String email) {
+	public DAuthUserDetails(String user,
+	                        String token,
+	                        String firstName,
+	                        String lastName,
+	                        String email,
+	                        Collection<? extends GrantedAuthority> authorities) {
 		this.user = user;
 		this.token = token;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.authorities = authorities;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		return authorities;
 	}
 
 	@Override
@@ -73,5 +80,17 @@ public class DAuthUserDetails implements UserDetails {
 
 	public String getEmail() {
 		return email;
+	}
+
+	@Override
+	public String toString() {
+		return "DAuthUserDetails{" +
+				"user='" + user + '\'' +
+				", token='" + token + '\'' +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", email='" + email + '\'' +
+				", authorities=" + authorities.toString() +
+				'}';
 	}
 }
