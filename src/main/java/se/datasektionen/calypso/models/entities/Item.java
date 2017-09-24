@@ -23,19 +23,22 @@ public class Item {
 	private String titleEnglish;
 
 	@Column(nullable = false)
-	private String contentSwedish;
-
-	@Column(nullable = false)
-	private String contentEnglish;
-
-	@Column(nullable = false)
 	private String author;
 
 	@Column
 	private String image;
 
 	@Column
+	private boolean sticky;
+
+	@Column
 	private LocalDateTime publishDate;
+
+	@Column(nullable = false)
+	private String contentSwedish;
+
+	@Column(nullable = false)
+	private String contentEnglish;
 
 	@Column
 	private String eventLocation;
@@ -175,6 +178,14 @@ public class Item {
 
 	public void setGoogleForm(String googleForm) {
 		this.googleForm = googleForm;
+	}
+
+	public boolean isSticky() {
+		return sticky;
+	}
+
+	public void setSticky(boolean sticky) {
+		this.sticky = sticky;
 	}
 
 	@Override

@@ -1,20 +1,27 @@
 package se.datasektionen.calypso.controllers.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
-import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Controller
+@PreAuthorize("hasAuthority('post')")
 public class EditController {
 
 	private final ItemRepository itemRepository;
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM YYYY HH:mm", Locale.forLanguageTag("sv"));
 
 	@Autowired
 	public EditController(ItemRepository itemRepository) {
@@ -24,6 +31,8 @@ public class EditController {
 	@GetMapping("/admin/new")
 	public String newForm(Model model) {
 		model.addAttribute("item", new Item());
+		model.addAttribute("now", LocalDateTime.now().format(formatter));
+
 		return "edit";
 	}
 
@@ -35,6 +44,7 @@ public class EditController {
 			throw new ResourceNotFoundException();
 
 		model.addAttribute("item", item);
+		model.addAttribute("now", LocalDateTime.now().format(formatter));
 		return "edit";
 	}
 
