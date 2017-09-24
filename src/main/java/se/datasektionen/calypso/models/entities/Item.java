@@ -120,4 +120,80 @@ public class Item {
 	public LocalDateTime getEventEndTime() {
 		return eventEndTime;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setItemType(ItemType itemType) {
+		this.itemType = itemType;
+	}
+
+	public void setTitleSwedish(String titleSwedish) {
+		this.titleSwedish = titleSwedish;
+	}
+
+	public void setTitleEnglish(String titleEnglish) {
+		this.titleEnglish = titleEnglish;
+	}
+
+	public void setContentSwedish(String contentSwedish) {
+		this.contentSwedish = contentSwedish;
+	}
+
+	public void setContentEnglish(String contentEnglish) {
+		this.contentEnglish = contentEnglish;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public void setPublishDate(LocalDateTime publishDate) {
+		this.publishDate = publishDate;
+	}
+
+	public void setEventLocation(String eventLocation) {
+		this.eventLocation = eventLocation;
+	}
+
+	public void setEventStartTime(LocalDateTime eventStartTime) {
+		this.eventStartTime = eventStartTime;
+	}
+
+	public void setEventEndTime(LocalDateTime eventEndTime) {
+		this.eventEndTime = eventEndTime;
+	}
+
+	public void setFacebookEvent(String facebookEvent) {
+		this.facebookEvent = facebookEvent;
+	}
+
+	public void setGoogleForm(String googleForm) {
+		this.googleForm = googleForm;
+	}
+
+	@Override
+	public String toString() {
+		return "Item{" +
+				"id=" + id +
+				", itemType=" + itemType +
+				", titleSwedish='" + titleSwedish + '\'' +
+				", titleEnglish='" + titleEnglish + '\'' +
+				", contentSwedish='" + contentSwedish + '\'' +
+				", contentEnglish='" + contentEnglish + '\'' +
+				", author='" + author + '\'' +
+				", image='" + image + '\'' +
+				", publishDate=" + publishDate +
+				", eventLocation='" + eventLocation + '\'' +
+				", eventStartTime=" + eventStartTime +
+				", eventEndTime=" + eventEndTime +
+				", facebookEvent='" + facebookEvent + '\'' +
+				", googleForm='" + googleForm + '\'' +
+				'}';
+	}
 }

@@ -25,6 +25,25 @@
     </header>
     <div id="content">
 
+        <form action="#" th:action="@{/admin/edit}" th:object="${item}" method="post">
+            <p>id:		<input type="text" th:field="*{id}" /></p>
+            <p>itemType:		<input type="text" th:field="*{itemType}" /></p>
+            <p>titleSwedish:		<input type="text" th:field="*{titleSwedish}" /></p>
+            <p>titleEnglish:		<input type="text" th:field="*{titleEnglish}" /></p>
+            <p>contentSwedish:		<input type="text" th:field="*{contentSwedish}" /></p>
+            <p>contentEnglish:		<input type="text" th:field="*{contentEnglish}" /></p>
+            <p>author:		<input type="text" th:field="*{author}" /></p>
+            <p>image:		<input type="text" th:field="*{image}" /></p>
+            <p>publishDate:		<input type="datetime-local" th:field="*{publishDate}" /></p>
+            <p>eventLocation:		<input type="text" th:field="*{eventLocation}" /></p>
+            <p>eventStartTime:		<input type="datetime-local" th:field="*{eventStartTime}" /></p>
+            <p>eventEndTime:		<input type="datetime-local" th:field="*{eventEndTime}" /></p>
+            <p>facebookEvent:		<input type="text" th:field="*{facebookEvent}" /></p>
+            <p>googleForm:		<input type="text" th:field="*{googleForm}" /></p>
+
+            <p><input type="submit" value="Submit" /></p>
+        </form>
+
         <span th:text="${item.titleSwedish}"></span>
 
     </div>
