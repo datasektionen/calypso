@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
 <head>
-    <title>Replace bing</title>
+    <title>Redigera post</title>
     <script src="/bar.js"></script>
     <link rel="stylesheet" href="/lol.css" />
 </head>
@@ -29,14 +29,8 @@
         <form action="#" th:action="@{/admin/edit}" th:object="${item}" method="POST" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}" />
             <p>itemType:		<input type="text" th:field="*{itemType}" /></p>
-            <p>contentSwedish:		<input type="text" th:field="*{contentSwedish}" /></p>
-            <p>contentEnglish:		<input type="text" th:field="*{contentEnglish}" /></p>
             <p>author:		<input type="text" th:field="*{author}" /></p>
             <p>image:		<input type="text" th:field="*{image}" /></p>
-            <p>publishDate:		<input type="datetime-local" th:field="*{publishDate}" /></p>
-            <p>eventLocation:		<input type="text" th:field="*{eventLocation}" /></p>
-            <p>eventStartTime:		<input type="datetime-local" th:field="*{eventStartTime}" /></p>
-            <p>eventEndTime:		<input type="datetime-local" th:field="*{eventEndTime}" /></p>
 
             <p><input type="submit" value="Submit" /></p>
 
@@ -54,14 +48,14 @@
                                     <img height="100" src="/uploads/{{ item.image }}_{{ sails.config.images.thumbnailSize }}_{{ sails.config.images.thumbnailSize }}.jpg" />
                                 </div>
                                 <div class="col-sm-8">
-                                    <label class="control-label" for="avatar">Byt ut bilden:</label><br />
-                                    <input type="file" name="avatar" id="avatar" class="" placeholder="Innehållsbild" />
+                                    <label class="control-label" for="avatar1">Byt ut bilden:</label><br />
+                                    <input type="file" name="avatar" id="avatar1" class="" placeholder="Innehållsbild" />
                                     <input type="hidden" name="image" value="{{ item.image }}" />
                                 </div>
                             </div>
                             <div th:unless="${item.image}">
-                                <label class="control-label" for="avatar">Lägg till bild:</label><br />
-                                <input type="file" name="avatar" id="avatar" class="" placeholder="Innehållsbild" />
+                                <label class="control-label" for="avatar2">Lägg till bild:</label><br />
+                                <input type="file" name="avatar" id="avatar2" class="" placeholder="Innehållsbild" />
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -98,31 +92,33 @@
                             <div class="form-horizontal">
                                 <div class="form-label-block">Publiceringsdatum:</div>
 
-                                <div th:unless="${item.publishDate}">
-                                    <div class="form-group">
-                                        <input type="radio" name="publish_now" id="publish_now" onclick="unqueue();" value="true" checked />
-                                        <label for="publish_now" th:inline="text">Direkt: <span>[[ ${now} ]]</span></label>
+                                <th:block th:switch="${item.getPublishStatus().name()}">
+                                    <div th:case="DRAFT">
+                                        <div class="form-group">
+                                            <input type="radio" name="publish_now" id="publish_now1" onclick="unqueue();" value="true" checked />
+                                            <label for="publish_now1" th:inline="text">Direkt: <span>[[ ${now} ]]</span></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="radio" name="publish_now" id="publish_later" value="false"
+                                                   onclick="queue(); document.getElementById('publishDate').focus();" title="Publicera senare" />
+                                            <label for="publishDate">Senare:</label>
+                                            <input type="datetime" name="publishDate" onfocus="queue(); document.getElementById('publish_later').checked = true;" id="publishDate" />
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="radio" name="publish_now" id="publish_later" value="false"
-                                               onclick="queue(); document.getElementById('publishDate').focus();" title="Publicera senare" />
-                                        <label for="publishDate">Senare:</label>
-                                        <input type="datetime" name="publishDate" onfocus="queue(); document.getElementById('publish_later').checked = true;" id="publishDate" />
+                                    <div th:case="PUBLISHED">
+                                        <div class="form-input-group">
+                                            <input type="radio" id="publish_now2" checked />
+                                            <label for="publish_now2">Publicerad: <span th:text="${item.publishDate.format(formatter)}"></span></label>
+                                        </div>
                                     </div>
-                                </div>
-                                {% else %}
-                                {% if item.now.unix() >= item.publishDate.unix() %}
-                                <div class="form-input-group">
-                                    <input type="radio" id="publish_now" checked />
-                                    <label for="publish_now">Publicerad: <span>{{ item.publishDate.format('D MMMM YYYY HH:mm') }}</span></label>
-                                </div>
-                                {% else %}
-                                <div class="form-input-group">
-                                    <input type="radio" id="publish_now" checked />
-                                    <label for="publish_now">Köad: <span>{{ item.publishDate.format('D MMMM YYYY HH:mm') }}</span></label>
-                                </div>
-                                {% endif %}
-                                {% endif %}
+                                    <div th:case="QUEUED">
+                                        <div class="form-input-group">
+                                            <input type="radio" id="publish_now" checked />
+                                            <label for="publish_now">Köad: <span th:text="${item.publishDate.format(formatter)}"></span></label>
+                                        </div>
+                                    </div>
+                                </th:block>
+
                             </div>
                             <div class="form-divider"></div>
                             <div class="form-group">
@@ -148,21 +144,25 @@
 
                                 <span sec:authorize="hasAuthority('sticky')">
                                     <span th:if="${item.sticky}">
-                                        <input type="checkbox" name="sticky" value="true" checked id="sticky" />
+                                        <input type="checkbox" name="sticky" value="true" checked id="sticky1" />
+                                        <label for="sticky1" class="form-label-narrow">Viktig post</label>
                                     </span>
                                     <span th:unless="${item.sticky}">
-                                        <input type="checkbox" name="sticky" value="true" id="sticky" />
+                                        <input type="checkbox" name="sticky" value="true" id="sticky2" />
+                                        <label for="sticky2" class="form-label-narrow">Viktig post</label>
                                     </span>
                                 </span>
                                 <span sec:authorize="!hasAuthority('sticky')">
                                     <span th:if="${item.sticky}">
-                                        <input readonly disabled type="checkbox" name="sticky" value="true" checked id="sticky" />
+                                        <input readonly disabled type="checkbox" name="sticky" value="true" checked id="sticky3" />
+                                        <label for="sticky3" class="form-label-narrow">Viktig post</label>
                                     </span>
                                     <span th:unless="${item.sticky}">
-                                        <input readonly disabled type="checkbox" name="sticky" value="true" id="sticky" />
+                                        <input readonly disabled type="checkbox" name="sticky" value="true" id="sticky4" />
+                                        <label for="sticky4" class="form-label-narrow">Viktig post</label>
                                     </span>
+                                    <small class="text-muted">Du saknar rättighet att ändra den här inställningen</small>
                                 </span>
-                                <label for="sticky" class="form-label-narrow">Viktig post</label>
                             </div>
 
                             <div class="form-group">
@@ -173,69 +173,81 @@
                             </div>
 
                             <div id="event_data" th:if="(${item.itemType}) == ItemType.EVENT">
-                            <h3>Event</h3>
-                            <div class="form-group">
-                                <div class="form-label-block">Eventdatum:</div>
-                                <div class="input-group">
-                                    <label for="eventStart">Start:</label>
-                                    <input type="datetime" name="eventStart" id="eventStart" value="{{ item.eventStart }}" />
-                                </div>
-                                <div class="input-group">
-                                    <label for="eventEnd">Slut:</label>
-                                    <input type="datetime" name="eventEnd" id="eventEnd" value="{{ item.eventEnd }}" />
-                                </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label for="eventLocation" class="form-label-block">Eventplats:</label>
-                                <input type="text" name="eventLocation" id="eventLocation" value="{{ item.eventLocation }}" />
+                                <p>eventLocation:		<input type="text"  /></p>
+                                <p>eventStartTime:		<input type="datetime-local" th:field="*{eventStartTime}" /></p>
+                                <p>eventEndTime:		<input type="datetime-local" th:field="*{eventEndTime}" /></p>
+
+
+                                <h3>Event</h3>
+                                <div class="form-group">
+                                    <div class="form-label-block">Eventdatum:</div>
+                                    <div class="input-group">
+                                        <label for="eventStart">Start:</label>
+                                        <input type="datetime" id="eventStart" th:field="*{eventStartTime}" />
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="eventEnd">Slut:</label>
+                                        <input type="datetime" id="eventEnd" th:field="*{eventEndTime}" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="eventLocation" class="form-label-block">Eventplats:</label>
+                                    <input type="text" id="eventLocation" th:field="*{eventLocation}" />
+                                </div>
                             </div>
                         </div>
+                        <div class="clear"></div>
                     </div>
-                    <div class="clear"></div>
                 </div>
             </div>
-    </div>
-</div>
-<div class="clear"></div>
+            <div class="clear"></div>
 
-<div class="footer-toolbar hidden-xs hidden-sm">
-    <div class="footer-toolbar-inner row">
-        <div class="footer-toolbar-info col-md-8">
-            {% if item.publishDate == "" %}
-            <strong>Kom ihåg att spara posten som utkast medan du jobbar.</strong>
-            Senaste utkast sparat {{ item.updatedAt.format('HH:mm') }} ({{ item.now.diff(item.updatedAt, 'minutes') }} min sedan)
-            {% elif create %}
-            <strong>Kom ihåg att spara posten som utkast medan du jobbar.</strong>
-            Posten har inte ännu sparats i systemet.
-            {% else %}
-            <strong>Publicerat innehåll uppdateras på siten direkt när du trycker på spara.</strong>
-            Senaste version sparad {{ item.updatedAt.format('HH:mm') }} ({{ item.now.diff(item.updatedAt, 'minutes') }} min sedan)
-            {% endif %}
-        </div>
-        <div class="footer-toolbar-action-buttons col-md-4 text-right">
-            <div id="publish_post">
-                {% if item.publishDate %}
-                <input class="button secondary-action" type="submit" name="delete" value="Ta bort" />
-                {% if item.now.unix() >= item.publishDate.unix() %}
-                <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
-                {% else %}
-                <input class="button primary-action" type="submit" name="publish" value="Köa publicering" />
-                {% endif %}
-                {% else %}
-                <input class="button secondary-action" type="submit" name="save" value="Spara utkast" />
-                <input class="button primary-action" type="submit" name="publish" value="Publicera" />
-                {% endif %}
-            </div>
-            <div id="queue_post" style="display: none;">
-                <input class="button primary-action" type="submit" name="publish" value="Köa publicering" />
-            </div>
-        </div>
-    </div>
-</div>
-</form>
+            <div class="footer-toolbar hidden-xs hidden-sm">
+                <div class="footer-toolbar-inner row">
+                    <div class="footer-toolbar-info col-md-8">
+                        <span th:if="!${item.publishDate}">
+                            <strong>Kom ihåg att spara posten som utkast medan du jobbar.</strong>
+                            <span th:if="${item.id}">
+                                Senaste utkast sparat {{ item.updatedAt.format('HH:mm') }} ({{ item.now.diff(item.updatedAt, 'minutes') }} min sedan)
+                            </span>
+                            <span th:unless="${item.id}">
+                            Posten har inte ännu sparats i systemet.
+                            </span>
+                        </span>
+                        <span th:if="${item.publishDate}">
+                            <strong>Publicerat innehåll uppdateras på siten direkt när du trycker på spara.</strong>
+                            Senaste version sparad {{ item.updatedAt.format('HH:mm') }} ({{ item.now.diff(item.updatedAt, 'minutes') }} min sedan)
+                        </span>
+                    </div>
+                    <div class="footer-toolbar-action-buttons col-md-4 text-right">
+                        <div id="publish_post">
 
-</div>
+                            <th:block th:switch="${item.getPublishStatus().name()}">
+                                <span th:case="DRAFT">
+                                    <input class="button secondary-action" type="submit" name="save" value="Spara utkast" />
+                                    <input class="button primary-action" type="submit" name="publish" value="Publicera" />
+                                </span>
+                                <span th:case="QUEUED">
+                                    <input class="button secondary-action" type="submit" name="delete" value="Ta bort" />
+                                    <input class="button primary-action" type="submit" name="publish" value="Köa publicering" />
+                                </span>
+                                <span th:case="PUBLISHED">
+                                    <input class="button secondary-action" type="submit" name="delete" value="Ta bort" />
+                                    <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
+                                </span>
+                            </th:block>
+                        </div>
+                        <div id="queue_post" style="display: none;">
+                            <input class="button primary-action" type="submit" name="publish" value="Köa publicering" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
 </div>
 
 </body>

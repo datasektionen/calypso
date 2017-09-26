@@ -32,6 +32,7 @@ public class EditController {
 	public String newForm(Model model) {
 		model.addAttribute("item", new Item());
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
+		model.addAttribute("formatter", formatter);
 
 		return "edit";
 	}
@@ -45,6 +46,10 @@ public class EditController {
 
 		model.addAttribute("item", item);
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
+		model.addAttribute("formatter", formatter);
+
+		boolean ok = LocalDateTime.now().compareTo(item.getPublishDate()) >= 0;
+
 		return "edit";
 	}
 

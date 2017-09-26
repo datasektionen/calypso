@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Item {
 
+	public enum PublishStatus { DRAFT, QUEUED, PUBLISHED }
+
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -186,6 +188,19 @@ public class Item {
 
 	public void setSticky(boolean sticky) {
 		this.sticky = sticky;
+	}
+
+	public PublishStatus getPublishStatus() {
+		// Posts without an ID are always drafts
+		if (this.getId() == null || this.getId() == 0 || this.getPublishDate() == null)
+			return PublishStatus.DRAFT;
+
+		LocalDateTime publishDate = this.getPublishDate();
+
+		if (LocalDateTime.now().compareTo(publishDate) > 0)
+			return PublishStatus.PUBLISHED;
+		else
+			return PublishStatus.QUEUED;
 	}
 
 	@Override
