@@ -4,8 +4,36 @@
       th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
 <head>
     <title>Redigera post</title>
-    <script src="/bar.js"></script>
-    <link rel="stylesheet" href="/lol.css" />
+    <script type="text/javascript"></script>
+    <link rel="stylesheet" href="/css/overrides.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" />
+    <script src="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script type="text/javascript">
+        var content_en = new SimpleMDE({
+            element: document.getElementById("content_en"),
+            autosave: {
+                uniqueId: "59ca98c66c3c3da1007d772f_en"
+            },
+            forceSync: true,
+            hideIcons: ['image', 'side-by-side', 'fullscreen', 'guide'],
+            parsingConfig: {
+                allowAtxHeaderWithoutSpace: true
+            },
+            spellChecker: false
+        });
+        var content_sv = new SimpleMDE({
+            element: document.getElementById("content_sv"),
+            autosave: {
+                uniqueId: "59ca98c66c3c3da1007d772f_sv"
+            },
+            forceSync: true,
+            hideIcons: ['image', 'side-by-side', 'fullscreen', 'guide'],
+            parsingConfig: {
+                allowAtxHeaderWithoutSpace: true
+            },
+            spellChecker: false
+        });
+    </script>
 </head>
 <body>
 
@@ -94,11 +122,16 @@
 
                                 <th:block th:switch="${item.getPublishStatus().name()}">
                                     <div th:case="DRAFT">
-                                        <div class="form-group">
-                                            <input type="radio" name="publish_now" id="publish_now1" onclick="unqueue();" value="true" checked />
-                                            <label for="publish_now1" th:inline="text">Direkt: <span>[[ ${now} ]]</span></label>
+                                        <div class="form-group radio row">
+                                            <div class="col-xs-6">
+                                                <input type="radio" name="publish_now" id="publish_now1" onclick="unqueue();" value="true" checked />
+                                                <label for="publish_now1" th:inline="text">Direkt:</label>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <span th:text="${now}"></span>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group radio">
                                             <input type="radio" name="publish_now" id="publish_later" value="false"
                                                    onclick="queue(); document.getElementById('publishDate').focus();" title="Publicera senare" />
                                             <label for="publishDate">Senare:</label>
@@ -106,13 +139,13 @@
                                         </div>
                                     </div>
                                     <div th:case="PUBLISHED">
-                                        <div class="form-input-group">
+                                        <div class="form-input-group radio">
                                             <input type="radio" id="publish_now2" checked />
                                             <label for="publish_now2">Publicerad: <span th:text="${item.publishDate.format(formatter)}"></span></label>
                                         </div>
                                     </div>
                                     <div th:case="QUEUED">
-                                        <div class="form-input-group">
+                                        <div class="form-input-group radio">
                                             <input type="radio" id="publish_now" checked />
                                             <label for="publish_now">Köad: <span th:text="${item.publishDate.format(formatter)}"></span></label>
                                         </div>
@@ -139,30 +172,34 @@
                             </div>
 
                             <div class="form-divider"></div>
-                            <div class="form-group">
-                                <div class="form-label-inline">Synlighet:</div>
+                            <div class="form-group row">
+                                <div class="form-label-inline col-xs-4" style="padding-right: 0;">Synlighet: &nbsp;</div>
 
-                                <span sec:authorize="hasAuthority('sticky')">
-                                    <span th:if="${item.sticky}">
+                                <div sec:authorize="hasAuthority('sticky')" class="col-xs-8" style="padding-left: 10px;">
+                                    <span th:if="${item.sticky}" class="checkbox">
                                         <input type="checkbox" name="sticky" value="true" checked id="sticky1" />
                                         <label for="sticky1" class="form-label-narrow">Viktig post</label>
                                     </span>
-                                    <span th:unless="${item.sticky}">
+                                    <span th:unless="${item.sticky}" class="checkbox">
                                         <input type="checkbox" name="sticky" value="true" id="sticky2" />
                                         <label for="sticky2" class="form-label-narrow">Viktig post</label>
                                     </span>
-                                </span>
-                                <span sec:authorize="!hasAuthority('sticky')">
-                                    <span th:if="${item.sticky}">
+                                </div>
+                                <div sec:authorize="!hasAuthority('sticky')" class="col-xs-8" style="padding-left: 10px;">
+                                    <span th:if="${item.sticky}" class="checkbox">
                                         <input readonly disabled type="checkbox" name="sticky" value="true" checked id="sticky3" />
                                         <label for="sticky3" class="form-label-narrow">Viktig post</label>
                                     </span>
-                                    <span th:unless="${item.sticky}">
+                                    <span th:unless="${item.sticky}" class="checkbox">
                                         <input readonly disabled type="checkbox" name="sticky" value="true" id="sticky4" />
                                         <label for="sticky4" class="form-label-narrow">Viktig post</label>
                                     </span>
-                                    <small class="text-muted">Du saknar rättighet att ändra den här inställningen</small>
-                                </span>
+                                </div>
+
+                                <div class="clearfix"></div>
+                                <div sec:authorize="!hasAuthority('sticky')" class="col-xs-12">
+                                    <small class="text-ultra-muted">Du saknar rättighet att ändra den här inställningen</small>
+                                </div>
                             </div>
 
                             <div class="form-group">

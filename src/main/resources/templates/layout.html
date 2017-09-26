@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <title th:replace="${title}">Calypso @ Datasektionen.se</title>
     <link rel="stylesheet" href="//aurora.datasektionen.se" />
-    <link rel="stylesheet" href="/styles/importer.css" />
     <script type="text/javascript" th:inline="text">
         window.methone_conf = {
             system_name: "calypso",
@@ -31,8 +30,6 @@
             ]
         };
     </script>
-
-    <th:block th:replace="${scripts}" />
     <th:block th:replace="${links}" />
 </head>
 <body>
@@ -41,5 +38,6 @@
     <th:block th:replace="${content}" />
 </div>
 <script src="//methone.datasektionen.se/bar.js"></script>
+<th:block th:replace="${scripts}" />
 </body>
 </html>
