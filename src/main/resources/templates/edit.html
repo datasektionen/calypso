@@ -150,8 +150,8 @@
                                     <select id="author" class="form-select form-control" name="author">
                                         <optgroup label="Dina positioner">
                                             <option th:each="mandate : ${#authentication.getPrincipal().getMandates()}"
-                                                    th:value="${mandate.getIdentifier()}"
-                                            th:text="${mandate.title}"></option>
+                                                    th:value="${mandate.getKey()}"
+                                                    th:text="${mandate.getValue()}"></option>
                                         </optgroup>
                                     </select>
                                 </div>
