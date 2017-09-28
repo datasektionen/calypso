@@ -86,6 +86,10 @@ public class DAuthUserDetails implements UserDetails {
 		return email;
 	}
 
+	public String getName() {
+		return this.firstName + " " + this.lastName;
+	}
+
 	public Map<String, String> getMandates() {
 		return mandates;
 	}

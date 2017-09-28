@@ -33,7 +33,19 @@ public class Item {
 
 	@Column(nullable = false)
 	@NotNull
+	@Size(min = 3, message = "KTH ID på författare krävs")
 	private String author;
+
+	@Column(nullable = false)
+	@NotNull
+	@Size(min = 3, message = "Namn på författare krävs")
+	private String authorDisplay;
+
+	@Column
+	private String publishAs;
+
+	@Column
+	private String publishAsDisplay;
 
 	@Column
 	private String image;
@@ -200,6 +212,30 @@ public class Item {
 
 	public void setSticky(boolean sticky) {
 		this.sticky = sticky;
+	}
+
+	public String getAuthorDisplay() {
+		return authorDisplay;
+	}
+
+	public String getPublishAs() {
+		return publishAs;
+	}
+
+	public String getPublishAsDisplay() {
+		return publishAsDisplay;
+	}
+
+	public void setAuthorDisplay(String authorDisplay) {
+		this.authorDisplay = authorDisplay;
+	}
+
+	public void setPublishAs(String publishAs) {
+		this.publishAs = publishAs;
+	}
+
+	public void setPublishAsDisplay(String publishAsDisplay) {
+		this.publishAsDisplay = publishAsDisplay;
 	}
 
 	public PublishStatus getPublishStatus() {
