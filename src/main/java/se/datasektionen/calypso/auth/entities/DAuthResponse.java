@@ -1,4 +1,4 @@
-package se.datasektionen.calypso.auth;
+package se.datasektionen.calypso.auth.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

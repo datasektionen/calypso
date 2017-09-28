@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class DAuthUserDetails implements UserDetails {
 	private String user;
@@ -12,18 +13,21 @@ public class DAuthUserDetails implements UserDetails {
 	private String lastName;
 	private String email;
 	private Collection<? extends GrantedAuthority> authorities;
+	private Map<String, String> mandates;
 
 	public DAuthUserDetails(String user,
 	                        String token,
 	                        String firstName,
 	                        String lastName,
 	                        String email,
+	                        Map<String, String> mandates,
 	                        Collection<? extends GrantedAuthority> authorities) {
 		this.user = user;
 		this.token = token;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.mandates = mandates;
 		this.authorities = authorities;
 	}
 
@@ -80,6 +84,10 @@ public class DAuthUserDetails implements UserDetails {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public Map<String, String> getMandates() {
+		return mandates;
 	}
 
 	@Override

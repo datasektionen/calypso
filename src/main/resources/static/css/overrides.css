@@ -110,7 +110,7 @@ h3 { border: none !important; }
     border: 3px solid #fff;
     border-top: none;
     border-right: none;
-    transition: .1s;
+    transition: .25s;
     transform: rotate(-45deg);
 }
 .checkbox label:hover::after {
@@ -132,6 +132,7 @@ input[type=checkbox] {
 .radio {
     position: relative;
     margin: 10px 0 -10px;
+    font-size: 14px;
 }
 .radio label {
     position: absolute;
@@ -150,6 +151,7 @@ input[type=checkbox] {
     background: #fff;
     border:1px solid #ddd;
     box-shadow: inset 0 2px 3px rgba(0, 0, 0, .1);
+    transition: .25s;
 }
 .radio label:after {
     opacity: 0.2;
@@ -163,7 +165,7 @@ input[type=checkbox] {
     left: -4px;
     border-top: none;
     border-right: none;
-    transition: .1s;
+    transition: .25s;
 }
 .radio label:hover::after {
     opacity: 0.5;
@@ -179,4 +181,9 @@ input[type=checkbox] {
 }
 input[type=radio] {
     visibility: hidden;
+}
+
+table.table thead {
+    background: #fff !important;
+    color: #e91e63 !important;
 }

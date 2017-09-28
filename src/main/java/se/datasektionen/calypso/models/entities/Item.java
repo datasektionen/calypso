@@ -3,6 +3,8 @@ package se.datasektionen.calypso.models.entities;
 import se.datasektionen.calypso.models.enums.ItemType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @SuppressWarnings("unused")
@@ -16,15 +18,21 @@ public class Item {
 	private Long id;
 
 	@Column(nullable = false)
+	@NotNull
 	private ItemType itemType;
 
 	@Column(nullable = false)
+	@NotNull
+	@Size(min = 15, message = "Titel (svenska) måste vara minst 15 tecken")
 	private String titleSwedish;
 
 	@Column(nullable = false)
+	@NotNull
+	@Size(min = 15, message = "Titel (engelska) måste vara minst 15 tecken")
 	private String titleEnglish;
 
 	@Column(nullable = false)
+	@NotNull
 	private String author;
 
 	@Column
@@ -37,9 +45,13 @@ public class Item {
 	private LocalDateTime publishDate;
 
 	@Column(nullable = false)
+	@NotNull
+	@Size(min = 50, message = "Innehåll (svenska) måste vara minst 50 tecken")
 	private String contentSwedish;
 
 	@Column(nullable = false)
+	@NotNull
+	@Size(min = 50, message = "Innehåll (engelska) måste vara minst 50 tecken")
 	private String contentEnglish;
 
 	@Column
