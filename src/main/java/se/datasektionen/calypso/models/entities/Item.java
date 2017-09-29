@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @SuppressWarnings("unused")
 @Entity
+@EntityListeners(ItemListener.class)
 public class Item {
 
 	public enum PublishStatus { DRAFT, QUEUED, PUBLISHED }
@@ -20,6 +21,12 @@ public class Item {
 	@Column(nullable = false)
 	@NotNull
 	private ItemType itemType;
+
+	@Column(nullable = false)
+	private LocalDateTime created;
+
+	@Column(nullable = false)
+	private LocalDateTime updated;
 
 	@Column(nullable = false)
 	@NotNull
@@ -56,14 +63,14 @@ public class Item {
 	@Column
 	private LocalDateTime publishDate;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 10000)
 	@NotNull
-	@Size(min = 50, message = "Innehåll (svenska) måste vara minst 50 tecken")
+	@Size(min = 50, max = 9999, message = "Innehåll (svenska) måste vara minst 50 tecken")
 	private String contentSwedish;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 10000)
 	@NotNull
-	@Size(min = 50, message = "Innehåll (engelska) måste vara minst 50 tecken")
+	@Size(min = 50, max = 9999, message = "Innehåll (engelska) måste vara minst 50 tecken")
 	private String contentEnglish;
 
 	@Column
@@ -238,6 +245,14 @@ public class Item {
 		this.publishAsDisplay = publishAsDisplay;
 	}
 
+	public LocalDateTime getCreated() {
+		return created;
+	}
+
+	public LocalDateTime getUpdated() {
+		return updated;
+	}
+
 	public PublishStatus getPublishStatus() {
 		// Posts without an ID are always drafts
 		if (this.getId() == null || this.getId() == 0 || this.getPublishDate() == null)
@@ -249,6 +264,14 @@ public class Item {
 			return PublishStatus.PUBLISHED;
 		else
 			return PublishStatus.QUEUED;
+	}
+
+	void triggerCreated() {
+		this.created = LocalDateTime.now();
+	}
+
+	void triggerUpdated() {
+		this.updated = LocalDateTime.now();
 	}
 
 	@Override

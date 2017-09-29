@@ -221,11 +221,11 @@
                                         <div class="form-label-block">Eventdatum:</div>
                                         <div class="input-group">
                                             <label for="eventStart">Start:</label>
-                                            <input type="datetime" id="eventStart" th:field="*{eventStartTime}" />
+                                            <input type="datetime-local" id="eventStart" th:field="*{eventStartTime}" />
                                         </div>
                                         <div class="input-group">
                                             <label for="eventEnd">Slut:</label>
-                                            <input type="datetime" id="eventEnd" th:field="*{eventEndTime}" />
+                                            <input type="datetime-local" id="eventEnd" th:field="*{eventEndTime}" />
                                         </div>
                                     </div>
 
@@ -247,8 +247,8 @@
                     <div class="footer-toolbar-info col-md-8">
                         <span th:if="!${item.publishDate}">
                             <strong>Kom ihåg att spara posten som utkast medan du jobbar.</strong>
-                            <span th:if="${item.id}">
-                                Senaste utkast sparat {{ item.updatedAt.format('HH:mm') }} ({{ item.now.diff(item.updatedAt, 'minutes') }} min sedan)
+                            <span th:if="${item.id}" th:inline="text">
+                                Senaste utkast sparat [[${item.updated.format(formatter)}]]
                             </span>
                             <span th:unless="${item.id}">
                             Posten har inte ännu sparats i systemet.
@@ -256,7 +256,7 @@
                         </span>
                         <span th:if="${item.publishDate}">
                             <strong>Publicerat innehåll uppdateras på siten direkt när du trycker på spara.</strong>
-                            Senaste version sparad {{ item.updatedAt.format('HH:mm') }} ({{ item.now.diff(item.updatedAt, 'minutes') }} min sedan)
+                            Senaste version sparad [[${item.updated.format(formatter)}]]
                         </span>
                     </div>
                     <div class="footer-toolbar-action-buttons col-md-4 text-right">
@@ -268,11 +268,9 @@
                                     <input class="button primary-action" type="submit" name="publish" value="Publicera" />
                                 </span>
                                 <span th:case="QUEUED">
-                                    <input class="button secondary-action" type="submit" name="delete" value="Ta bort" />
-                                    <input class="button primary-action" type="submit" name="publish" value="Köa publicering" />
+                                    <input class="button primary-action" type="submit" name="save" value="Köa publicering" />
                                 </span>
                                 <span th:case="PUBLISHED">
-                                    <input class="button secondary-action" type="submit" name="delete" value="Ta bort" />
                                     <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
                                 </span>
                             </th:block>

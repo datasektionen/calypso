@@ -9,6 +9,15 @@ select, select.form-control {
     background-size: 1000px;
 }
 
+select optgroup {
+    background-color: #f7f7f7;
+    color: #999;
+}
+
+select option {
+    background-color: #FFFFFF;
+}
+
 select.form-control:focus, input.form-control:focus {
     border: 1px solid #ec5f99;
     box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.1),

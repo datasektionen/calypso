@@ -61,12 +61,17 @@ public class EditController {
 	}
 
 	@PostMapping("/admin/edit")
-	public String doEdit(@Valid Item item, BindingResult bindingResult, Model model) {
+	public String doEdit(@RequestParam String publish, @Valid Item item, BindingResult bindingResult, Model model) {
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
 		model.addAttribute("formatter", formatter);
 
+		// Check for form errors
 		if (bindingResult.hasErrors())
 			return "edit";
+
+		// If the special publish param (name of a submit button) is present, we publish
+		if (publish != null)
+			item.setPublishDate(LocalDateTime.now());
 
 		item = itemRepository.save(item);
 
