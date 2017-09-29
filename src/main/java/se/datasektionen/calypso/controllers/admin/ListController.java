@@ -33,33 +33,13 @@ public class ListController {
 	                        @RequestParam(name = "sort", defaultValue = "DESC") String sort,
 	                        @RequestParam(name = "page", defaultValue = "0") int page,
 	                        Model model) {
-		model.addAttribute("formatter", DateTimeFormatter.ofPattern("D MMMM YYYY HH:mm"));
+		model.addAttribute("formatter", DateTimeFormatter.ofPattern("d MMMM YYYY HH:mm"));
 		model.addAttribute("items",
 				itemRepository.findAllByItemType(
 						ItemType.valueOfIgnoreCase(itemType),
 						new PageRequest(page, PAGE_SIZE, new Sort(Sort.Direction.valueOf(sort), sortBy))));
 
 		return "list";
-	}
-
-	@RequestMapping(value = "/admin/import", method = RequestMethod.GET)
-	public String facebookImport(@RequestParam(name = "error", required = false) String error, Model model) {
-		model.addAttribute("error", error);
-		return "import";
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/admin/import", method = RequestMethod.POST)
-	public Object doFacebookImport(@RequestParam("url") String url, Model model) {
-		String eventId;
-		try {
-			eventId = facebookEvent(url);
-		} catch (IllegalArgumentException e) {
-			return "redirect:/admin/import?error=Invalid event URL";
-		}
-
-		// return facebook.eventOperations().getEvent(eventId);
-		return "import";
 	}
 
 }

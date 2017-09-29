@@ -33,12 +33,4 @@ public class APIController {
 				new PageRequest(page, PAGE_SIZE, new Sort(Sort.Direction.valueOf(sort), sortBy)));
 	}
 
-	@RequestMapping("/new")
-	public Object create() {
-		Item item = new Item(ItemType.POST, "Hej", "Hi", "Innehåll", "Content",
-				"mauritzz", "");
-
-		return itemRepository.save(item);
-	}
-
 }

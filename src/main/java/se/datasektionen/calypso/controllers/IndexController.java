@@ -1,4 +1,4 @@
-package se.datasektionen.calypso.controllers.admin;
+package se.datasektionen.calypso.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
