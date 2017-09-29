@@ -1,9 +1,11 @@
 select, select.form-control {
     -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     background-image: url('select.svg');
     background-position: center right;
     background-repeat: no-repeat;
-    background-color: #e83d84;
+    background-color: #e91e63;
     background-size: 1000px;
 }
 

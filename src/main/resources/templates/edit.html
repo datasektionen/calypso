@@ -56,6 +56,8 @@
 
         <form action="#" th:action="@{/admin/edit}" th:object="${item}" method="POST" enctype="multipart/form-data">
             <input type="hidden" th:field="*{image}" />
+            <input type="hidden" th:field="*{author}" />
+            <input type="hidden" th:field="*{authorDisplay}" />
 
             <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
                 <strong>Något blev fel under redigeringen:</strong>
@@ -71,34 +73,34 @@
                         <input type="text" th:field="*{titleEnglish}" class="ds-secondary-input" placeholder="Titel (engelska)" />
                     </div>
                     <div class="clear"></div>
-                    <div class="ultra_light" style="padding-top: 15px;">
-                        <div class="col-sm-6"></div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <strong>Externa länkar:</strong>
-                                <div class="input-group">
-                                    <div class="input-group-addon" id="fb"><i class="fa fa-fw"></i></div>
-                                    <input type="text" class="form-control" title="Facebook-event (URL)"
-                                           placeholder="Facebook-event (URL)" th:field="*{facebookEvent}" />
-                                </div>
-                                <div class="input-group">
-                                    <div class="input-group-addon" id="gdocs"><i class="fa fa-fw"></i></div>
-                                    <input type="text" class="form-control" title="Google Doc/Form (URL)"
-                                           placeholder="Google Doc/Form (URL)" th:field="*{googleForm}" />
-                                </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-addon" id="fb"><i class="fa fa-fw"></i></div>
+                                <input type="text" class="form-control" title="Facebook-event (URL)"
+                                       placeholder="Facebook-event (URL)" th:field="*{facebookEvent}" />
                             </div>
                         </div>
-                        <div class="clear"></div>
                     </div>
-
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-addon" id="gdocs"><i class="fa fa-fw"></i></div>
+                            <input type="text" class="form-control" title="Google Doc/Form (URL)"
+                                   placeholder="Google Doc/Form (URL)" th:field="*{googleForm}" />
+                        </div>
+                    </div>
                     <div class="clear"></div>
 
                     <div class="col-xs-6">
+                        <div class="form-label-block" style="padding-bottom: 5px;">Innehåll (svenska):</div>
                         <textarea th:field="*{contentSwedish}" title="Innehåll (svenska)" id="content_sv"></textarea>
                     </div>
                     <div class="col-xs-6">
+                        <div class="form-label-block" style="padding-bottom: 5px;">Innehåll (engelska):</div>
                         <textarea th:field="*{contentEnglish}" title="Innehåll (engelska)" id="content_en"></textarea>
                     </div>
+
+                    <div class="col-xs-12" style="height: 50px;"></div>
                 </div>
                 <div class="col-xs-3">
                     <div class="sidebar toolbox">
@@ -161,7 +163,7 @@
                                             </optgroup>
                                             <optgroup label="Publicera under eget namn">
                                                 <option th:value="null"
-                                                        th:text="${#authentication.getPrincipal().getName()}"
+                                                        th:text="${item.authorDisplay}"
                                                         th:selected="${item.publishAs == null && item.id != null}"></option>
                                             </optgroup>
                                         </select>
@@ -212,29 +214,25 @@
                                 </div>
                             </div>
 
-                            <div id="event_data" th:if="(${item.itemType}) == ItemType.EVENT">
-
-                                <p>eventLocation:		<input type="text"  /></p>
-                                <p>eventStartTime:		<input type="datetime-local" th:field="*{eventStartTime}" /></p>
-                                <p>eventEndTime:		<input type="datetime-local" th:field="*{eventEndTime}" /></p>
-
-
+                            <div id="event_data" class="row">
                                 <h3>Event</h3>
-                                <div class="form-group">
-                                    <div class="form-label-block">Eventdatum:</div>
-                                    <div class="input-group">
-                                        <label for="eventStart">Start:</label>
-                                        <input type="datetime" id="eventStart" th:field="*{eventStartTime}" />
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="form-label-block">Eventdatum:</div>
+                                        <div class="input-group">
+                                            <label for="eventStart">Start:</label>
+                                            <input type="datetime" id="eventStart" th:field="*{eventStartTime}" />
+                                        </div>
+                                        <div class="input-group">
+                                            <label for="eventEnd">Slut:</label>
+                                            <input type="datetime" id="eventEnd" th:field="*{eventEndTime}" />
+                                        </div>
                                     </div>
-                                    <div class="input-group">
-                                        <label for="eventEnd">Slut:</label>
-                                        <input type="datetime" id="eventEnd" th:field="*{eventEndTime}" />
-                                    </div>
-                                </div>
 
-                                <div class="form-group">
-                                    <label for="eventLocation" class="form-label-block">Eventplats:</label>
-                                    <input type="text" id="eventLocation" th:field="*{eventLocation}" />
+                                    <div class="form-group">
+                                        <label for="eventLocation" class="form-label-block">Eventplats:</label>
+                                        <input type="text" id="eventLocation" th:field="*{eventLocation}" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
