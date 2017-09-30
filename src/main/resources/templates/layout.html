@@ -8,7 +8,7 @@
         window.methone_conf = {
             system_name: "calypso",
             color_scheme: "pink",
-            login_text: "[[${#httpServletRequest.remoteUser}]]",
+            login_text: "[[${#authentication.getPrincipal().getFirstName()}]]",
             login_href: "/login",
             links: [
                 {

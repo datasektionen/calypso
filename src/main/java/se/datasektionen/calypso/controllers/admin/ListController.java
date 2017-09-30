@@ -6,15 +6,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
 
 import java.time.format.DateTimeFormatter;
-
-import static se.datasektionen.calypso.util.StringUtils.facebookEvent;
+import java.util.Locale;
 
 @Controller
 public class ListController {
@@ -33,7 +30,8 @@ public class ListController {
 	                        @RequestParam(name = "sort", defaultValue = "DESC") String sort,
 	                        @RequestParam(name = "page", defaultValue = "0") int page,
 	                        Model model) {
-		model.addAttribute("formatter", DateTimeFormatter.ofPattern("d MMMM YYYY HH:mm"));
+		model.addAttribute("formatter", DateTimeFormatter.ofPattern("d MMM YYYY HH:mm", Locale.forLanguageTag("sv")));
+		model.addAttribute("page", page);
 		model.addAttribute("items",
 				itemRepository.findAllByItemType(
 						ItemType.valueOfIgnoreCase(itemType),

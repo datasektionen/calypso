@@ -198,3 +198,33 @@ table.table thead {
     background: #fff !important;
     color: #e91e63 !important;
 }
+
+.alert {
+    border-radius: 0 !important;
+}
+
+.alert-muted {
+    color: #999;
+    background: #fafafa;
+    border-color: #f2f2f2;
+}
+
+.alert-sm {
+    padding: 7px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.table-pagination {
+    text-align: center;
+}
+
+.table-pagination .disabled a {
+    color: #999 !important;
+}
+
+.table-pagination .active a {
+    color: #fff !important;
+    background: #ec407a !important;
+    border-color: #d81b60 !important;
+}

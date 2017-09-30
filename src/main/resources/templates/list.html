@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
 <head>
     <title>Replace bing</title>
@@ -24,16 +25,20 @@
         </div>
     </header>
     <div id="content">
+        <div sec:authorize="!hasAuthority('editor')" class="alert alert-muted alert-sm">
+            <i class="fa fa-fw fa-info-circle"></i>
+            Eftersom du saknar redaktörsrättigheter kan du endast se och redigera dina egna inlägg.
+        </div>
 
         <table width="100%" class="table table-striped">
             <thead>
             <tr>
                 <th width="5%"><i class="fa fa-newspaper-o"></i></th>
                 <th width="30%">Titel</th>
-                <th width="20%">Publicerad</th>
-                <th width="20%">Eventplats</th>
-                <th width="20%">Eventstart</th>
-                <th width="15%">Författare</th>
+                <th width="15%">Publicerad</th>
+                <th width="15%">Eventplats</th>
+                <th width="15%">Eventstart</th>
+                <th width="20%">Författare</th>
             </tr>
             </thead>
             <tbody th:unless="${#lists.isEmpty(items)}">
@@ -60,18 +65,26 @@
                         <em>Utkast</em>
                     </span>
                 </td>
-                <td style="vertical-align: middle;" th:text="${item.eventLocation}"></td>
+                <td style="vertical-align: middle;">
+                    <span th:text="${item.eventLocation}"></span>
+                    <span th:if="${#strings.isEmpty(item.eventLocation)}">
+                        <em>&mdash;</em>
+                    </span>
+                </td>
                 <td style="vertical-align: middle;">
                     <span th:if="${item.eventStartTime}">
                         <span th:text="${item.eventStartTime.format(formatter)}"></span>
                     </span>
+                    <span th:unless="${item.eventStartTime}">
+                        <em>&mdash;</em>
+                    </span>
                 </td>
-                <td style="vertical-align:middle;" th:text="${item.author}"></td>
+                <td style="vertical-align:middle;" th:text="${item.authorDisplay}"></td>
             </tr>
             </tbody>
-            <tbody th:if="${#lists.isEmpty(items)}">
+            <tbody th:if="${items.getTotalElements() == 0}">
             <tr>
-                <td colspan="4">
+                <td colspan="6">
                     <div class="text-center">
                         <br>
                         <h4>Inget innehåll hittades för de givna kriterierna</h4>
@@ -81,6 +94,29 @@
             </tr>
             </tbody>
         </table>
+
+        <div class="table-pagination" th:if="${items.getTotalElements() > 0}">
+            <ul class="pagination">
+                <li th:class="${items.number eq 0} ? 'disabled' : ''">
+                    <a th:unless="${page == 0}" th:href="@{${'/contacts'}(page=${items.number-1},size=${items.size})}">&laquo;</a>
+                    <a th:if="${page == 0}" href="javascript:void(0);">&laquo;</a>
+                </li>
+
+                <li th:each="pageNo : ${#numbers.sequence(0, items.totalPages - 1)}" th:class="${items.number == pageNo} ? 'active' : ''">
+                    <a th:if="${items.number == page}" href="javascript:void(0);">
+                        <span th:text="${pageNo + 1}"></span>
+                    </a>
+                    <a th:unless="${items.number == page}" th:href="@{${'/admin/list'}(page=${pageNo})}">
+                        <span th:text="${pageNo + 1}"></span>
+                    </a>
+
+                </li>
+                <li th:class="${items.number + 1 ge items.totalPages} ? 'disabled' : ''">
+                    <a th:unless="${items.isLast()}" th:href="@{${'/admin/list'}(page=${page+1})}">&raquo;</a>
+                    <a th:if="${items.isLast()}" href="javascript:void(0);">&raquo;</a>
+                </li>
+            </ul>
+        </div>
 
     </div>
 </div>
