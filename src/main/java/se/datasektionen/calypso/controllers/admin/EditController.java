@@ -17,18 +17,18 @@ import se.datasektionen.calypso.models.repositories.ItemRepository;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 @Controller
 @PreAuthorize("hasAuthority('post')")
 public class EditController {
 
 	private final ItemRepository itemRepository;
-	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM YYYY HH:mm", Locale.forLanguageTag("sv"));
+	private final DateTimeFormatter formatter;
 
 	@Autowired
-	public EditController(ItemRepository itemRepository) {
+	public EditController(ItemRepository itemRepository, DateTimeFormatter formatter) {
 		this.itemRepository = itemRepository;
+		this.formatter = formatter;
 	}
 
 	@GetMapping("/admin/new")

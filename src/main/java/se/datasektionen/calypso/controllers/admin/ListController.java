@@ -11,17 +11,18 @@ import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 @Controller
 public class ListController {
 
 	private final ItemRepository itemRepository;
+	private final DateTimeFormatter formatter;
 	private static final int PAGE_SIZE = 50;
 
 	@Autowired
-	public ListController(ItemRepository itemRepository) {
+	public ListController(ItemRepository itemRepository, DateTimeFormatter formatter) {
 		this.itemRepository = itemRepository;
+		this.formatter = formatter;
 	}
 
 	@RequestMapping("/admin/list")
@@ -30,7 +31,7 @@ public class ListController {
 	                        @RequestParam(name = "sort", defaultValue = "DESC") String sort,
 	                        @RequestParam(name = "page", defaultValue = "0") int page,
 	                        Model model) {
-		model.addAttribute("formatter", DateTimeFormatter.ofPattern("d MMM YYYY HH:mm", Locale.forLanguageTag("sv")));
+		model.addAttribute("formatter", formatter);
 		model.addAttribute("page", page);
 		model.addAttribute("items",
 				itemRepository.findAllByItemType(
