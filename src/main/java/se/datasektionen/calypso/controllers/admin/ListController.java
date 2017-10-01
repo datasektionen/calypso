@@ -27,10 +27,10 @@ public class ListController {
 
 	@RequestMapping("/admin/list")
 	public String index(@RequestParam(name = "itemType", defaultValue = "post") String itemType,
-	                        @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
-	                        @RequestParam(name = "sort", defaultValue = "DESC") String sort,
-	                        @RequestParam(name = "page", defaultValue = "0") int page,
-	                        Model model) {
+	                    @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+	                    @RequestParam(name = "sort", defaultValue = "DESC") String sort,
+	                    @RequestParam(name = "page", defaultValue = "0") int page,
+	                    Model model) {
 		model.addAttribute("formatter", formatter);
 		model.addAttribute("page", page);
 		model.addAttribute("items",
