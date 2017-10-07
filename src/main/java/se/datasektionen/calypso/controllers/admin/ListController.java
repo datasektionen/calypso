@@ -1,12 +1,17 @@
 package se.datasektionen.calypso.controllers.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import se.datasektionen.calypso.auth.DAuthUserDetails;
+import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
 
@@ -30,14 +35,23 @@ public class ListController {
 	                    @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
 	                    @RequestParam(name = "sort", defaultValue = "DESC") String sort,
 	                    @RequestParam(name = "page", defaultValue = "0") int page,
-	                    Model model) {
+	                    Authentication auth, Model model) {
+		// Common objects
+		ItemType type = ItemType.valueOfIgnoreCase(itemType);
+		PageRequest pageable = new PageRequest(page, PAGE_SIZE, new Sort(Sort.Direction.valueOf(sort), sortBy));
+		DAuthUserDetails user = (DAuthUserDetails) auth.getPrincipal();
+		Page<Item> items;
+
+		// Items
+		if (user.getAuthorities().contains(new SimpleGrantedAuthority("editor")))
+			items = itemRepository.findAllByItemType(type, pageable);
+		else
+			items = itemRepository.findAllByItemTypeAndAuthor(type, user.getUser(), pageable);
+
+		// Populate model
 		model.addAttribute("formatter", formatter);
 		model.addAttribute("page", page);
-		model.addAttribute("items",
-				itemRepository.findAllByItemType(
-						ItemType.valueOfIgnoreCase(itemType),
-						new PageRequest(page, PAGE_SIZE, new Sort(Sort.Direction.valueOf(sort), sortBy))));
-
+		model.addAttribute("items", items);
 		return "list";
 	}
 
