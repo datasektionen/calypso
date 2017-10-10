@@ -7,7 +7,6 @@ public class ItemListener {
 
 	@PrePersist
 	protected void onCreate(Item item) {
-		item.triggerCreated();
 		item.triggerUpdated();
 	}
 

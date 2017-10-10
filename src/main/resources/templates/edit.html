@@ -55,6 +55,7 @@
     <div id="content">
 
         <form action="#" th:action="@{/admin/edit}" th:object="${item}" method="POST" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}" />
             <input type="hidden" th:field="*{image}" />
             <input type="hidden" th:field="*{author}" />
             <input type="hidden" th:field="*{authorDisplay}" />
@@ -131,6 +132,7 @@
                                         </div>
                                     </div>
                                     <div th:case="PUBLISHED">
+                                        <input type="hidden" th:field="*{publishDate}" />
                                         <div class="form-input-group radio">
                                             <input type="radio" id="publish_now2" checked />
                                             <label for="publish_now2">Publicerad: <span th:text="${item.publishDate.format(formatter)}"></span></label>
@@ -164,7 +166,7 @@
                                             <optgroup label="Publicera under eget namn">
                                                 <option th:value="null"
                                                         th:text="${item.authorDisplay}"
-                                                        th:selected="${item.publishAs == null && item.id != null}"></option>
+                                                        th:selected="${#strings.isEmpty(item.publishAs) && item.id > 0}"></option>
                                             </optgroup>
                                         </select>
                                     </div>

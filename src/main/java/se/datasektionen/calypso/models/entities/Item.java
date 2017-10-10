@@ -23,9 +23,6 @@ public class Item {
 	private ItemType itemType;
 
 	@Column(nullable = false)
-	private LocalDateTime created;
-
-	@Column(nullable = false)
 	private LocalDateTime updated;
 
 	@Column(nullable = false)
@@ -245,10 +242,6 @@ public class Item {
 		this.publishAsDisplay = publishAsDisplay;
 	}
 
-	public LocalDateTime getCreated() {
-		return created;
-	}
-
 	public LocalDateTime getUpdated() {
 		return updated;
 	}
@@ -266,10 +259,6 @@ public class Item {
 			return PublishStatus.QUEUED;
 	}
 
-	void triggerCreated() {
-		this.created = LocalDateTime.now();
-	}
-
 	void triggerUpdated() {
 		this.updated = LocalDateTime.now();
 	}
@@ -279,13 +268,18 @@ public class Item {
 		return "Item{" +
 				"id=" + id +
 				", itemType=" + itemType +
+				", updated=" + updated +
 				", titleSwedish='" + titleSwedish + '\'' +
 				", titleEnglish='" + titleEnglish + '\'' +
+				", author='" + author + '\'' +
+				", authorDisplay='" + authorDisplay + '\'' +
+				", publishAs='" + publishAs + '\'' +
+				", publishAsDisplay='" + publishAsDisplay + '\'' +
+				", image='" + image + '\'' +
+				", sticky=" + sticky +
+				", publishDate=" + publishDate +
 				", contentSwedish='" + contentSwedish + '\'' +
 				", contentEnglish='" + contentEnglish + '\'' +
-				", author='" + author + '\'' +
-				", image='" + image + '\'' +
-				", publishDate=" + publishDate +
 				", eventLocation='" + eventLocation + '\'' +
 				", eventStartTime=" + eventStartTime +
 				", eventEndTime=" + eventEndTime +

@@ -1,4 +1,4 @@
-package se.datasektionen.calypso.util;
+package se.datasektionen.calypso.util.converters;
 
 import org.springframework.core.convert.converter.Converter;
 
@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class StringToLocalDateTimeConverter implements Converter<String, LocalDateTime> {
+
+	@Override
 	public LocalDateTime convert(String source) {
 		// Discard null values
 		if (source == null)
