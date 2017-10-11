@@ -97,6 +97,20 @@ public class Item {
 		this.image = image;
 	}
 
+	public Item(ItemType itemType, String titleSwedish, String titleEnglish, String contentSwedish, String contentEnglish, String author, String image, String eventLocation, LocalDateTime eventStartTime, LocalDateTime eventEndTime, String facebookEvent) {
+		this.itemType = itemType;
+		this.titleSwedish = titleSwedish;
+		this.titleEnglish = titleEnglish;
+		this.author = author;
+		this.image = image;
+		this.contentSwedish = contentSwedish;
+		this.contentEnglish = contentEnglish;
+		this.eventLocation = eventLocation;
+		this.eventStartTime = eventStartTime;
+		this.eventEndTime = eventEndTime;
+		this.facebookEvent = facebookEvent;
+	}
+
 	@Enumerated(EnumType.STRING)
 	public ItemType getItemType() {
 		return itemType;

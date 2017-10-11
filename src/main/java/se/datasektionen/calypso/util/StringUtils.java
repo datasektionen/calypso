@@ -15,4 +15,16 @@ public class StringUtils {
 		return m.group(1);
 	}
 
+	public static String getBodyText(String input, boolean swedish) {
+		Pattern p = Pattern.compile("^(..)\\1{5,}.?$", Pattern.MULTILINE);
+		Matcher m = p.matcher(input);
+
+		if (!m.find())
+			return input;
+
+		// For Swedish text, return the text from the start to the delimiter
+		// For English text, return the text from the delimiter to the end
+		return swedish ? input.substring(0, m.start(0)).trim() : input.substring(m.end(0)).trim();
+	}
+
 }

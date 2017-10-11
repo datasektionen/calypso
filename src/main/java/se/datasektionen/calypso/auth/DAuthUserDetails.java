@@ -1,5 +1,6 @@
 package se.datasektionen.calypso.auth;
 
+import facebook4j.Facebook;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,6 +15,7 @@ public class DAuthUserDetails implements UserDetails {
 	private String email;
 	private Collection<? extends GrantedAuthority> authorities;
 	private Map<String, String> mandates;
+	private Facebook facebook;
 
 	public DAuthUserDetails(String user,
 	                        String token,
@@ -92,6 +94,14 @@ public class DAuthUserDetails implements UserDetails {
 
 	public Map<String, String> getMandates() {
 		return mandates;
+	}
+
+	public Facebook getFacebook() {
+		return facebook;
+	}
+
+	public void setFacebook(Facebook facebook) {
+		this.facebook = facebook;
 	}
 
 	@Override

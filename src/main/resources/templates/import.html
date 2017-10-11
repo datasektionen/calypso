@@ -31,14 +31,14 @@
             ditt Facebookevent, samt länk till själva eventet.
         </p>
         <p>
-            Om den beskrivande texten innehåller sex eller mer förekomster av ett och samma tecken (t.ex. ======),
+            Om den beskrivande texten innehåller 30 eller mer förekomster av ett och samma tecken (t.ex. ======),
             eller en rad med "English:"/"In English" kommer detta att användas för att dela upp texten i svenska och engelska.
         </p>
 
         <form th:action="@{/admin/import}" method="post">
             <div class="form-group form-horizontal">
                 <input name="url" width="100" />
-                <input type="submit" value="Importera" class="theme-color" />
+                <input type="submit" value="Importera" class="button primary-action theme-color btn-color" />
             </div>
         </form>
 

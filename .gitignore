@@ -1,5 +1,7 @@
 .idea
 application.properties
+facebook4j.properties
 target
 out
 *.iml
+.DS_Store
