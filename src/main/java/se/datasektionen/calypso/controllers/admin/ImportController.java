@@ -83,7 +83,6 @@ public class ImportController {
 					getBodyText(event.getDescription(), true),
 					getBodyText(event.getDescription(), false),
 					user.getUser(),
-					null,
 					event.getLocation(),
 					DateUtils.dateToLDT(event.getStartTime()),
 					DateUtils.dateToLDT(event.getEndTime()),

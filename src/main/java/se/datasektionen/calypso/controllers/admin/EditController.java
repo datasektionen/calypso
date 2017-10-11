@@ -69,8 +69,6 @@ public class EditController {
 		if (bindingResult.hasErrors())
 			return "edit";
 
-		System.out.println(item.toString());
-
 		// If the special publish param (name of a submit button) is present, we publish
 		if (publish != null)
 			item.setPublishDate(LocalDateTime.now());

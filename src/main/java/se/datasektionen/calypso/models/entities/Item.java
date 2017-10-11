@@ -52,9 +52,6 @@ public class Item {
 	private String publishAsDisplay;
 
 	@Column
-	private String image;
-
-	@Column
 	private boolean sticky;
 
 	@Column
@@ -87,22 +84,20 @@ public class Item {
 
 	public Item() {}
 
-	public Item(ItemType itemType, String titleSwedish, String titleEnglish, String contentSwedish, String contentEnglish, String author, String image) {
+	public Item(ItemType itemType, String titleSwedish, String titleEnglish, String contentSwedish, String contentEnglish, String author) {
 		this.itemType = itemType;
 		this.titleSwedish = titleSwedish;
 		this.titleEnglish = titleEnglish;
 		this.contentSwedish = contentSwedish;
 		this.contentEnglish = contentEnglish;
 		this.author = author;
-		this.image = image;
 	}
 
-	public Item(ItemType itemType, String titleSwedish, String titleEnglish, String contentSwedish, String contentEnglish, String author, String image, String eventLocation, LocalDateTime eventStartTime, LocalDateTime eventEndTime, String facebookEvent) {
+	public Item(ItemType itemType, String titleSwedish, String titleEnglish, String contentSwedish, String contentEnglish, String author, String eventLocation, LocalDateTime eventStartTime, LocalDateTime eventEndTime, String facebookEvent) {
 		this.itemType = itemType;
 		this.titleSwedish = titleSwedish;
 		this.titleEnglish = titleEnglish;
 		this.author = author;
-		this.image = image;
 		this.contentSwedish = contentSwedish;
 		this.contentEnglish = contentEnglish;
 		this.eventLocation = eventLocation;
@@ -138,10 +133,6 @@ public class Item {
 
 	public String getAuthor() {
 		return author;
-	}
-
-	public String getImage() {
-		return image;
 	}
 
 	public String getEventLocation() {
@@ -194,10 +185,6 @@ public class Item {
 
 	public void setAuthor(String author) {
 		this.author = author;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
 	}
 
 	public void setPublishDate(LocalDateTime publishDate) {
@@ -289,7 +276,6 @@ public class Item {
 				", authorDisplay='" + authorDisplay + '\'' +
 				", publishAs='" + publishAs + '\'' +
 				", publishAsDisplay='" + publishAsDisplay + '\'' +
-				", image='" + image + '\'' +
 				", sticky=" + sticky +
 				", publishDate=" + publishDate +
 				", contentSwedish='" + contentSwedish + '\'' +

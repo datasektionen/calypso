@@ -56,7 +56,6 @@
 
         <form action="#" th:action="@{/admin/edit}" th:object="${item}" method="POST" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}" />
-            <input type="hidden" th:field="*{image}" />
             <input type="hidden" th:field="*{author}" />
             <input type="hidden" th:field="*{authorDisplay}" />
 
