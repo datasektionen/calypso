@@ -23,22 +23,26 @@
     </header>
     <div id="content">
 
-        <h3>Viktig information</h3>
+        <h2>Viktig information</h2>
 
         <p>Du kan endast importera <strong>publika event</strong> som är synliga för alla Facebookanvändare.</p>
         <p>
-            Importen kommer att automatiskt skapa ett utkast med samma bild, beskrivande text, plats och tid som
-            ditt Facebookevent, samt länk till själva eventet.
-        </p>
-        <p>
-            Om den beskrivande texten innehåller 30 eller mer förekomster av ett och samma tecken (t.ex. ======),
-            eller en rad med "English:"/"In English" kommer detta att användas för att dela upp texten i svenska och engelska.
+            Importen kommer att automatiskt skapa ett utkast med samma beskrivande text, plats och tid som
+            ditt Facebookevent, samt länk till själva eventet. Om den beskrivande texten innehåller fem eller
+            mer förekomster av två tecken (t.ex. == eller -•) kommer detta att användas för
+            att dela upp texten i svenska och engelska.
         </p>
 
-        <form th:action="@{/admin/import}" method="post">
-            <div class="form-group form-horizontal">
-                <input name="url" width="100" />
-                <input type="submit" value="Importera" class="button primary-action theme-color btn-color" />
+        <p>Eventet publiceras inte förrän du granskat och godkänt det.</p>
+
+        <form th:action="@{/admin/import}" method="post" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-xs-10" style="padding-right: 0;">
+                    <input name="url" class="ds-primary-input" width="100" />
+                </div>
+                <div class="col-xs-2">
+                    <input style="width: 100%;" type="submit" value="Importera" class="button primary-action theme-color btn-color" />
+                </div>
             </div>
         </form>
 
