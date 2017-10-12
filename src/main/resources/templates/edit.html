@@ -138,6 +138,7 @@
                                         </div>
                                     </div>
                                     <div th:case="QUEUED">
+                                        <input type="hidden" th:field="*{publishDate}" />
                                         <div class="form-input-group radio">
                                             <input type="radio" id="publish_now" checked />
                                             <label for="publish_now">Köad: <span th:text="${item.publishDate.format(formatter)}"></span></label>
@@ -219,13 +220,12 @@
                                 <h3>Event</h3>
                                 <div class="col-xs-12">
                                     <div class="form-group">
-                                        <div class="form-label-block">Eventdatum:</div>
+                                        <label for="eventStart" class="form-label-block">Eventstart:</label>
                                         <div class="input-group">
-                                            <label for="eventStart">Start:</label>
                                             <input type="datetime-local" id="eventStart" th:field="*{eventStartTime}" />
                                         </div>
+                                        <label for="eventEnd" class="form-label-block">Eventslut:</label>
                                         <div class="input-group">
-                                            <label for="eventEnd">Slut:</label>
                                             <input type="datetime-local" id="eventEnd" th:field="*{eventEndTime}" />
                                         </div>
                                     </div>

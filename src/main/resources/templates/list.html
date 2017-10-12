@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
 <head>
-    <title>Nyheter & event - Calypso @ Datasektionen.se</title>
+    <title>Nyheter & Event - Calypso @ Datasektionen.se</title>
     <script type="text/javascript"></script>
     <link rel="stylesheet" href="/css/overrides.css" />
 </head>
@@ -44,12 +44,17 @@
             <tbody th:unless="${#lists.isEmpty(items)}">
             <tr th:each="item : ${items}">
                 <td style="vertical-align: middle;">
-                    <span th:if="${item.publishDate}">
-                        <i class="fa fa-check-circle text-success"></i>
-                    </span>
-                    <span th:if="!${item.publishDate}">
-                        <i class="fa fa-circle-o"></i>
-                    </span>
+                    <th:block th:switch="${item.getPublishStatus().name()}">
+                        <div th:case="DRAFT">
+                            <i class="fa fa-circle-o"></i>
+                        </div>
+                        <div th:case="QUEUED">
+                            <i class="fa fa-clock-o text-warning"></i>
+                        </div>
+                        <div th:case="PUBLISHED">
+                            <i class="fa fa-check-circle text-success"></i>
+                        </div>
+                    </th:block>
                 </td>
                 <td>
                     <a th:href="@{/admin/edit(id=${item.id})}">

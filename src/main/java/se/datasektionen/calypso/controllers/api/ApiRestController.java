@@ -13,13 +13,13 @@ import se.datasektionen.calypso.models.repositories.ItemRepository;
 
 @RestController
 @RequestMapping("/api")
-public class APIController {
+public class ApiRestController {
 
 	private final ItemRepository itemRepository;
 	private static final int PAGE_SIZE = 50;
 
 	@Autowired
-	public APIController(ItemRepository itemRepository) {
+	public ApiRestController(ItemRepository itemRepository) {
 		this.itemRepository = itemRepository;
 	}
 
