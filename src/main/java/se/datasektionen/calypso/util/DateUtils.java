@@ -10,4 +10,8 @@ public class DateUtils {
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 
+	public static Date ldtToDate(LocalDateTime date) {
+		return Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
+	}
+
 }
