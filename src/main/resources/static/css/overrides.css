@@ -79,6 +79,9 @@ select.form-control:focus, input.form-control:focus {
 
 h3 { border: none !important; }
 
+#content {
+    min-height: calc(100vh - 216px);
+}
 
 /**
  * Main page elements.
@@ -227,4 +230,32 @@ table.table thead {
     color: #fff !important;
     background: #ec407a !important;
     border-color: #d81b60 !important;
+}
+
+#footer {
+    background: #333333;
+    margin: 0;
+    height: 70px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#footer p {
+    color: #fff;
+}
+
+#footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#footer #footer-inner div {
+    text-transform: uppercase;
+    color: #ccc;
+    font-weight: 300;
+    font-size: 13px;
+    padding-top: 25px;
+}
+
+#footer-inner a {
+    color: #fff;
 }

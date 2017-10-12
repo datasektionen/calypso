@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title th:replace="${title}">Calypso @ Datasektionen.se</title>
     <link rel="stylesheet" href="//aurora.datasektionen.se" />
+    <link rel="stylesheet" th:href="@{/css/overrides.css}" />
     <script type="text/javascript" th:inline="text">
         window.methone_conf = {
             system_name: "calypso",
@@ -36,6 +37,23 @@
 <div id="methone-container-replace"></div>
 <div id="application" class="pink">
     <th:block th:replace="${content}" />
+</div>
+
+<div id="footer" class="row">
+    <div id="footer-inner">
+        <div class="col-sm-3">
+            <a href="https://github.com/datasektionen/calypso" target="_blank">Calypso</a>
+        </div>
+        <div class="col-sm-6 text-center">
+            Utvecklat av
+            <a href="mailto:mauritzz@kth.se">
+                <strong>Mauritz Zachrisson</strong>
+            </a>
+        </div>
+        <div class="col-sm-3" th:inline="text" th:class="text-right">
+            Java [[${@environment.getProperty('java.runtime.version')}]] ([[${@environment.getProperty('os.arch')}]])
+        </div>
+    </div>
 </div>
 <script src="//methone.datasektionen.se/bar.js"></script>
 <th:block th:replace="${scripts}" />
