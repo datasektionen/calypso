@@ -3,6 +3,7 @@ package se.datasektionen.calypso.controllers.api;
 import biweekly.Biweekly;
 import biweekly.ICalendar;
 import biweekly.component.VEvent;
+import biweekly.property.Color;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -30,6 +31,9 @@ public class CalendarController {
 	public String eventFeed() {
 		PageRequest pageable = new PageRequest(0, 20, new Sort(Sort.Direction.DESC, "eventStartTime"));
 		ICalendar ical = new ICalendar();
+		ical.setName("Datasektionen");
+		ical.setColor(new Color("hotpink"));
+		ical.setProductId("-//Datasektionen//Calypso//SV");
 
 		itemRepository
 				.findAllByItemType(ItemType.EVENT, pageable)
