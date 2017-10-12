@@ -126,7 +126,7 @@
                                                 <label for="publish_later">Senare:</label>
                                             </div>
                                             <div class="col-xs-7" style="padding-left: 0;">
-                                                <input type="datetime" name="publishDate" id="publishDate" />
+                                                <input type="datetime-local" name="publishDate" id="publishDate" />
                                             </div>
                                         </div>
                                     </div>
@@ -209,7 +209,7 @@
                                     <select class="form-control" id="content_type" th:field="*{itemType}">
                                         <option th:each="itemType : ${T(se.datasektionen.calypso.models.enums.ItemType).values()}"
                                                 th:value="${itemType}"
-                                                th:text="${itemType.name().toLowerCase()}">
+                                                th:text="${#strings.capitalize(itemType.name().toLowerCase())}">
                                         </option>
                                     </select>
                                 </div>

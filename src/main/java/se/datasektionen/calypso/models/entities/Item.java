@@ -27,12 +27,12 @@ public class Item {
 
 	@Column(nullable = false)
 	@NotNull
-	@Size(min = 15, message = "Titel (svenska) måste vara minst 15 tecken")
+	@Size(min = 8, message = "Titel (svenska) måste vara minst åtta tecken")
 	private String titleSwedish;
 
 	@Column(nullable = false)
 	@NotNull
-	@Size(min = 15, message = "Titel (engelska) måste vara minst 15 tecken")
+	@Size(min = 8, message = "Titel (engelska) måste vara minst åtta tecken")
 	private String titleEnglish;
 
 	@Column(nullable = false)
