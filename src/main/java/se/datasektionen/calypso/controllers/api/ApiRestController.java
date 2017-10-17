@@ -17,7 +17,7 @@ import java.util.Collection;
 @RequestMapping("/api")
 public class ApiRestController {
 
-	private static final int PAGE_SIZE = 50;
+	private static final int PAGE_SIZE = 25;
 	private ApiRepository apiRepository;
 
 	@Autowired
@@ -26,13 +26,16 @@ public class ApiRestController {
 	}
 
 	@RequestMapping("/list")
-	public Page<Item> items(@RequestParam(name = "itemType", defaultValue = "post") String itemType,
+	public Page<Item> items(@RequestParam(name = "itemType", required = false) String itemType,
 	                        @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
 	                        @RequestParam(name = "sort", defaultValue = "DESC") String sort,
 	                        @RequestParam(name = "page", defaultValue = "0") int page) {
-		return apiRepository.list(
-				ItemType.valueOfIgnoreCase(itemType),
-				new PageRequest(page, PAGE_SIZE, new Sort(Sort.Direction.valueOf(sort), sortBy)));
+		PageRequest pageable = new PageRequest(page, PAGE_SIZE, new Sort(Sort.Direction.valueOf(sort), sortBy));
+
+		if (itemType == null)
+			return apiRepository.findAllPublished(pageable);
+		else
+			return apiRepository.findAllPublishedByItemType(ItemType.valueOfIgnoreCase(itemType), pageable);
 	}
 
 	@RequestMapping("/event")
