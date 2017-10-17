@@ -38,23 +38,34 @@
 <body>
 
 <div id="main">
-    <header>
-        <div class="header-inner">
-            <div class="row">
-                <div class="header-left col-md-2"></div>
-                <div class="col-md-8">
-                    <h2>Redigera post</h2>
+    <form action="#" th:action="@{/admin/edit}" th:object="${item}" method="POST" enctype="multipart/form-data">
+        <header>
+            <div class="header-inner">
+                <div class="row">
+                    <div class="header-left col-md-2"></div>
+                    <div class="col-md-8">
+                        <h2>Redigera post</h2>
+                    </div>
+                    <div class="header-right col-md-2">
+                        <th:block th:switch="${item.getPublishStatus().name()}">
+                                <span th:case="DRAFT">
+                                    <!-- <a href="/admin/new" class="primary-action">Skapa ny</a> -->
+                                    <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
+                                </span>
+                            <span th:case="QUEUED">
+                                    <input class="button primary-action" type="submit" name="save" value="Köa publicering" />
+                                </span>
+                            <span th:case="PUBLISHED">
+                                    <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
+                                </span>
+                        </th:block>
+                    </div>
                 </div>
-                <div class="header-right col-md-2">
-                    <a href="/admin/new" class="primary-action">Skapa ny</a>
-                </div>
+                <div class="clear"></div>
             </div>
-            <div class="clear"></div>
-        </div>
-    </header>
-    <div id="content">
+        </header>
+        <div id="content">
 
-        <form action="#" th:action="@{/admin/edit}" th:object="${item}" method="POST" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}" />
             <input type="hidden" th:field="*{author}" />
             <input type="hidden" th:field="*{authorDisplay}" />
@@ -106,48 +117,25 @@
                     <div class="sidebar toolbox">
                         <h3 style="margin-top: 0;">Metadata</h3>
                         <div class="col-xs-12">
-                            <div class="form-horizontal">
-                                <div class="form-label-block">Publiceringsdatum:</div>
-
+                            <div class="form-horizontal form-group">
                                 <th:block th:switch="${item.getPublishStatus().name()}">
                                     <div th:case="DRAFT">
-                                        <div class="form-group radio row">
-                                            <div class="col-xs-5" style="padding-right: 0;">
-                                                <input type="radio" name="publish_now" id="publish_now1" value="true" checked />
-                                                <label for="publish_now1" th:inline="text">Direkt:</label>
-                                            </div>
-                                            <div class="col-xs-7" style="padding-left: 0;">
-                                                <small class="text-muted" th:text="${now}"></small>
-                                            </div>
-                                        </div>
-                                        <div class="form-group radio">
-                                            <div class="col-xs-5" style="padding-right: 0;">
-                                                <input type="radio" name="publish_now" id="publish_later" value="false" title="Publicera senare" />
-                                                <label for="publish_later">Senare:</label>
-                                            </div>
-                                            <div class="col-xs-7" style="padding-left: 0;">
-                                                <input type="datetime-local" name="publishDate" id="publishDate" />
-                                            </div>
-                                        </div>
+                                        <label for="publishDate" class="form-label-block">Publiceringsdatum:</label>
+                                        <input class="form-control input" type="datetime-local" id="publishDate" th:field="*{publishDate}" placeholder="YYYY-MM-DDThh:mm" />
+                                        <small class="text-ultra-muted">Lämna blankt för direktpublicering</small>
                                     </div>
                                     <div th:case="PUBLISHED">
+                                        <label for="publishDate" class="form-label-block">Publiceringsdatum:</label>
+                                        <input class="form-control input" readonly="readonly" disabled="disabled" type="text" th:value="${item.publishDate.format(formatter)}" />
                                         <input type="hidden" th:field="*{publishDate}" />
-                                        <div class="form-input-group radio">
-                                            <input type="radio" id="publish_now2" checked />
-                                            <label for="publish_now2">Publicerad: <span th:text="${item.publishDate.format(formatter)}"></span></label>
-                                        </div>
                                     </div>
                                     <div th:case="QUEUED">
                                         <input type="hidden" th:field="*{publishDate}" />
-                                        <div class="form-input-group radio">
-                                            <input type="radio" id="publish_now" checked />
-                                            <label for="publish_now">Köad: <span th:text="${item.publishDate.format(formatter)}"></span></label>
-                                        </div>
+                                        <label for="publishDate" class="form-label-block">Köad för publicering:</label>
+                                        <input class="form-control input" readonly="readonly" disabled="disabled" type="text" th:value="${item.publishDate.format(formatter)}" />
                                     </div>
                                 </th:block>
-
                             </div>
-                            <div class="form-divider"></div>
                             <div class="form-group">
                                 <label for="publishAs" class="form-label-block">Publicera i egenskap av:</label>
                                 <div class="form-input-group">
@@ -173,7 +161,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-divider"></div>
                             <div class="form-group row">
                                 <div class="form-label-inline col-xs-4" style="padding-right: 0;">Synlighet: &nbsp;</div>
 
@@ -221,18 +208,16 @@
                                 <div class="col-xs-12">
                                     <div class="form-group">
                                         <label for="eventStart" class="form-label-block">Eventstart:</label>
-                                        <div class="input-group">
-                                            <input type="datetime-local" id="eventStart" th:field="*{eventStartTime}" />
-                                        </div>
+                                        <input class="form-control input" type="datetime-local" id="eventStart" th:field="*{eventStartTime}" />
+                                    </div>
+                                    <div class="form-group">
                                         <label for="eventEnd" class="form-label-block">Eventslut:</label>
-                                        <div class="input-group">
-                                            <input type="datetime-local" id="eventEnd" th:field="*{eventEndTime}" />
-                                        </div>
+                                        <input class="form-control input" type="datetime-local" id="eventEnd" th:field="*{eventEndTime}" />
                                     </div>
 
                                     <div class="form-group">
                                         <label for="eventLocation" class="form-label-block">Eventplats:</label>
-                                        <input type="text" id="eventLocation" th:field="*{eventLocation}" />
+                                        <input class="form-control input" type="text" id="eventLocation" th:field="*{eventLocation}" />
                                     </div>
                                 </div>
                             </div>
@@ -282,9 +267,9 @@
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
+    </form>
 
-    </div>
 </div>
 
 </body>
