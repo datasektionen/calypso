@@ -3,11 +3,11 @@ package se.datasektionen.calypso.components;
 import com.rometools.rome.feed.rss.Channel;
 import com.rometools.rome.feed.rss.Item;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
+import se.datasektionen.calypso.util.Config;
 import se.datasektionen.calypso.util.converters.RssConverter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,19 +19,19 @@ import java.util.stream.Collectors;
 @Component("rssView")
 public final class RssComponent extends AbstractRssFeedView {
 
-	@Value("${application.base-url}")
-	private String baseUrl;
 	private ApiRepository apiRepository;
+	private Config config;
 
 	@Autowired
-	public RssComponent(ApiRepository apiRepository) {
+	public RssComponent(ApiRepository apiRepository, Config config) {
 		this.apiRepository = apiRepository;
+		this.config = config;
 	}
 
 	@Override
 	protected Channel newFeed() {
 		Channel channel = new Channel("rss_2.0");
-		channel.setLink(baseUrl + "/posts/feed/");
+		channel.setLink(config.getBaseUrl() + "/posts/feed/");
 		channel.setTitle("Datasektionen.se - RSS");
 		channel.setDescription("Nyheter och event från Datasektionen.se");
 		return channel;

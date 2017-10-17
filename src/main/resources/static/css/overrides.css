@@ -89,7 +89,7 @@ h3 { border: none !important; }
 
 .checkbox {
     position: relative;
-    margin: 0 0 25px !important;
+    margin: 0 !important;
     font-size: 14px;
     color: #777;
 }

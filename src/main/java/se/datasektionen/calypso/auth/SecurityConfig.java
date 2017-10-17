@@ -9,10 +9,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import se.datasektionen.calypso.util.Config;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	private Config config;
+
+	@Autowired
+	public SecurityConfig(Config config) {
+		this.config = config;
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -43,12 +51,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public DAuthUserDetailsService dAuthUserDetails() {
-		return new DAuthUserDetailsService();
+		return new DAuthUserDetailsService(config);
 	}
 
 	@Bean
 	public DAuthEntryPoint dAuthEntryPoint() {
-		return new DAuthEntryPoint();
+		return new DAuthEntryPoint(config);
 	}
 
 	@Bean

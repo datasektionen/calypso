@@ -1,6 +1,6 @@
 package se.datasektionen.calypso.auth;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,6 +16,7 @@ import se.datasektionen.calypso.auth.entities.DAuthResponse;
 import se.datasektionen.calypso.auth.entities.dfunkt.DFunktResponse;
 import se.datasektionen.calypso.auth.entities.dfunkt.Mandate;
 import se.datasektionen.calypso.auth.entities.dfunkt.Role;
+import se.datasektionen.calypso.util.Config;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,14 +31,18 @@ import java.util.stream.Collectors;
  */
 public class DAuthUserDetailsService implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
-	@Value("${LOGIN2_KEY}")
-	private String apiKey;
+	private Config config;
+
+	@Autowired
+	public DAuthUserDetailsService(Config config) {
+		this.config = config;
+	}
 
 	@Override
 	public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
 		// Required variables
 		String t = token.getPrincipal().toString();
-		String url = "https://login2.datasektionen.se/verify/" + t + ".json?api_key=" + apiKey;
+		String url = "https://login2.datasektionen.se/verify/" + t + ".json?api_key=" + config.getApiKey();
 
 		// Perform REST consumption
 		DAuthResponse response = new RestTemplate().getForObject(url, DAuthResponse.class);
