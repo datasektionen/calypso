@@ -14,16 +14,17 @@ import se.datasektionen.calypso.models.repositories.ApiRepository;
 import static se.datasektionen.calypso.util.DateUtils.ldtToDate;
 
 @Controller
-public class CalendarController {
+@RequestMapping("/feeds")
+public class FeedController {
 
 	private ApiRepository apiRepository;
 
 	@Autowired
-	public CalendarController(ApiRepository apiRepository) {
+	public FeedController(ApiRepository apiRepository) {
 		this.apiRepository = apiRepository;
 	}
 
-	@RequestMapping(produces = "text/calendar", method = RequestMethod.GET, value = "/feeds/ical")
+	@RequestMapping(produces = "text/calendar", method = RequestMethod.GET, value = "/ical")
 	@ResponseBody
 	public String eventFeed() {
 		ICalendar ical = new ICalendar();
@@ -46,6 +47,11 @@ public class CalendarController {
 				.forEach(ical::addEvent);
 
 		return Biweekly.write(ical).go();
+	}
+
+	@RequestMapping(produces = "application/*", method = RequestMethod.GET, value = "/rss")
+	public String feed() {
+		return "rssView";
 	}
 
 }

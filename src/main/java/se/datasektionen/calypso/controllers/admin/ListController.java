@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import se.datasektionen.calypso.models.repositories.ItemRepository;
 import java.time.format.DateTimeFormatter;
 
 @Controller
+@PreAuthorize("hasAuthority('post')")
 public class ListController {
 
 	private final ItemRepository itemRepository;
