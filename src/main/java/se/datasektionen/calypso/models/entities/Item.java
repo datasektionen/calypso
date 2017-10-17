@@ -20,6 +20,7 @@ public class Item {
 
 	@Column(nullable = false)
 	@NotNull
+	@Enumerated(EnumType.STRING)
 	private ItemType itemType;
 
 	@Column(nullable = false)

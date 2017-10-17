@@ -22,4 +22,5 @@ public interface ItemRepository extends CrudRepository<Item, Long> {
 	@Override
 	@PreAuthorize("hasPermission(#item, null)")
 	<S extends Item> S save(@Param("item") S item);
+
 }
