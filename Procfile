@@ -1,1 +1,1 @@
-web: java -Xmx686m -jar target/calypso-*-with-dependencies.jar
+web: java -Xmx686m -jar target/*.jar
