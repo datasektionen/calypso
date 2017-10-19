@@ -15,7 +15,7 @@ import se.datasektionen.calypso.auth.DAuthUserDetails;
 import se.datasektionen.calypso.exceptions.BadRequestException;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
-import se.datasektionen.calypso.models.repositories.ItemRepository;
+import se.datasektionen.calypso.util.Config;
 import se.datasektionen.calypso.util.DateUtils;
 
 import java.time.LocalDateTime;
@@ -27,18 +27,17 @@ import static se.datasektionen.calypso.util.StringUtils.getBodyText;
 @Controller
 public class ImportController {
 
-	private String callbackURL = "http://localhost:8080/admin/import/authorize";
-	private ItemRepository itemRepository;
+	private String callbackURL;
 	private DateTimeFormatter formatter;
 
 	@Autowired
-	public ImportController(ItemRepository itemRepository, DateTimeFormatter formatter) {
-		this.itemRepository = itemRepository;
+	public ImportController(DateTimeFormatter formatter, Config config) {
 		this.formatter = formatter;
+		this.callbackURL = config.getBaseUrl() + "/admin/import/authorize";
 	}
 
 	@RequestMapping(value = "/admin/import", method = RequestMethod.GET)
-	public String facebookImport(Authentication auth, Model model) {
+	public String facebookImport(Authentication auth) {
 		DAuthUserDetails user = (DAuthUserDetails) auth.getPrincipal();
 
 		// Catch unauthenticated users
