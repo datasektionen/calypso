@@ -1,6 +1,5 @@
 .idea
 application-dev.properties
-facebook4j.properties
 target
 out
 *.iml
