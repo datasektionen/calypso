@@ -1,8 +1,14 @@
 {
   "properties": [
     {
-      "name": "application.base-url",
+      "name": "APPLICATION_URL",
       "type": "java.lang.String",
-      "description": "Description for application.base-url."
-  }
-] }
+      "description": "Application URL, including scheme and excluding the trailing slash."
+    },
+    {
+      "name": "LOGIN2_KEY",
+      "type": "java.lang.String",
+      "description": "API key for login2.datasektionen.se."
+    }
+  ]
+}
