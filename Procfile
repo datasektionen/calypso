@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -Xmx686m -jar target/*.jar
+web: java -Xmx686m -jar target/calypso-*-with-dependencies.jar
