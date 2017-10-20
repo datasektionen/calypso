@@ -54,6 +54,7 @@ public class ListController {
 		model.addAttribute("formatter", formatter);
 		model.addAttribute("page", page);
 		model.addAttribute("items", items);
+		model.addAttribute("itemType", type);
 		return "list";
 	}
 

@@ -15,7 +15,10 @@
             <div class="row">
                 <div class="header-left col-md-2"></div>
                 <div class="col-md-8">
-                    <h2>Nyheter & Event</h2>
+                    <th:block th:switch="${itemType.name()}">
+                        <h2 th:case="EVENT">Redigera event</h2>
+                        <h2 th:case="POST">Redigera nyheter</h2>
+                    </th:block>
                 </div>
                 <div class="header-right col-md-2">
                     <a href="/admin/new" class="primary-action">Skapa ny</a>
