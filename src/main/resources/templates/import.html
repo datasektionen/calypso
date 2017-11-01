@@ -27,13 +27,16 @@
 
         <p>Du kan endast importera <strong>publika event</strong> som är synliga för alla Facebookanvändare.</p>
         <p>
-            Importen kommer att automatiskt skapa ett utkast med samma beskrivande text, plats och tid som
+            Importen kommer att automatiskt skapa ett utkast med samma titel, beskrivande text och tid som
             ditt Facebookevent, samt länk till själva eventet. Om den beskrivande texten innehåller fem eller
             mer förekomster av två tecken (t.ex. == eller -•) kommer detta att användas för
             att dela upp texten i svenska och engelska.
         </p>
 
         <p>Eventet publiceras inte förrän du granskat och godkänt det.</p>
+        <p>
+            <strong>Observera att eventplats inte följer med i importen utan måste fyllas i manuellt.</strong>
+        </p>
 
         <form th:action="@{/admin/import}" method="post" class="form-horizontal">
             <div class="form-group">

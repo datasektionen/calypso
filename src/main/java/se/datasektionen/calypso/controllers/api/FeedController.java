@@ -37,7 +37,7 @@ public class FeedController {
 				.stream()
 				.map(e -> {
 					VEvent event = new VEvent();
-					event.setUid(e.getId().toString());
+					event.setUid("" + e.getId());
 					event.setSummary(e.getTitleSwedish());
 					event.setDescription(e.getContentSwedish());
 					event.setDateStart(ldtToDate(e.getEventStartTime()));

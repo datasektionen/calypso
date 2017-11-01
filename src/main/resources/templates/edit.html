@@ -34,6 +34,27 @@
             spellChecker: false
         });
     </script>
+    <script type="text/javascript" src="/js/vue.js"></script>
+    <script type="text/javascript" th:inline="text">
+        new Vue({
+            el: "#main",
+            data: {
+                contentType: "[[${item.itemType}]]",
+                publishStatus: "[[${item.getPublishStatus().name()}]]",
+                publishDate: "[[${item.publishDate}]]"
+            },
+            methods: {
+                queue: function () {
+                    if (this.publishDate.match(/^20\d{2}-(0[1-9]|1[0-2])-([0-2]\d|3[0-1])T[0-2]\d:[0-5]\d$/)) {
+                        this.publishStatus = "QUEUED";
+                    } else {
+                        alert('Du måste ange ett datum på giltigt format: YYYY-MM-DDThh:mm (ex. 2017-09-21T11:27');
+                        this.publishDate = "";
+                    }
+                }
+            }
+        })
+    </script>
 </head>
 <body>
 
@@ -48,16 +69,17 @@
                     </div>
                     <div class="header-right col-md-2">
                         <th:block th:switch="${item.getPublishStatus().name()}">
-                                <span th:case="DRAFT">
-                                    <!-- <a href="/admin/new" class="primary-action">Skapa ny</a> -->
-                                    <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
-                                </span>
+                            <span th:case="DRAFT">
+                                <input class="button primary-action" type="submit" name="save" value="Spara utkast" v-if="publishStatus == 'DRAFT'" />
+                                <input class="button primary-action" type="submit" name="save" value="Köa publicering" v-if="publishStatus == 'QUEUED'" />
+                            </span>
                             <span th:case="QUEUED">
-                                    <input class="button primary-action" type="submit" name="save" value="Köa publicering" />
-                                </span>
+                                <input class="button primary-action" type="submit" name="save" value="Spara utkast" v-if="publishStatus == 'DRAFT'" />
+                                <input class="button primary-action" type="submit" name="save" value="Köa publicering" v-if="publishStatus == 'QUEUED'" />
+                            </span>
                             <span th:case="PUBLISHED">
-                                    <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
-                                </span>
+                                <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
+                            </span>
                         </th:block>
                     </div>
                 </div>
@@ -121,7 +143,7 @@
                                 <th:block th:switch="${item.getPublishStatus().name()}">
                                     <div th:case="DRAFT">
                                         <label for="publishDate" class="form-label-block">Publiceringsdatum:</label>
-                                        <input class="form-control input" type="datetime-local" id="publishDate" th:field="*{publishDate}" placeholder="YYYY-MM-DDThh:mm" />
+                                        <input class="form-control input" v-model="publishDate" type="datetime-local" id="publishDate" th:field="*{publishDate}" @blur="queue" placeholder="YYYY-MM-DDThh:mm" />
                                         <small class="text-ultra-muted">Lämna blankt för direktpublicering</small>
                                     </div>
                                     <div th:case="PUBLISHED">
@@ -194,7 +216,7 @@
                             <div class="form-group">
                                 <label for="content_type" class="form-label-block">Posttyp:</label>
                                 <div class="form-input-group">
-                                    <select class="form-control" id="content_type" th:field="*{itemType}">
+                                    <select class="form-control" id="content_type" th:field="*{itemType}" v-model="contentType">
                                         <option th:each="itemType : ${T(se.datasektionen.calypso.models.enums.ItemType).values()}"
                                                 th:value="${itemType}"
                                                 th:text="${#strings.capitalize(itemType.name().toLowerCase())}">
@@ -203,21 +225,21 @@
                                 </div>
                             </div>
 
-                            <div id="event_data" class="row">
+                            <div id="event_data" class="row" v-if="contentType == 'EVENT'">
                                 <h3>Event</h3>
                                 <div class="col-xs-12">
                                     <div class="form-group">
                                         <label for="eventStart" class="form-label-block">Eventstart:</label>
-                                        <input class="form-control input" type="datetime-local" id="eventStart" th:field="*{eventStartTime}" />
+                                        <input class="form-control input" required="required" type="datetime-local" id="eventStart" th:field="*{eventStartTime}" />
                                     </div>
                                     <div class="form-group">
                                         <label for="eventEnd" class="form-label-block">Eventslut:</label>
-                                        <input class="form-control input" type="datetime-local" id="eventEnd" th:field="*{eventEndTime}" />
+                                        <input class="form-control input" required="required" type="datetime-local" id="eventEnd" th:field="*{eventEndTime}" />
                                     </div>
 
                                     <div class="form-group">
                                         <label for="eventLocation" class="form-label-block">Eventplats:</label>
-                                        <input class="form-control input" type="text" id="eventLocation" th:field="*{eventLocation}" />
+                                        <input class="form-control input" required="required" type="text" id="eventLocation" th:field="*{eventLocation}" />
                                     </div>
                                 </div>
                             </div>
@@ -233,11 +255,16 @@
                     <div class="footer-toolbar-info col-md-8">
                         <span th:if="!${item.publishDate}">
                             <strong>Kom ihåg att spara posten som utkast medan du jobbar.</strong>
-                            <span th:if="${item.id}" th:inline="text">
-                                Senaste utkast sparat [[${item.updated.format(formatter)}]]
+                            <span th:unless="${#fields.hasErrors('*')}">
+                                <span th:if="${item.id > 0}" th:inline="text">
+                                    Senaste utkast sparat [[${item.updated.format(formatter)}]]
+                                </span>
+                                <span th:if="${item.id == -1}">
+                                    Posten har inte ännu sparats i systemet.
+                                </span>
                             </span>
-                            <span th:unless="${item.id}">
-                            Posten har inte ännu sparats i systemet.
+                            <span th:if="${#fields.hasErrors('*')}">
+                                Rätta till de fel som uppstod under redigeringen för att spara posten.
                             </span>
                         </span>
                         <span th:if="${item.publishDate}">
@@ -250,11 +277,14 @@
 
                             <th:block th:switch="${item.getPublishStatus().name()}">
                                 <span th:case="DRAFT">
-                                    <input class="button secondary-action" type="submit" name="save" value="Spara utkast" />
-                                    <input class="button primary-action" type="submit" name="publish" value="Publicera" />
+                                    <input class="button secondary-action" type="submit" name="save" value="Spara utkast" v-if="publishStatus == 'DRAFT'" />
+                                    <input class="button primary-action" type="submit" name="publish" value="Publicera" v-if="publishStatus == 'DRAFT'" />
+                                    <input class="button primary-action" type="submit" name="save" value="Köa publicering" v-if="publishStatus == 'QUEUED'" />
                                 </span>
                                 <span th:case="QUEUED">
-                                    <input class="button primary-action" type="submit" name="save" value="Köa publicering" />
+                                    <input class="button secondary-action" type="submit" name="save" value="Spara utkast" v-if="publishStatus == 'DRAFT'" />
+                                    <input class="button primary-action" type="submit" name="publish" value="Publicera" v-if="publishStatus == 'DRAFT'" />
+                                    <input class="button primary-action" type="submit" name="save" value="Köa publicering" v-if="publishStatus == 'QUEUED'" />
                                 </span>
                                 <span th:case="PUBLISHED">
                                     <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
