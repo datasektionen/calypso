@@ -39,7 +39,7 @@
         new Vue({
             el: "#main",
             data: {
-                contentType: "[[${item.itemType}]]",
+                contentType: "[[${item.itemType != null ? item.itemType : 'POST'}]]",
                 publishStatus: "[[${item.getPublishStatus().name()}]]",
                 publishDate: "[[${item.publishDate}]]"
             },
