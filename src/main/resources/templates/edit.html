@@ -100,7 +100,7 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-9">
+                <div class="col-md-9">
                     <div class="col-xs-12">
                         <input type="text" th:field="*{titleSwedish}" class="ds-primary-input" placeholder="Titel (svenska)"/>
                         <input type="text" th:field="*{titleEnglish}" class="ds-secondary-input" placeholder="Titel (engelska)" />
@@ -124,18 +124,18 @@
                     </div>
                     <div class="clear"></div>
 
-                    <div class="col-xs-6">
+                    <div class="col-md-6">
                         <div class="form-label-block" style="padding-bottom: 5px;">Innehåll (svenska):</div>
                         <textarea th:field="*{contentSwedish}" title="Innehåll (svenska)" id="content_sv"></textarea>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-md-6">
                         <div class="form-label-block" style="padding-bottom: 5px;">Innehåll (engelska):</div>
                         <textarea th:field="*{contentEnglish}" title="Innehåll (engelska)" id="content_en"></textarea>
                     </div>
 
                     <div class="col-xs-12" style="height: 50px;"></div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-md-3">
                     <div class="sidebar toolbox">
                         <h3 style="margin-top: 0;">Metadata</h3>
                         <div class="col-xs-12">
@@ -250,7 +250,7 @@
             </div>
             <div class="clear"></div>
 
-            <div class="footer-toolbar hidden-xs hidden-sm">
+            <div class="footer-toolbar">
                 <div class="footer-toolbar-inner row">
                     <div class="footer-toolbar-info col-md-8">
                         <span th:if="!${item.publishDate}">

@@ -33,75 +33,77 @@
             Eftersom du saknar redaktörsrättigheter kan du endast se och redigera dina egna inlägg.
         </div>
 
-        <table width="100%" class="table table-striped">
-            <thead>
-            <tr>
-                <th width="5%"><i class="fa fa-newspaper-o"></i></th>
-                <th width="30%">Titel</th>
-                <th width="15%">Publicerad</th>
-                <th width="15%">Eventplats</th>
-                <th width="15%">Eventstart</th>
-                <th width="20%">Författare</th>
-            </tr>
-            </thead>
-            <tbody th:unless="${#lists.isEmpty(items)}">
-            <tr th:each="item : ${items}">
-                <td style="vertical-align: middle;">
-                    <th:block th:switch="${item.getPublishStatus().name()}">
-                        <div th:case="DRAFT">
-                            <i class="fa fa-circle-o"></i>
-                        </div>
-                        <div th:case="QUEUED">
-                            <i class="fa fa-clock-o text-warning"></i>
-                        </div>
-                        <div th:case="PUBLISHED">
-                            <i class="fa fa-check-circle text-success"></i>
-                        </div>
-                    </th:block>
-                </td>
-                <td>
-                    <a th:href="@{/admin/edit(id=${item.id})}">
-                        <strong th:text="${item.titleSwedish}"></strong><br />
-                        <small th:text="${item.titleEnglish}"></small>
-                    </a>
-                </td>
-                <td style="vertical-align: middle;">
+        <div class="table-responsive">
+            <table width="100%" class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="5%"><i class="fa fa-newspaper-o"></i></th>
+                    <th width="30%">Titel</th>
+                    <th width="15%">Publicerad</th>
+                    <th width="15%">Eventplats</th>
+                    <th width="15%">Eventstart</th>
+                    <th width="20%">Författare</th>
+                </tr>
+                </thead>
+                <tbody th:unless="${#lists.isEmpty(items)}">
+                <tr th:each="item : ${items}">
+                    <td style="vertical-align: middle;">
+                        <th:block th:switch="${item.getPublishStatus().name()}">
+                            <div th:case="DRAFT">
+                                <i class="fa fa-circle-o"></i>
+                            </div>
+                            <div th:case="QUEUED">
+                                <i class="fa fa-clock-o text-warning"></i>
+                            </div>
+                            <div th:case="PUBLISHED">
+                                <i class="fa fa-check-circle text-success"></i>
+                            </div>
+                        </th:block>
+                    </td>
+                    <td>
+                        <a th:href="@{/admin/edit(id=${item.id})}">
+                            <strong th:text="${item.titleSwedish}"></strong><br />
+                            <small th:text="${item.titleEnglish}"></small>
+                        </a>
+                    </td>
+                    <td style="vertical-align: middle;">
                     <span th:if="${item.publishDate}">
                         <span th:text="${item.publishDate.format(formatter)}"></span>
                     </span>
-                    <span th:if="!${item.publishDate}">
+                        <span th:if="!${item.publishDate}">
                         <em>Utkast</em>
                     </span>
-                </td>
-                <td style="vertical-align: middle;">
-                    <span th:text="${item.eventLocation}"></span>
-                    <span th:if="${#strings.isEmpty(item.eventLocation)}">
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <span th:text="${item.eventLocation}"></span>
+                        <span th:if="${#strings.isEmpty(item.eventLocation)}">
                         <em>&mdash;</em>
                     </span>
-                </td>
-                <td style="vertical-align: middle;">
+                    </td>
+                    <td style="vertical-align: middle;">
                     <span th:if="${item.eventStartTime}">
                         <span th:text="${item.eventStartTime.format(formatter)}"></span>
                     </span>
-                    <span th:unless="${item.eventStartTime}">
+                        <span th:unless="${item.eventStartTime}">
                         <em>&mdash;</em>
                     </span>
-                </td>
-                <td style="vertical-align:middle;" th:text="${item.authorDisplay}"></td>
-            </tr>
-            </tbody>
-            <tbody th:if="${items.getTotalElements() == 0}">
-            <tr>
-                <td colspan="6">
-                    <div class="text-center">
-                        <br>
-                        <h4>Inget innehåll hittades för de givna kriterierna</h4>
-                        <br>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    </td>
+                    <td style="vertical-align:middle;" th:text="${item.authorDisplay}"></td>
+                </tr>
+                </tbody>
+                <tbody th:if="${items.getTotalElements() == 0}">
+                <tr>
+                    <td colspan="6">
+                        <div class="text-center">
+                            <br>
+                            <h4>Inget innehåll hittades för de givna kriterierna</h4>
+                            <br>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
         <div class="table-pagination" th:if="${items.getTotalElements() > 0}">
             <ul class="pagination">
