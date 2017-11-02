@@ -15,7 +15,7 @@ public class Item {
 	public enum PublishStatus { DRAFT, QUEUED, PUBLISHED }
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(nullable = false)
