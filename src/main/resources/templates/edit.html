@@ -36,24 +36,40 @@
     </script>
     <script type="text/javascript" src="https://unpkg.com/vue"></script>
     <script type="text/javascript" th:inline="text">
-        new Vue({
-            el: "#main",
-            data: {
-                contentType: "[[${item.itemType != null ? item.itemType : 'POST'}]]",
-                publishStatus: "[[${item.getPublishStatus().name()}]]",
-                publishDate: "[[${item.publishDate}]]"
-            },
-            methods: {
-                queue: function () {
-                    if (this.publishDate.match(/^20\d{2}-(0[1-9]|1[0-2])-([0-2]\d|3[0-1])T[0-2]\d:[0-5]\d$/)) {
-                        this.publishStatus = "QUEUED";
-                    } else {
-                        alert('Du måste ange ett datum på giltigt format: YYYY-MM-DDThh:mm (ex. 2017-09-21T11:27');
-                        this.publishDate = "";
-                    }
+        var Data = {
+            contentType: "[[${item.itemType != null ? item.itemType : 'POST'}]]",
+            publishStatus: "[[${item.getPublishStatus().name()}]]",
+            publishDate: "[[${item.publishDate}]]"
+        };
+
+        var Methods = {
+            queue: function () {
+                if (this.publishDate.match(/^20\d{2}-(0[1-9]|1[0-2])-([0-2]\d|3[0-1])T[0-2]\d:[0-5]\d$/)) {
+                    this.publishStatus = "QUEUED";
+                } else {
+                    alert('Du måste ange ett datum på giltigt format: YYYY-MM-DDThh:mm (ex. 2017-09-21T11:27');
+                    this.publishDate = "";
                 }
             }
-        })
+        };
+
+        new Vue({
+            el: "#headerButtons",
+            data: Data,
+            methods: Methods
+        });
+
+        new Vue({
+            el: "#sidebar",
+            data: Data,
+            methods: Methods
+        });
+
+        new Vue({
+            el: "#footerButtons",
+            data: Data,
+            methods: Methods
+        });
     </script>
 </head>
 <body>
@@ -67,7 +83,7 @@
                     <div class="col-md-8">
                         <h2>Redigera post</h2>
                     </div>
-                    <div class="header-right col-md-2">
+                    <div class="header-right col-md-2" id="headerButtons">
                         <th:block th:switch="${item.getPublishStatus().name()}">
                             <span th:case="DRAFT">
                                 <input class="button primary-action" type="submit" name="save" value="Spara utkast" v-if="publishStatus == 'DRAFT'" />
@@ -136,7 +152,7 @@
                     <div class="col-xs-12" style="height: 50px;"></div>
                 </div>
                 <div class="col-md-3">
-                    <div class="sidebar toolbox">
+                    <div class="sidebar toolbox" id="sidebar">
                         <h3 style="margin-top: 0;">Metadata</h3>
                         <div class="col-xs-12">
                             <div class="form-horizontal form-group">
@@ -250,7 +266,7 @@
             </div>
             <div class="clear"></div>
 
-            <div class="footer-toolbar">
+            <div class="footer-toolbar" id="footerButtons">
                 <div class="footer-toolbar-inner row">
                     <div class="footer-toolbar-info col-md-8">
                         <span th:if="!${item.publishDate}">
