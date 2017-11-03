@@ -108,15 +108,15 @@
         <div class="table-pagination" th:if="${items.getTotalElements() > 0}">
             <ul class="pagination">
                 <li th:class="${items.number eq 0} ? 'disabled' : ''">
-                    <a th:unless="${page == 0}" th:href="@{${'/contacts'}(page=${items.number-1},size=${items.size})}">&laquo;</a>
-                    <a th:if="${page == 0}" href="javascript:void(0);">&laquo;</a>
+                    <a th:unless="${page == 0}" th:href="@{${'/admin/list'}(page=${items.number-1})}">&laquo;</a>
+                    <a th:if="${page == 0}" class="disabled" href="javascript:void(0);">&laquo;</a>
                 </li>
 
                 <li th:each="pageNo : ${#numbers.sequence(0, items.totalPages - 1)}" th:class="${items.number == pageNo} ? 'active' : ''">
-                    <a th:if="${items.number == page}" href="javascript:void(0);">
+                    <a th:if="${items.number == pageNo}" href="javascript:void(0);" class="disabled">
                         <span th:text="${pageNo + 1}"></span>
                     </a>
-                    <a th:unless="${items.number == page}" th:href="@{${'/admin/list'}(page=${pageNo})}">
+                    <a th:unless="${items.number == pageNo}" th:href="@{${'/admin/list'}(page=${pageNo})}">
                         <span th:text="${pageNo + 1}"></span>
                     </a>
 
