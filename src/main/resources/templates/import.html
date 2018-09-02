@@ -23,6 +23,12 @@
     </header>
     <div id="content">
 
+        <div class="alert alert-danger">
+            Eftersom det numera krävs en <strong>formell jävla ansökan</strong> för att
+            slå upp <em>publika</em> event i Facebooks kassa API är denna funktion disabled tills vidare.
+            Tack Cambridge Analytica :):):)
+        </div>
+
         <h2>Viktig information</h2>
 
         <p>Du kan endast importera <strong>publika event</strong> som är synliga för alla Facebookanvändare.</p>
@@ -38,7 +44,7 @@
             <strong>Observera att eventplats inte följer med i importen utan måste fyllas i manuellt.</strong>
         </p>
 
-        <form th:action="@{/admin/import}" method="post" class="form-horizontal">
+        <form action="#" method="post" class="form-horizontal">
             <div class="form-group">
                 <div class="col-xs-10" style="padding-right: 0;">
                     <input name="url" class="ds-primary-input" width="100" />
