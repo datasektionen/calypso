@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
@@ -43,6 +41,14 @@ public class ApiRestController {
 	@RequestMapping("/event")
 	public Collection<Item> upcomingEvents() {
 		return apiRepository.upcomingEvents();
+	}
+
+	@RequestMapping("/item/{id}")
+	public Item item(@PathVariable("id") long itemId) {
+		Item item = apiRepository.findOne(itemId);
+
+		if (item == null) throw new ResourceNotFoundException();
+		return item;
 	}
 
 }

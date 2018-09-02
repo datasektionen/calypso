@@ -24,4 +24,7 @@ public interface ApiRepository extends CrudRepository<Item, Long> {
 	@Query("select i from Item i where i.publishDate <= CURRENT_TIMESTAMP")
 	Page<Item> findAllPublished(Pageable pageable);
 
+	@Query("select i from Item i where i.publishDate <= CURRENT_TIMESTAMP and i.id = ?1")
+	Item findOne(Long id);
+
 }
