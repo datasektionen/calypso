@@ -272,10 +272,10 @@
                         <span th:if="!${item.publishDate}">
                             <strong>Kom ihåg att spara posten som utkast medan du jobbar.</strong>
                             <span th:unless="${#fields.hasErrors('*')}">
-                                <span th:if="${item.id > 0}" th:inline="text">
+                                <span th:if="${item.id != null}" th:inline="text">
                                     Senaste utkast sparat [[${item.updated.format(formatter)}]]
                                 </span>
-                                <span th:if="${item.id == -1}">
+                                <span th:if="${item.id == null}">
                                     Posten har inte ännu sparats i systemet.
                                 </span>
                             </span>
@@ -285,7 +285,12 @@
                         </span>
                         <span th:if="${item.publishDate}">
                             <strong>Publicerat innehåll uppdateras på siten direkt när du trycker på spara.</strong>
-                            Senaste version sparad [[${item.updated.format(formatter)}]]
+                            <span th:if="${item.id != null}" th:inline="text">
+                                Senaste version sparad [[${item.updated.format(formatter)}]]
+                            </span>
+                            <span th:if="${item.id == null}">
+                                Posten har inte ännu sparats i systemet.
+                            </span>
                         </span>
                     </div>
                     <div class="footer-toolbar-action-buttons col-md-4 text-right">

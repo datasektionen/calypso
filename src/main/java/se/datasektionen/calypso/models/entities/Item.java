@@ -112,8 +112,8 @@ public class Item {
 		return itemType;
 	}
 
-	public long getId() {
-		return (id == null) ? -1 : id;
+	public Long getId() {
+		return id;
 	}
 
 	public String getTitleSwedish() {
@@ -250,7 +250,7 @@ public class Item {
 
 	public PublishStatus getPublishStatus() {
 		// Posts without an ID are always drafts
-		if (this.getId() == 0 || this.getPublishDate() == null)
+		if (this.getId() == null || this.getPublishDate() == null)
 			return PublishStatus.DRAFT;
 
 		LocalDateTime publishDate = this.getPublishDate();
