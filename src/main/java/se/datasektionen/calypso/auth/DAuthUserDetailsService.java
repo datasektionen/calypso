@@ -70,7 +70,7 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 
 		// Try to get mandates from DFunkt
 		Map<String, String> mandates = new HashMap<>();
-		String dFunktUrl = "http://dfunkt.datasektionen.se/api/user/kthid/" + user; // + "/current";
+		String dFunktUrl = "http://dfunkt.datasektionen.se/api/user/kthid/" + user + "/current";
 		try {
 			ResponseEntity<DFunktResponse> mandatesHttp = new RestTemplate()
 					.exchange(dFunktUrl, HttpMethod.GET, new HttpEntity<>(null, headers), DFunktResponse.class);

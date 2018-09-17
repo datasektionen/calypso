@@ -1,8 +1,19 @@
 package se.datasektionen.calypso.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import se.datasektionen.calypso.models.enums.ItemType;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -11,6 +22,14 @@ import java.time.LocalDateTime;
 @Entity
 @EntityListeners(ItemListener.class)
 public class Item {
+
+	@Transient
+	@JsonIgnore
+	private Parser parser = Parser.builder().build();
+
+	@Transient
+	@JsonIgnore
+	private HtmlRenderer renderer = HtmlRenderer.builder().escapeHtml(false).build();
 
 	public enum PublishStatus { DRAFT, QUEUED, PUBLISHED }
 
@@ -125,11 +144,11 @@ public class Item {
 	}
 
 	public String getContentSwedish() {
-		return contentSwedish;
+		return renderer.render(parser.parse(contentSwedish));
 	}
 
 	public String getContentEnglish() {
-		return contentEnglish;
+		return renderer.render(parser.parse(contentEnglish));
 	}
 
 	public String getAuthor() {
