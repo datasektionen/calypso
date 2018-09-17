@@ -1,5 +1,6 @@
 package se.datasektionen.calypso.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -144,10 +145,20 @@ public class Item {
 	}
 
 	public String getContentSwedish() {
-		return renderer.render(parser.parse(contentSwedish)).replace("\\", "");
+		return contentSwedish;
 	}
 
 	public String getContentEnglish() {
+		return contentEnglish;
+	}
+
+	@JsonGetter("contentSwedish")
+	public String getContentSwedishProcessed() {
+		return renderer.render(parser.parse(contentSwedish)).replace("\\", "");
+	}
+
+	@JsonGetter("contentEnglish")
+	public String getContentEnglishProcessed() {
 		return renderer.render(parser.parse(contentEnglish)).replace("\\", "");
 	}
 
