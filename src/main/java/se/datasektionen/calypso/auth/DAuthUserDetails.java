@@ -6,7 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class DAuthUserDetails implements UserDetails {
 	private String user;
 	private String token;
@@ -114,5 +116,16 @@ public class DAuthUserDetails implements UserDetails {
 				", email='" + email + '\'' +
 				", authorities=" + authorities.toString() +
 				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		DAuthUserDetails that = (DAuthUserDetails) o;
+		return Objects.equals(user, that.user) &&
+				Objects.equals(firstName, that.firstName) &&
+				Objects.equals(lastName, that.lastName) &&
+				Objects.equals(email, that.email);
 	}
 }
