@@ -4,6 +4,7 @@ import com.rometools.rome.feed.rss.Channel;
 import com.rometools.rome.feed.rss.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
@@ -41,7 +42,7 @@ public final class RssComponent extends AbstractRssFeedView {
 	protected List<Item> buildFeedItems(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		return apiRepository
-				.findAllPublished(new PageRequest(0, 100))
+				.findAllPublished(new PageRequest(0, 100, new Sort(Sort.Direction.DESC, "publishDate")))
 				.getContent()
 				.stream()
 				.map(RssConverter::toRssItem)

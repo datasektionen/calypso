@@ -42,6 +42,7 @@ public class FeedController {
 					event.setDescription(e.getContentSwedish());
 					event.setDateStart(ldtToDate(e.getEventStartTime()));
 					event.setDateEnd(ldtToDate(e.getEventEndTime()));
+					event.setLocation(e.getEventLocation());
 					return event;
 				})
 				.forEach(ical::addEvent);
