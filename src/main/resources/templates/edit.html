@@ -107,6 +107,7 @@
             <input type="hidden" th:field="*{id}" />
             <input type="hidden" th:field="*{author}" />
             <input type="hidden" th:field="*{authorDisplay}" />
+            <input type="hidden" th:field="*{updated}" />
 
             <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
                 <strong>Något blev fel under redigeringen:</strong>

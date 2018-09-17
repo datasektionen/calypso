@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
+import se.datasektionen.calypso.models.constraints.Event;
 import se.datasektionen.calypso.models.enums.ItemType;
 
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 
 @SuppressWarnings("unused")
 @Entity
+@Event
 @EntityListeners(ItemListener.class)
 public class Item {
 
@@ -276,6 +278,10 @@ public class Item {
 
 	public LocalDateTime getUpdated() {
 		return updated;
+	}
+
+	public void setUpdated(LocalDateTime updated) {
+		this.updated = updated;
 	}
 
 	public PublishStatus getPublishStatus() {
