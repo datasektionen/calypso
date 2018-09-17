@@ -144,11 +144,11 @@ public class Item {
 	}
 
 	public String getContentSwedish() {
-		return renderer.render(parser.parse(contentSwedish));
+		return renderer.render(parser.parse(contentSwedish)).replace("\\", "");
 	}
 
 	public String getContentEnglish() {
-		return renderer.render(parser.parse(contentEnglish));
+		return renderer.render(parser.parse(contentEnglish)).replace("\\", "");
 	}
 
 	public String getAuthor() {
