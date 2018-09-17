@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, links, scripts, content)">
+<head>
+    <meta charset="utf-8" />
+    <title>Calypso @ Datasektionen.se</title>
+    <link rel="stylesheet" href="//aurora.datasektionen.se" />
+    <link rel="stylesheet" th:href="@{/css/overrides.css}" />
+    <meta name="theme-color" content="#e91e63" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="text/javascript" th:inline="text">
+        window.methone_conf = {
+            system_name: "calypso",
+            color_scheme: "pink",
+            login_text: null,
+            login_href: null,
+            links: [
+                {
+                    str: "Redigera nyheter",
+                    href: "/admin/list?itemType=post"
+                },
+                {
+                    str: "Redigera event",
+                    href: "/admin/list?itemType=event"
+                },
+                {
+                    str: "Facebook-import",
+                    href: "/admin/import"
+                },
+                {
+                    str: "Ny post",
+                    href: "/admin/new"
+                }
+            ]
+        };
+    </script>
+</head>
+<body>
+<div id="methone-container-replace"></div>
+<div id="application" class="pink">
+    <div id="main">
+        <header>
+            <div class="header-inner">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h2>Java says no :(</h2>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </header>
+        <div id="content">
+
+            <div th:if="${status}" class="mb-5 mt-5">
+
+                <th:block th:switch="${status}">
+                    <div th:case="403">
+                        <div class="text-center">
+                            <i class="fa fa-6x fa-exclamation-triangle text-theme-color"></i>
+                        </div>
+                        <div class="text-center">
+                            <h1>403 boi</h1>
+                            <p>
+                                <strong>Du har inte tillåtelse att utföra det här kommandot.</strong>
+                            </p>
+                            <p>
+                                Försökte du göra något busigt? Eller saknar du bara rättigheter att redigera nyheter?<br />
+                                För att kunna posta på Datasektionen.se behöver du rättigheten <code>prometheus:post</code> från
+                                <a href="http://pls.datasektionen.se">Pls.</a>
+                            </p>
+                            <hr />
+                            <div th:if="${message}">
+                                <p>Systemet gav följande meddelande:</p>
+                                <div class="alert alert-danger" th:text="${message}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:case="404">
+                        <div class="text-center">
+                            <i class="fa fa-6x fa-question-circle text-theme-color"></i>
+                        </div>
+                        <div class="text-center">
+                            <h1>404 boi</h1>
+                            <p>
+                                <strong>Sidan du har försökt nå existerar inte.</strong>
+                            </p>
+                            <hr />
+                            <p>Så mycket spännande finns det inte, du kan typ:</p>
+                            <ul class="list-unstyled">
+                                <li><a th:href="@{/admin/list}">Redigera nyheter</a></li>
+                                <li><a th:href="@{/api/list}">Lista nyheter som JSON</a></li>
+                                <li><a th:href="@{/api/event}">Kolla event som JSON</a></li>
+                                <li><a th:href="@{/feeds/ical}">Få ut alla event som ICS</a></li>
+                                <li><a th:href="@{/feeds/rss}">Få ut alla nyheter som RSS</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div th:case="500">
+                        <div class="text-center">
+                            <i class="fa fa-3x fa-exclamation text-danger"></i>
+                        </div>
+                        <div class="text-center">
+                            <h1>500 😱</h1>
+                            <p>
+                                <strong>Ett tekniskt fel stöttes på när din begäran skulle utföras.</strong>
+                            </p>
+                            <p>
+                                Det verkar som att Calypso inte riktigt lyckades snurra ett helt månvarv.
+                                Om du tror att detta är en bugg som bör lösas, <a href="https://github.com/datasektionen/calypso" target="_blank">skapa ett GitHub-issue.</a>
+                            </p>
+                        </div>
+
+                        <div th:if="${message}">
+                            <p>Systemet gav följande meddelande:</p>
+                            <div class="alert alert-danger" th:text="${message}"></div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="footer" class="row">
+    <div id="footer-inner">
+        <div class="col-sm-3">
+            <a href="https://github.com/datasektionen/calypso" target="_blank">
+                <i class="fa fa-github"></i> &nbsp;
+                Calypso
+            </a>
+        </div>
+        <div class="col-sm-6 text-center">
+            Utvecklat av
+            <a href="mailto:mauritzz@kth.se">
+                <strong>Mauritz Zachrisson</strong>
+            </a>
+        </div>
+        <div class="col-sm-3" th:inline="text" th:class="text-right">
+            Java [[${@environment.getProperty('java.runtime.version')}]] ([[${@environment.getProperty('os.arch')}]])
+        </div>
+    </div>
+</div>
+<script src="//methone.datasektionen.se/bar.js"></script>
+</body>
+</html>
