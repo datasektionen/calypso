@@ -27,7 +27,7 @@ public class ApiRestController {
 
 	@RequestMapping("/list")
 	public Page<Item> items(@RequestParam(name = "itemType", required = false) String itemType,
-	                        @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+	                        @RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
 	                        @RequestParam(name = "sort", defaultValue = "DESC") String sort,
 	                        @RequestParam(name = "page", defaultValue = "0") int page) {
 		PageRequest pageable = new PageRequest(page, PAGE_SIZE, new Sort(Sort.Direction.valueOf(sort), sortBy));
