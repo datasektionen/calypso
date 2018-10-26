@@ -56,7 +56,7 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 
 		// Prepare Pls and Dfunkt API calls
 		String user = response.getUser();
-		String plsUrl = "http://pls.datasektionen.se/api/user/" + user + "/prometheus";
+		String plsUrl = "https://pls.datasektionen.se/api/user/" + user + "/prometheus";
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("User-Agent", "Spring Framework/Java " + System.getProperty("java.version"));
@@ -70,7 +70,7 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 
 		// Try to get mandates from DFunkt
 		Map<String, String> mandates = new HashMap<>();
-		String dFunktUrl = "http://dfunkt.datasektionen.se/api/user/kthid/" + user + "/current";
+		String dFunktUrl = "https://dfunkt.datasektionen.se/api/user/kthid/" + user + "/current";
 		try {
 			ResponseEntity<DFunktResponse> mandatesHttp = new RestTemplate()
 					.exchange(dFunktUrl, HttpMethod.GET, new HttpEntity<>(null, headers), DFunktResponse.class);
