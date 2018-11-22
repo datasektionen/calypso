@@ -35,6 +35,7 @@ public class FeedController {
 		apiRepository
 				.allEvents()
 				.stream()
+				.filter(e -> e.getEventStartTime() != null && e.getEventEndTime() != null)
 				.map(e -> {
 					VEvent event = new VEvent();
 					event.setUid("" + e.getId());
