@@ -11,6 +11,10 @@ import se.datasektionen.calypso.models.enums.ItemType;
 
 public interface ItemRepository extends CrudRepository<Item, Long> {
 
+	Page<Item> findAll(Pageable pageable);
+
+	Page<Item> findAllByAuthor(String author, Pageable pageable);
+
 	Page<Item> findAllByItemType(ItemType itemType, Pageable pageable);
 
 	Page<Item> findAllByItemTypeAndAuthor(ItemType itemType, String author, Pageable pageable);

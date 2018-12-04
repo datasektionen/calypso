@@ -33,7 +33,7 @@ public class ListController {
 	}
 
 	@RequestMapping("/admin/list")
-	public String index(@RequestParam(name = "itemType", defaultValue = "post") String itemType,
+	public String index(@RequestParam(name = "itemType", required = false) String itemType,
 	                    @RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
 	                    @RequestParam(name = "sort", defaultValue = "DESC") String sort,
 	                    @RequestParam(name = "page", defaultValue = "0") int page,
@@ -45,10 +45,16 @@ public class ListController {
 		Page<Item> items;
 
 		// Items
-		if (user.getAuthorities().contains(new SimpleGrantedAuthority("editor")))
-			items = itemRepository.findAllByItemType(type, pageable);
+		if (type == null)
+			if (user.getAuthorities().contains(new SimpleGrantedAuthority("editor")))
+				items = itemRepository.findAll(pageable);
+			else
+				items = itemRepository.findAllByAuthor(user.getUser(), pageable);
 		else
-			items = itemRepository.findAllByItemTypeAndAuthor(type, user.getUser(), pageable);
+			if (user.getAuthorities().contains(new SimpleGrantedAuthority("editor")))
+				items = itemRepository.findAllByItemType(type, pageable);
+			else
+				items = itemRepository.findAllByItemTypeAndAuthor(type, user.getUser(), pageable);
 
 		// Populate model
 		model.addAttribute("formatter", formatter);

@@ -222,6 +222,10 @@ table.table thead {
     text-align: center;
 }
 
+.pink #content .table-pagination ul li a {
+    text-decoration: none !important;
+}
+
 .table-pagination .disabled a {
     color: #999 !important;
 }
