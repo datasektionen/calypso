@@ -32,7 +32,7 @@ public final class RssComponent extends AbstractRssFeedView {
 	@Override
 	protected Channel newFeed() {
 		Channel channel = new Channel("rss_2.0");
-		channel.setLink(config.getBaseUrl() + "/posts/feed/");
+		channel.setLink(config.getBaseUrl() + "/feed/rss");
 		channel.setTitle("Datasektionen.se - RSS");
 		channel.setDescription("Nyheter och event från Datasektionen.se");
 		return channel;

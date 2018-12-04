@@ -16,11 +16,12 @@ public class RssConverter {
 
 		Description description = new Description();
 		description.setType(Content.HTML);
-		description.setValue(item.getContentSwedish());
+		description.setValue(item.getContentSwedishProcessed());
 
 		rssItem.setTitle(item.getTitleSwedish());
 		rssItem.setDescription(description);
 		rssItem.setPubDate(ldtToDate(item.getPublishDate()));
+		rssItem.setLink("https://datasektionen.se/nyheter/" + item.getId());
 		return rssItem;
 	}
 
