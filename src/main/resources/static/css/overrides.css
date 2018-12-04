@@ -52,13 +52,6 @@ select.form-control:focus, input.form-control:focus {
     padding: 0;
     list-style-type: none;
 }
-.fa {
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-}
 #methone-container-replace::shadow #methone_header {
     background: #7cb342 !important;
 }
