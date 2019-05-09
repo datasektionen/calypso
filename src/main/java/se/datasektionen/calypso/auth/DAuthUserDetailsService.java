@@ -42,10 +42,15 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 	public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
 		// Required variables
 		String t = token.getPrincipal().toString();
-		String url = "https://login2.datasektionen.se/verify/" + t + ".json?api_key=" + config.getApiKey();
+		String url = "https://login.datasektionen.se/verify/" + t + ".json?api_key=" + config.getApiKey();
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("User-Agent", "Spring Framework/Java " + System.getProperty("java.version"));
 
 		// Perform REST consumption
-		DAuthResponse response = new RestTemplate().getForObject(url, DAuthResponse.class);
+		DAuthResponse response = new RestTemplate()
+			.exchange(url, HttpMethod.GET, new HttpEntity<>(null, headers), DAuthResponse.class)
+			.getBody();
 
 		System.err.println("Received user question for user " + token);
 		System.out.println("Fetched user: " + response.toString());
@@ -57,9 +62,6 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 		// Prepare Pls and Dfunkt API calls
 		String user = response.getUser();
 		String plsUrl = "https://pls.datasektionen.se/api/user/" + user + "/prometheus";
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("User-Agent", "Spring Framework/Java " + System.getProperty("java.version"));
 
 		// Read permissions from Pls
 		ResponseEntity<String[]> permissions = new RestTemplate()
