@@ -34,6 +34,11 @@
             Eftersom du saknar redaktörsrättigheter kan du endast se och redigera dina egna inlägg.
         </div>
 
+        <div th:if="${param.deleted}" class="alert alert-success alert-sm">
+            <i class="fa fa-fw fa-info-circle"></i>
+            Inlägg med ID #<span th:text="${param.deleted}"></span> raderades.
+        </div>
+
         <div class="row">
             <div class="col-sm-6 text-muted" style="padding-top: 5px;">
                 <small th:text="${'Totalt ' + items.totalElements + ' objekt du kan redigera.'}"></small>
@@ -116,7 +121,7 @@
                 </tbody>
                 <tbody th:if="${items.getTotalElements() == 0}">
                 <tr>
-                    <td colspan="6">
+                    <td colspan="7">
                         <div class="text-center">
                             <br>
                             <h4>Inget innehåll hittades för de givna kriterierna</h4>

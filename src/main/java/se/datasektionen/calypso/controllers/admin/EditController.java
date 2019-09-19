@@ -6,9 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import se.datasektionen.calypso.auth.DAuthUserDetails;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Item;
@@ -76,6 +74,13 @@ public class EditController {
 		item = itemRepository.save(item);
 
 		return "redirect:/admin/edit?saved=true&id=" + item.getId();
+	}
+
+	@PreAuthorize("hasAuthority('editor')")
+	@RequestMapping("/admin/delete/{id}")
+	public String delete(@PathVariable long id) {
+		itemRepository.delete(id);
+		return "redirect:/admin/list?deleted=" + id;
 	}
 
 }

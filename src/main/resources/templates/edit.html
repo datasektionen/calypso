@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml"
+<html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
 <head>
@@ -298,6 +298,12 @@
                         <div id="publish_post">
 
                             <th:block th:switch="${item.getPublishStatus().name()}">
+                                <a th:href="@{/admin/delete/{id}(id=${item.id})}"
+                                   th:if="${item.id != null}"
+                                   sec:authorize="hasAuthority('editor')"
+                                   onclick="return window.confirm('Är du säker på att du vill ta bort posten?');"
+                                   class="button secondary-action">Radera</a>
+
                                 <span th:case="DRAFT">
                                     <input class="button secondary-action" type="submit" name="save" value="Spara utkast" v-if="publishStatus == 'DRAFT'" />
                                     <input class="button primary-action" type="submit" name="publish" value="Publicera" v-if="publishStatus == 'DRAFT'" />
