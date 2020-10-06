@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component("rssView")
+@Component("rssViewEn")
 public final class EnglishRssComponent extends AbstractRssFeedView {
 
 	private ApiRepository apiRepository;
