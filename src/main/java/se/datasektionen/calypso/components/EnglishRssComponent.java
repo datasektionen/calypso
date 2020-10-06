@@ -24,7 +24,7 @@ public final class EnglishRssComponent extends AbstractRssFeedView {
 	private Config config;
 
 	@Autowired
-	public RssComponent(ApiRepository apiRepository, Config config) {
+	public EnglishRssComponent(ApiRepository apiRepository, Config config) {
 		this.apiRepository = apiRepository;
 		this.config = config;
 	}
@@ -32,7 +32,7 @@ public final class EnglishRssComponent extends AbstractRssFeedView {
 	@Override
 	protected Channel newFeed() {
 		Channel channel = new Channel("rss_2.0");
-		channel.setLink(config.getBaseUrl() + "/feed/rss/en");
+		channel.setLink(config.getBaseUrl() + "/feed/rss_en");
 		channel.setTitle("Datasektionen.se - RSS");
 		channel.setDescription("News and events from datasektionen.se");
 		return channel;
