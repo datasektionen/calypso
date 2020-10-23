@@ -55,5 +55,10 @@ public class FeedController {
 	public String feed() {
 		return "rssView";
 	}
+    
+	@RequestMapping(produces = "application/*", method = RequestMethod.GET, value = "/rss_en")
+	public String englishFeed() {
+		return "rssViewEn";
+	}
 
 }

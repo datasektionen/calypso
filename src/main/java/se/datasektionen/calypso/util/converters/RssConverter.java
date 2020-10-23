@@ -25,4 +25,20 @@ public class RssConverter {
 		return rssItem;
 	}
 
+	/**
+	 * Convert a Item entity to an English RSS item.
+	 */
+	public static com.rometools.rome.feed.rss.Item toEnglishRssItem(Item item) {
+		com.rometools.rome.feed.rss.Item rssItem = new com.rometools.rome.feed.rss.Item();
+
+		Description description = new Description();
+		description.setType(Content.HTML);
+		description.setValue(item.getContentEnglishProcessed());
+
+		rssItem.setTitle(item.getTitleEnglish());
+		rssItem.setDescription(description);
+		rssItem.setPubDate(ldtToDate(item.getPublishDate()));
+		rssItem.setLink("https://datasektionen.se/en/news/" + item.getId());
+		return rssItem;
+	}
 }
