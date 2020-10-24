@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import se.datasektionen.calypso.util.Config;
+import se.datasektionen.calypso.config.Config;
 
 @Configuration
 @EnableWebSecurity
@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public PreAuthenticatedAuthenticationProvider dAuthAuthProvider() {
-		DAuthProvider provider = new DAuthProvider();
+		var provider = new DAuthProvider();
 		provider.setPreAuthenticatedUserDetailsService(dAuthUserDetails());
 
 		return provider;
@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public DAuthFilter dAuthFilter() throws Exception {
-		DAuthFilter filter = new DAuthFilter();
+		var filter = new DAuthFilter();
 		filter.setAuthenticationManager(authenticationManager());
 		return filter;
 	}

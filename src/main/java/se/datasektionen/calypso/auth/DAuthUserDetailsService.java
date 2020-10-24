@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -16,7 +15,7 @@ import se.datasektionen.calypso.auth.entities.DAuthResponse;
 import se.datasektionen.calypso.auth.entities.dfunkt.DFunktResponse;
 import se.datasektionen.calypso.auth.entities.dfunkt.Mandate;
 import se.datasektionen.calypso.auth.entities.dfunkt.Role;
-import se.datasektionen.calypso.util.Config;
+import se.datasektionen.calypso.config.Config;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,14 +40,14 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 	@Override
 	public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
 		// Required variables
-		String t = token.getPrincipal().toString();
-		String url = "https://login.datasektionen.se/verify/" + t + ".json?api_key=" + config.getApiKey();
-		
-		HttpHeaders headers = new HttpHeaders();
+		var t = token.getPrincipal().toString();
+		var url = "https://login.datasektionen.se/verify/" + t + ".json?api_key=" + config.getApiKey();
+
+		var headers = new HttpHeaders();
 		headers.set("User-Agent", "Spring Framework/Java " + System.getProperty("java.version"));
 
 		// Perform REST consumption
-		DAuthResponse response = new RestTemplate()
+		var response = new RestTemplate()
 			.exchange(url, HttpMethod.GET, new HttpEntity<>(null, headers), DAuthResponse.class)
 			.getBody();
 
@@ -60,11 +59,11 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 			throw new UsernameNotFoundException("Token rendered empty or malformed response");
 
 		// Prepare Pls and Dfunkt API calls
-		String user = response.getUser();
-		String plsUrl = "https://pls.datasektionen.se/api/user/" + user + "/prometheus";
+		var user = response.getUser();
+		var plsUrl = "https://pls.datasektionen.se/api/user/" + user + "/prometheus";
 
 		// Read permissions from Pls
-		ResponseEntity<String[]> permissions = new RestTemplate()
+		var permissions = new RestTemplate()
 				.exchange(plsUrl, HttpMethod.GET, new HttpEntity<>(null, headers), String[].class);
 		List<GrantedAuthority> authorities = Arrays.stream(permissions.getBody())
 				.map(SimpleGrantedAuthority::new)
@@ -72,9 +71,9 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 
 		// Try to get mandates from DFunkt
 		Map<String, String> mandates = new HashMap<>();
-		String dFunktUrl = "https://dfunkt.datasektionen.se/api/user/kthid/" + user + "/current";
+		var dFunktUrl = "https://dfunkt.datasektionen.se/api/user/kthid/" + user + "/current";
 		try {
-			ResponseEntity<DFunktResponse> mandatesHttp = new RestTemplate()
+			var mandatesHttp = new RestTemplate()
 					.exchange(dFunktUrl, HttpMethod.GET, new HttpEntity<>(null, headers), DFunktResponse.class);
 
 			mandates = mandatesHttp

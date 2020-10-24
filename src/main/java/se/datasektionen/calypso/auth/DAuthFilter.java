@@ -20,7 +20,7 @@ public class DAuthFilter extends AbstractAuthenticationProcessingFilter {
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 
-		String token = request.getParameter("token");
+		var token = request.getParameter("token");
 
 		System.out.println("Filter running, token is " + token);
 

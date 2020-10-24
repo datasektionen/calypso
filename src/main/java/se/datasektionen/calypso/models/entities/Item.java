@@ -131,7 +131,7 @@ public class Item {
 		if (this.getId() == null || this.getPublishDate() == null)
 			return PublishStatus.DRAFT;
 
-		LocalDateTime publishDate = this.getPublishDate();
+		var publishDate = this.getPublishDate();
 
 		if (LocalDateTime.now().compareTo(publishDate) > 0)
 			return PublishStatus.PUBLISHED;

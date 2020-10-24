@@ -17,22 +17,21 @@ import java.util.Collection;
 @CrossOrigin
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class ApiRestController {
+public class ApiController {
 
 	private static final int PAGE_SIZE = 25;
 	private final ApiRepository apiRepository;
 
 	@RequestMapping("/list")
 	public Page<Item> items(@RequestParam(name = "itemType", required = false) String itemType,
-	                        @RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
-	                        @RequestParam(name = "sort", defaultValue = "DESC") String sort,
-	                        @RequestParam(name = "page", defaultValue = "0") int page) {
-		PageRequest pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Direction.valueOf(sort), sortBy));
+							@RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
+							@RequestParam(name = "sort", defaultValue = "DESC") String sort,
+							@RequestParam(name = "page", defaultValue = "0") int page) {
+		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Direction.valueOf(sort), sortBy));
 
-		if (itemType == null)
-			return apiRepository.findAllPublished(pageable);
-		else
-			return apiRepository.findAllPublishedByItemType(ItemType.valueOfIgnoreCase(itemType), pageable);
+		return itemType == null
+				? apiRepository.findAllPublished(pageable)
+				: apiRepository.findAllPublishedByItemType(ItemType.valueOfIgnoreCase(itemType), pageable);
 	}
 
 	@RequestMapping("/event")

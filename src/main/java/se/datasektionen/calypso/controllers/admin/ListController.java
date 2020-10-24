@@ -1,6 +1,6 @@
 package se.datasektionen.calypso.controllers.admin;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,17 +20,13 @@ import java.time.format.DateTimeFormatter;
 
 @Controller
 @PreAuthorize("hasAuthority('post')")
+@RequiredArgsConstructor
 public class ListController {
+
+	private static final int PAGE_SIZE = 50;
 
 	private final ItemRepository itemRepository;
 	private final DateTimeFormatter formatter;
-	private static final int PAGE_SIZE = 50;
-
-	@Autowired
-	public ListController(ItemRepository itemRepository, DateTimeFormatter formatter) {
-		this.itemRepository = itemRepository;
-		this.formatter = formatter;
-	}
 
 	@RequestMapping("/admin/list")
 	public String index(@RequestParam(name = "itemType", required = false) String itemType,
@@ -39,9 +35,9 @@ public class ListController {
 	                    @RequestParam(name = "page", defaultValue = "0") int page,
 	                    Authentication auth, Model model) {
 		// Common objects
-		ItemType type = ItemType.valueOfIgnoreCase(itemType);
-		PageRequest pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.valueOf(sort), sortBy));
-		DAuthUserDetails user = (DAuthUserDetails) auth.getPrincipal();
+		var type = ItemType.valueOfIgnoreCase(itemType);
+		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.valueOf(sort), sortBy));
+		var user = (DAuthUserDetails) auth.getPrincipal();
 		Page<Item> items;
 
 		// Items

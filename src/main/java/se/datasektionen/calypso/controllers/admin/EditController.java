@@ -26,9 +26,9 @@ public class EditController {
 
 	@GetMapping("/admin/new")
 	public String newForm(Authentication auth, Model model) {
-		DAuthUserDetails user = (DAuthUserDetails) auth.getPrincipal();
+		var user = (DAuthUserDetails) auth.getPrincipal();
 
-		Item item = new Item();
+		var item = new Item();
 		item.setAuthor(user.getUser());
 		item.setAuthorDisplay(user.getName());
 
@@ -41,7 +41,7 @@ public class EditController {
 
 	@GetMapping("/admin/edit")
 	public String editForm(@RequestParam(name = "id") Long id, Model model) {
-		Item item = itemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+		var item = itemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
 		if (item == null)
 			throw new ResourceNotFoundException();

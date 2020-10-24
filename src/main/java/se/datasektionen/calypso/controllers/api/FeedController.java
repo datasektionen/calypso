@@ -1,60 +1,36 @@
 package se.datasektionen.calypso.controllers.api;
 
-import biweekly.Biweekly;
-import biweekly.ICalendar;
-import biweekly.component.VEvent;
-import biweekly.property.Color;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import se.datasektionen.calypso.models.repositories.ApiRepository;
-
-import static se.datasektionen.calypso.util.DateUtils.ldtToDate;
+import se.datasektionen.calypso.feeds.IcalFeed;
+import se.datasektionen.calypso.feeds.rss.RssFeeds;
+import se.datasektionen.calypso.feeds.rss.RssView;
 
 @Controller
 @RequestMapping("/feeds")
 @RequiredArgsConstructor
 public class FeedController {
 
-	private final ApiRepository apiRepository;
+	private final RssFeeds rssFeeds;
+	private final IcalFeed icalFeed;
 
 	@RequestMapping(produces = "text/calendar", method = RequestMethod.GET, value = "/ical")
 	@ResponseBody
 	public String eventFeed() {
-		ICalendar ical = new ICalendar();
-		ical.setName("Datasektionen");
-		ical.setColor(new Color("hotpink"));
-		ical.setProductId("-//Datasektionen//Calypso//SV");
-
-		apiRepository
-				.allEvents()
-				.stream()
-				.filter(e -> e.getEventStartTime() != null && e.getEventEndTime() != null)
-				.map(e -> {
-					VEvent event = new VEvent();
-					event.setUid("" + e.getId());
-					event.setSummary(e.getTitleSwedish());
-					event.setDescription(e.getContentSwedish());
-					event.setDateStart(ldtToDate(e.getEventStartTime()));
-					event.setDateEnd(ldtToDate(e.getEventEndTime()));
-					event.setLocation(e.getEventLocation());
-					return event;
-				})
-				.forEach(ical::addEvent);
-
-		return Biweekly.write(ical).go();
+		return icalFeed.renderIcsFeed();
 	}
 
-	@RequestMapping(produces = "application/*", method = RequestMethod.GET, value = "/rss")
-	public String feed() {
-		return "rssView";
+	@RequestMapping(produces = "application/rss+xml", method = RequestMethod.GET, value = "/rss")
+	public RssView rssFeedSwedish() {
+		return rssFeeds.swedishFeed();
 	}
     
-	@RequestMapping(produces = "application/*", method = RequestMethod.GET, value = "/rss_en")
-	public String englishFeed() {
-		return "rssViewEn";
+	@RequestMapping(produces = "application/rss+xml", method = RequestMethod.GET, value = "/rss_en")
+	public RssView rssFeedEnglish() {
+		return rssFeeds.englishFeed();
 	}
 
 }

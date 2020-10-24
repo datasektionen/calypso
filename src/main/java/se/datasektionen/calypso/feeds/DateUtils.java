@@ -1,4 +1,4 @@
-package se.datasektionen.calypso.util;
+package se.datasektionen.calypso.feeds;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

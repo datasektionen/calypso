@@ -23,10 +23,6 @@
                     href: "/admin/list?itemType=event"
                 },
                 {
-                    str: "Facebook-import",
-                    href: "/admin/import"
-                },
-                {
                     str: "Ny post",
                     href: "/admin/new"
                 }
@@ -154,9 +150,7 @@
         </div>
         <div class="col-sm-6 text-center">
             Utvecklat av
-            <a href="mailto:mauritzz@kth.se">
-                <strong>Mauritz Zachrisson</strong>
-            </a>
+            <a href="mailto:mauritzz@kth.se">Mauritz Zachrisson</a>
         </div>
         <div class="col-sm-3" th:inline="text" th:class="text-right">
             Java [[${@environment.getProperty('java.runtime.version')}]] ([[${@environment.getProperty('os.arch')}]])
