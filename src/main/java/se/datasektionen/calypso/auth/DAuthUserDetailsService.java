@@ -56,7 +56,7 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 		System.out.println("Fetched user: " + response.toString());
 
 		// Unsuccessful login
-		if (response.getUser() == null || response.getFirst_name() == null)
+		if (response.getUser() == null || response.getFirstName() == null)
 			throw new UsernameNotFoundException("Token rendered empty or malformed response");
 
 		// Prepare Pls and Dfunkt API calls
@@ -93,8 +93,8 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 		return new DAuthUserDetails(
 				response.getUser(),
 				token.toString(),
-				response.getFirst_name(),
-				response.getLast_name(),
+				response.getFirstName(),
+				response.getLastName(),
 				response.getEmails(),
 				mandates,
 				authorities

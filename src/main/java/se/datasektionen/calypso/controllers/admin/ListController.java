@@ -40,7 +40,7 @@ public class ListController {
 	                    Authentication auth, Model model) {
 		// Common objects
 		ItemType type = ItemType.valueOfIgnoreCase(itemType);
-		PageRequest pageable = new PageRequest(page, PAGE_SIZE, new Sort(Sort.Direction.valueOf(sort), sortBy));
+		PageRequest pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.valueOf(sort), sortBy));
 		DAuthUserDetails user = (DAuthUserDetails) auth.getPrincipal();
 		Page<Item> items;
 

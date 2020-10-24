@@ -23,8 +23,7 @@ public class CalypsoPermissionsEvaluator implements PermissionEvaluator {
 				return true;
 
 			// By now, we know the user isn't editor, thus they can only access their own content
-			if (user.getUser().equals(item.getAuthor()))
-				return true;
+			return user.getUser().equals(item.getAuthor());
 		}
 
 		return false;

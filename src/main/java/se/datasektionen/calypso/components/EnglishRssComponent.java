@@ -5,6 +5,7 @@ import com.rometools.rome.feed.rss.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
@@ -39,10 +40,9 @@ public final class EnglishRssComponent extends AbstractRssFeedView {
 	}
 
 	@Override
-	protected List<Item> buildFeedItems(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	protected List<Item> buildFeedItems(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) {
 		return apiRepository
-				.findAllPublished(new PageRequest(0, 100, new Sort(Sort.Direction.DESC, "publishDate")))
+				.findAllPublished(PageRequest.of(0, 100, Sort.by(Direction.DESC, "publishDate")))
 				.getContent()
 				.stream()
 				.map(RssConverter::toEnglishRssItem)

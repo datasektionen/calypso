@@ -8,6 +8,7 @@ import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface ApiRepository extends CrudRepository<Item, Long> {
 
@@ -24,7 +25,8 @@ public interface ApiRepository extends CrudRepository<Item, Long> {
 	@Query("select i from Item i where i.publishDate <= CURRENT_TIMESTAMP")
 	Page<Item> findAllPublished(Pageable pageable);
 
+	@Override
 	@Query("select i from Item i where i.publishDate <= CURRENT_TIMESTAMP and i.id = ?1")
-	Item findOne(Long id);
+	Optional<Item> findById(Long id);
 
 }

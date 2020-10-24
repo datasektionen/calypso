@@ -4,7 +4,7 @@ import biweekly.Biweekly;
 import biweekly.ICalendar;
 import biweekly.component.VEvent;
 import biweekly.property.Color;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,14 +15,10 @@ import static se.datasektionen.calypso.util.DateUtils.ldtToDate;
 
 @Controller
 @RequestMapping("/feeds")
+@RequiredArgsConstructor
 public class FeedController {
 
-	private ApiRepository apiRepository;
-
-	@Autowired
-	public FeedController(ApiRepository apiRepository) {
-		this.apiRepository = apiRepository;
-	}
+	private final ApiRepository apiRepository;
 
 	@RequestMapping(produces = "text/calendar", method = RequestMethod.GET, value = "/ical")
 	@ResponseBody

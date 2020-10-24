@@ -1,6 +1,6 @@
 package se.datasektionen.calypso.controllers.admin;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -18,16 +18,11 @@ import java.time.format.DateTimeFormatter;
 
 @Controller
 @PreAuthorize("hasAuthority('post')")
+@RequiredArgsConstructor
 public class EditController {
 
 	private final ItemRepository itemRepository;
 	private final DateTimeFormatter formatter;
-
-	@Autowired
-	public EditController(ItemRepository itemRepository, DateTimeFormatter formatter) {
-		this.itemRepository = itemRepository;
-		this.formatter = formatter;
-	}
 
 	@GetMapping("/admin/new")
 	public String newForm(Authentication auth, Model model) {
@@ -46,7 +41,7 @@ public class EditController {
 
 	@GetMapping("/admin/edit")
 	public String editForm(@RequestParam(name = "id") Long id, Model model) {
-		Item item = itemRepository.findOne(id);
+		Item item = itemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
 		if (item == null)
 			throw new ResourceNotFoundException();
@@ -79,7 +74,7 @@ public class EditController {
 	@PreAuthorize("hasAuthority('editor')")
 	@RequestMapping("/admin/delete/{id}")
 	public String delete(@PathVariable long id) {
-		itemRepository.delete(id);
+		itemRepository.deleteById(id);
 		return "redirect:/admin/list?deleted=" + id;
 	}
 

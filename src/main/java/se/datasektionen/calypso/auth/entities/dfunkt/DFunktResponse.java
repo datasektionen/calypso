@@ -2,28 +2,14 @@
 package se.datasektionen.calypso.auth.entities.dfunkt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import java.util.List;
 
+@Data
 public class DFunktResponse {
 
 	@JsonProperty("mandates")
-	private List<Mandate> mandates = null;
+	private List<Mandate> mandates;
 
-	@JsonProperty("mandates")
-	public List<Mandate> getMandates() {
-		return mandates;
-	}
-
-	@JsonProperty("mandates")
-	public void setMandates(List<Mandate> mandates) {
-		this.mandates = mandates;
-	}
-
-	@Override
-	public String toString() {
-		return "DFunktResponse{" +
-				"mandates=" + mandates +
-				'}';
-	}
 }
