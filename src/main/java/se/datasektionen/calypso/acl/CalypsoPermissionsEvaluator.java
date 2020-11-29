@@ -7,24 +7,28 @@ import se.datasektionen.calypso.auth.DAuthUserDetails;
 import se.datasektionen.calypso.models.entities.Item;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 public class CalypsoPermissionsEvaluator implements PermissionEvaluator {
 
 	@Override
 	public boolean hasPermission(Authentication auth, Object target, Object permission) {
-		DAuthUserDetails user = (DAuthUserDetails) auth.getPrincipal();
+		var user = (DAuthUserDetails) auth.getPrincipal();
+
+		if (target instanceof Optional) {
+			target = ((Optional<Item>) target).get();
+		}
 
 		if (target instanceof Item) {
-			boolean editor = user.getAuthorities().contains(new SimpleGrantedAuthority("editor"));
-			Item item = (Item) target;
+			var editor = user.getAuthorities().contains(new SimpleGrantedAuthority("editor"));
+			var item = (Item) target;
 
 			// Editors always have access
 			if (editor)
 				return true;
 
 			// By now, we know the user isn't editor, thus they can only access their own content
-			if (user.getUser().equals(item.getAuthor()))
-				return true;
+			return user.getUser().equals(item.getAuthor());
 		}
 
 		return false;

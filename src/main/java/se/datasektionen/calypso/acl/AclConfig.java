@@ -13,7 +13,7 @@ public class AclConfig extends GlobalMethodSecurityConfiguration {
 
 	@Bean
 	protected MethodSecurityExpressionHandler expressionHandler() {
-		DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+		var expressionHandler = new DefaultMethodSecurityExpressionHandler();
 
 		// Enable custom permissions evaluator
 		expressionHandler.setPermissionEvaluator(new CalypsoPermissionsEvaluator());

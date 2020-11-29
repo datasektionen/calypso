@@ -7,10 +7,8 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class DAuthFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -20,9 +18,9 @@ public class DAuthFilter extends AbstractAuthenticationProcessingFilter {
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationException, IOException, ServletException {
+			throws AuthenticationException {
 
-		String token = request.getParameter("token");
+		var token = request.getParameter("token");
 
 		System.out.println("Filter running, token is " + token);
 

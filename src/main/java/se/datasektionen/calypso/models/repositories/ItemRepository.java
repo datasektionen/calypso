@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 
+import java.util.Optional;
+
 public interface ItemRepository extends CrudRepository<Item, Long> {
 
 	Page<Item> findAll(Pageable pageable);
@@ -21,7 +23,7 @@ public interface ItemRepository extends CrudRepository<Item, Long> {
 
 	@Override
 	@PostAuthorize("hasPermission(returnObject, null)")
-	Item findOne(Long id);
+	Optional<Item> findById(Long id);
 
 	@Override
 	@PreAuthorize("hasPermission(#item, null)")
