@@ -10,10 +10,12 @@ public class Config {
 
 	private final String baseUrl;
 	private final String apiKey;
+	private final String receptionMode;
 
-	public Config(@Value("${APPLICATION_URL}") String baseUrl, @Value("${LOGIN2_KEY}") String apiKey) {
+	public Config(@Value("${APPLICATION_URL}") String baseUrl, @Value("${LOGIN_KEY}") String apiKey, @Value("${RECEPTION_MODE}") String receptionMode) {
 		this.baseUrl = baseUrl;
 		this.apiKey = apiKey;
+		this.receptionMode = receptionMode;
 	}
 
 }

@@ -62,9 +62,12 @@
                     <th width="3%"><i class="far fa-newspaper"></i></th>
                     <th width="30%">Titel</th>
                     <th width="15%">Publicerad</th>
-                    <th width="15%">Eventplats</th>
-                    <th width="15%">Eventstart</th>
+                    <th width="12.5%">Eventplats</th>
+                    <th width="12.5%">Eventstart</th>
                     <th width="20%">Författare</th>
+                    <th width="5%"
+                        title="Mörklagda evenemang/nyheter kommer mörkläggas (inte visas) när mottagningsläge är påslaget."
+                    >Mörklägg</th>
                 </tr>
                 </thead>
                 <tbody th:unless="${#lists.isEmpty(items)}">
@@ -78,10 +81,10 @@
                     <td style="vertical-align: middle;">
                         <th:block th:switch="${item.getPublishStatus().name()}">
                             <div th:case="DRAFT">
-                                <i class="fa fa-circle-o"></i>
+                                <i class="far fa-circle"></i>
                             </div>
                             <div th:case="QUEUED">
-                                <i class="fa fa-clock-o text-warning"></i>
+                                <i class="far fa-clock text-warning"></i>
                             </div>
                             <div th:case="PUBLISHED">
                                 <i class="fa fa-check-circle text-success"></i>
@@ -117,11 +120,21 @@
                     </span>
                     </td>
                     <td style="vertical-align:middle;" th:text="${item.authorDisplay}"></td>
+                    <td style="vertical-align: middle;">
+                        <th:block th:switch="${item.sensitive}">
+                            <div th:case="true">
+                                Ja
+                            </div>
+                            <div th:case="false">
+                                Nej
+                            </div>
+                        </th:block>
+                    </td>
                 </tr>
                 </tbody>
                 <tbody th:if="${items.getTotalElements() == 0}">
                 <tr>
-                    <td colspan="7">
+                    <td colspan="8">
                         <div class="text-center">
                             <br>
                             <h4>Inget innehåll hittades för de givna kriterierna</h4>
