@@ -36,11 +36,6 @@ public class ApiController {
 							@RequestParam(name = "page", defaultValue = "0") int page) {
 		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Direction.valueOf(sort), sortBy));
 
-		apiRepository.findAll().forEach(i -> {
-			if (!i.getTest()) i.setTest(false);
-			apiRepository.save(i);
-		});
-
 		// Reception mode is on, filter sensitive events
 		if (receptionRepository.get().getState()) {
 			// https://stackoverflow.com/a/57252328/16911837
