@@ -79,6 +79,11 @@ public class Item {
 	@Column
 	private boolean sticky;
 
+	// Sensitive = true means that this item will be hidden during the reception
+	@Column(nullable = false)
+	@NotNull
+	private boolean sensitive;
+
 	@Column
 	private LocalDateTime publishDate;
 
@@ -124,6 +129,10 @@ public class Item {
 
 	public boolean isSticky() {
 		return sticky;
+	}
+
+	public boolean isSensitive() {
+		return sensitive;
 	}
 
 	public PublishStatus getPublishStatus() {

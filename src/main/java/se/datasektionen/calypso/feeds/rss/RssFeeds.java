@@ -7,16 +7,19 @@ import org.springframework.stereotype.Component;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
 import se.datasektionen.calypso.config.Config;
+import se.datasektionen.calypso.models.repositories.ReceptionRepository;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Component
 public class RssFeeds {
 
 	private final ApiRepository apiRepository;
+	private final ReceptionRepository receptionRepository;
 	private final Config config;
 
 	public RssView swedishFeed() {
@@ -48,10 +51,17 @@ public class RssFeeds {
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertItems(Function<Item, String> titleMapper,
 																		Function<Item, String> contentMapper,
 																		Function<Item, String> linkMapper) {
-		return apiRepository
-				.findAllPublished(PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "publishDate")))
-				.getContent()
-				.stream()
+
+		Stream<Item> sensitive = apiRepository
+								.findAllPublished(PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "publishDate")))
+								.getContent()
+								.stream()
+								.filter(i -> !i.isSensitive());
+		Stream<Item> all = apiRepository
+							.findAllPublished(PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "publishDate")))
+							.getContent()
+							.stream();
+		return (receptionRepository.get().getState() ? sensitive : all)
 				.map(i -> RssConverter.toRssItem(i, titleMapper, contentMapper, linkMapper))
 				.collect(Collectors.toList());
 	}
