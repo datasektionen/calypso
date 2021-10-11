@@ -25,6 +25,10 @@
                 {
                     str: "Ny post",
                     href: "/admin/new"
+                },
+                {
+                    str: "Mottagningsläge",
+                    href: "/admin/reception"
                 }
             ]
         };
@@ -61,7 +65,8 @@
                             <p>
                                 Försökte du göra något busigt? Eller saknar du bara rättigheter att redigera nyheter?<br />
                                 För att kunna posta på Datasektionen.se behöver du rättigheten <code>prometheus:post</code> från
-                                <a href="http://pls.datasektionen.se">Pls.</a>
+                                <a href="http://pls.datasektionen.se">Pls.</a></br>
+                                För att kunna hantera mottagningsläge behöver du rättigheten <code>prometheus:reception</code>.
                             </p>
                             <hr />
                             <div th:if="${message}">
