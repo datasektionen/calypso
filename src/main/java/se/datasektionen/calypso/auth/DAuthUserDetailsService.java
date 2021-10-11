@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * <p>Resolves {@link PreAuthenticatedAuthenticationToken}'s into {@link DAuthUserDetails} objects.</p>
  *
- * <p>Does so by using the <pre>login2</pre> service.</p>
+ * <p>Does so by using the <pre>login</pre> service.</p>
  */
 public class DAuthUserDetailsService implements AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 

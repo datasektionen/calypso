@@ -6,9 +6,9 @@
       "description": "Application URL, including scheme and excluding the trailing slash."
     },
     {
-      "name": "LOGIN2_KEY",
+      "name": "LOGIN_KEY",
       "type": "java.lang.String",
-      "description": "API key for login2.datasektionen.se."
+      "description": "API key for login.datasektionen.se."
     }
   ]
 }
