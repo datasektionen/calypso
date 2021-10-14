@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface ApiRepository extends CrudRepository<Item, Long> {
 
 	@Query("select e from Item e where e.itemType = 'EVENT' and e.publishDate <= CURRENT_TIMESTAMP and " +
-			"e.eventStartTime > CURRENT_TIMESTAMP order by e.eventStartTime asc")
+			"e.eventEndTime > CURRENT_TIMESTAMP order by e.eventStartTime asc")
 	List<Item> upcomingEvents();
 
 	@Query("select e from Item e where e.itemType = 'EVENT' and e.publishDate <= CURRENT_TIMESTAMP")
