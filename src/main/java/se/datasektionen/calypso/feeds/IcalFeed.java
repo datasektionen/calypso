@@ -11,6 +11,8 @@ import se.datasektionen.calypso.models.repositories.ApiRepository;
 
 import static se.datasektionen.calypso.feeds.DateUtils.ldtToDate;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class IcalFeed {
@@ -30,7 +32,11 @@ public class IcalFeed {
 		apiRepository
 				.allEvents()
 				.stream()
-				.filter(e -> e.getEventStartTime() != null && e.getEventEndTime() != null)
+				.filter(e ->
+					e.getEventStartTime() != null && e.getEventEndTime() != null &&
+					LocalDateTime.now().minusMonths(2)
+					.compareTo(e.getEventStartTime()) < 0
+				)
 				.map(IcalFeed::toEvent)
 				.forEach(ical::addEvent);
 
