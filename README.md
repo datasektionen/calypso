@@ -7,8 +7,16 @@ Spring Boot with Spring MVC + Spring Data JPA + Spring Security + Thymeleaf + Po
 
 ## Development
 
-`mvn -DskipTests clean dependency:list install`
-`java -jar target/calypso-1.0-SNAPSHOT.jar`
+1. Configure database connection in `resources/application.properties`.
+```
+spring.datasource.url=jdbc:postgresql://localhost:5432/DB_NAME
+spring.datasource.username=USER
+spring.datasource.password=PSWD
+```
+Do not commit these changes
+
+2. `mvn -DskipTests clean dependency:list install`
+3. `java -jar target/calypso-1.0-SNAPSHOT.jar`
 
 -----------
 
@@ -17,5 +25,8 @@ for development configuration. All config in this file will override the global
 `application.properties`
 
 ## Environment variables
-LOGIN_KEY
-APPLICATION_URL
+
+| Name                         | Description                 | Default                 | Example                                |
+| ---------------------------- | --------------------------- | ----------------------- | -------------------------------------- |
+| LOGIN_KEY                    | Login key                   | ---                     | ---                                    |
+| APPLICATION_URL              | URL to backend              | ---                     | http://localhost.datasektionen.se:8080 |
