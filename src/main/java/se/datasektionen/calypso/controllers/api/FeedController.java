@@ -19,8 +19,14 @@ public class FeedController {
 
 	@RequestMapping(produces = "text/calendar", method = RequestMethod.GET, value = "/ical")
 	@ResponseBody
+	public String eventFeedSwedish() {
+		return icalFeed.renderIcsFeedSwedish();
+	}
+
+	@RequestMapping(produces = "text/calendar", method = RequestMethod.GET, value = "/ical_en")
+	@ResponseBody
 	public String eventFeed() {
-		return icalFeed.renderIcsFeed();
+		return icalFeed.renderIcsFeedEnglish();
 	}
 
 	@RequestMapping(produces = "application/rss+xml", method = RequestMethod.GET, value = "/rss")
