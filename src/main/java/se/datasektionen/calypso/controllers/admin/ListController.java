@@ -33,6 +33,7 @@ public class ListController {
 	                    @RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
 	                    @RequestParam(name = "sort", defaultValue = "DESC") String sort,
 	                    @RequestParam(name = "page", defaultValue = "0") int page,
+											@RequestParam(name = "onlyMe", defaultValue = "false") boolean onlyMe,
 	                    Authentication auth, Model model) {
 		// Common objects
 		var type = ItemType.valueOfIgnoreCase(itemType);
@@ -42,12 +43,12 @@ public class ListController {
 
 		// Items
 		if (type == null)
-			if (user.getAuthorities().contains(new SimpleGrantedAuthority("editor")))
+			if (!onlyMe && user.getAuthorities().contains(new SimpleGrantedAuthority("editor")))
 				items = itemRepository.findAll(pageable);
 			else
 				items = itemRepository.findAllByAuthor(user.getUser(), pageable);
 		else
-			if (user.getAuthorities().contains(new SimpleGrantedAuthority("editor")))
+			if (!onlyMe && user.getAuthorities().contains(new SimpleGrantedAuthority("editor")))
 				items = itemRepository.findAllByItemType(type, pageable);
 			else
 				items = itemRepository.findAllByItemTypeAndAuthor(type, user.getUser(), pageable);
