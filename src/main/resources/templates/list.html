@@ -40,15 +40,40 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-6 text-muted" style="padding-top: 5px;">
+            <div class="col-md-8 text-muted" style="padding-top: 5px;">
                 <small th:text="${'Totalt ' + items.totalElements + ' objekt du kan redigera.'}"></small>
             </div>
-            <div class="col-sm-6">
+            <div class="col-md-2 text-muted" style="padding-top: 5px; text-align: right;">
+                <div sec:authorize="hasAuthority('editor')">
+                    <form method="get" name="onlyMeSelector">
+                        <input type="hidden" name="itemType" th:value="${itemType}">
+                        <input type="hidden" name="page" th:value="${page}">
+                        <span  class="checkbox">
+                            <input type="checkbox" name="onlyMe" value="true" id="onlyMe" th:if="${onlyMe}" checked/>
+                            <input type="checkbox" name="onlyMe" value="true" id="onlyMe" th:unless="${onlyMe}"/>
+                            <label for="onlyMe" class="form-label-narrow">Endast dina inlägg</label>
+                        </span>
+                        <script>
+                            document.getElementById("onlyMe").addEventListener('change',
+                                function (event) {
+                                    document.forms["onlyMeSelector"].submit()
+                                });
+                        </script>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-2">
                 <div class="table-pagination" style="text-align: right !important;">
                     <ul class="pagination pagination-sm" style="margin: 0; margin-bottom: 5px;">
-                        <li th:class="${itemType == null}  ? active : ''"><a th:href="@{${'/admin/list'}}">Alla</a></li>
-                        <li th:class="${itemType != null && itemType.name() == 'EVENT'} ? active : ''"><a th:href="@{${'/admin/list'}(itemType=EVENT)}">Event</a></li>
-                        <li th:class="${itemType != null && itemType.name() == 'POST'}  ? active : ''"><a th:href="@{${'/admin/list'}(itemType=POST)}">Nyheter</a></li>
+                        <li th:class="${itemType == null}  ? active : ''">
+                            <a th:href="@{${'/admin/list'}(onlyMe=${onlyMe}, page=${page})}">Alla</a>
+                        </li>
+                        <li th:class="${itemType != null && itemType.name() == 'EVENT'} ? active : ''">
+                            <a th:href="@{${'/admin/list'}(itemType=EVENT, onlyMe=${onlyMe}, page=${page})}">Event</a>
+                        </li>
+                        <li th:class="${itemType != null && itemType.name() == 'POST'}  ? active : ''">
+                            <a th:href="@{${'/admin/list'}(itemType=POST, onlyMe=${onlyMe}, page=${page})}">Nyheter</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -149,7 +174,7 @@
         <div class="table-pagination" th:if="${items.getTotalElements() > 0}">
             <ul class="pagination">
                 <li th:class="${items.number eq 0} ? 'disabled' : ''">
-                    <a th:unless="${page == 0}" th:href="@{${'/admin/list'}(page=${items.number-1},itemType=${itemType})}">&laquo;</a>
+                    <a th:unless="${page == 0}" th:href="@{${'/admin/list'}(page=${items.number-1},itemType=${itemType},onlyMe=${onlyMe})}">&laquo;</a>
                     <a th:if="${page == 0}" class="disabled" href="javascript:void(0);">&laquo;</a>
                 </li>
 
@@ -157,13 +182,12 @@
                     <a th:if="${items.number == pageNo}" href="javascript:void(0);" class="disabled">
                         <span th:text="${pageNo + 1}"></span>
                     </a>
-                    <a th:unless="${items.number == pageNo}" th:href="@{${'/admin/list'}(page=${pageNo},itemType=${itemType})}">
+                    <a th:unless="${items.number == pageNo}" th:href="@{${'/admin/list'}(page=${pageNo},itemType=${itemType},onlyMe=${onlyMe})}">
                         <span th:text="${pageNo + 1}"></span>
                     </a>
-
                 </li>
                 <li th:class="${items.number + 1 ge items.totalPages} ? 'disabled' : ''">
-                    <a th:unless="${items.isLast()}" th:href="@{${'/admin/list'}(page=${page+1},itemType=${itemType})}">&raquo;</a>
+                    <a th:unless="${items.isLast()}" th:href="@{${'/admin/list'}(page=${page+1},itemType=${itemType},onlyMe=${onlyMe})}">&raquo;</a>
                     <a th:if="${items.isLast()}" href="javascript:void(0);">&raquo;</a>
                 </li>
             </ul>
