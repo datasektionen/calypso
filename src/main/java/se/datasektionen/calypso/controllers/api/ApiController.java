@@ -71,8 +71,12 @@ public class ApiController {
 	@RequestMapping("/item/{id}")
 	public Item item(@PathVariable("id") long itemId) {
 		Optional<Item> item = apiRepository.findById(itemId);
-		if (item.isPresent() && !receptionRepository.get().getState()) return item.get();
-		else throw new ResourceNotFoundException();
+		if (item.isPresent()) {
+			if (receptionRepository.get().getState()) { // Reception mode is on
+				if (!item.get().isSensitive()) return item.get();
+			} else return item.get();
+		}
+		throw new ResourceNotFoundException();
 	}
 
 }
