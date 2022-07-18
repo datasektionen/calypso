@@ -47,7 +47,9 @@ public class ApiController {
 				.stream()
 				.filter(i -> !i.isSensitive())
 				.collect(Collectors.toList());
-			return itemType == null ? new PageImpl<Item>(s1) : new PageImpl<Item>(s2);
+			return itemType == null
+					? new PageImpl<Item>(s1, pageable, s1.size())
+					: new PageImpl<Item>(s2, pageable, s2.size());
 		}
 
 		return itemType == null
