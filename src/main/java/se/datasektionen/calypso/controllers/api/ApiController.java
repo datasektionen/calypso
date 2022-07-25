@@ -38,16 +38,9 @@ public class ApiController {
 
 		// Reception mode is on, filter sensitive events
 		if (receptionRepository.get().getState()) {
-			// https://stackoverflow.com/a/57252328/16911837
-			List<Item> s1 = apiRepository.findAllPublished(pageable)
-				.stream()
-				.filter(i -> !i.isSensitive())
-				.collect(Collectors.toList());
-			List<Item> s2 = apiRepository.findAllPublishedByItemType(ItemType.valueOfIgnoreCase(itemType), pageable)
-				.stream()
-				.filter(i -> !i.isSensitive())
-				.collect(Collectors.toList());
-			return itemType == null ? new PageImpl<Item>(s1) : new PageImpl<Item>(s2);
+			return itemType == null
+					? apiRepository.findAllPublishedNonSensitive(pageable)
+					: apiRepository.findAllPublishedByItemTypeNonSensitive(ItemType.valueOfIgnoreCase(itemType), pageable);
 		}
 
 		return itemType == null
