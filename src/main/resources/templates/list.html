@@ -39,6 +39,10 @@
             Inlägg med ID #<span th:text="${param.deleted}"></span> raderades.
         </div>
 
+        <div th:if="${receptionMode}">
+            <div class="alert alert-info">Mottagningsläget är för närvarande påslaget. Nyheter markerade som känsliga kommer inte exponeras av APIet eller synas på hemsidan.</div>
+        </div>
+
         <div class="row">
             <div class="col-md-8 text-muted" style="padding-top: 5px;">
                 <small th:text="${'Totalt ' + items.totalElements + ' objekt du kan redigera.'}"></small>
