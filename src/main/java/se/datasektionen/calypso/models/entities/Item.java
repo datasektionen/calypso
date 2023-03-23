@@ -152,4 +152,21 @@ public class Item {
 		this.updated = LocalDateTime.now();
 	}
 
+	public Item duplicate() {
+		Item duplicatedItem = new Item();
+		duplicatedItem.titleSwedish = this.titleSwedish;
+		duplicatedItem.contentSwedish = this.contentSwedish;
+		duplicatedItem.titleEnglish = this.titleEnglish;
+		duplicatedItem.contentEnglish = this.contentEnglish;
+		duplicatedItem.itemType = this.itemType;
+		duplicatedItem.isSensitive = this.isSensitive;
+
+		if (duplicatedItem.itemType == ItemType.Event) {
+			duplicatedItem.eventLocation = this.eventLocation;
+			// TODO: I want to clear the dates but keep the hours.
+			duplicatedItem.eventStartTime = this.eventStartTime
+			duplicatedItem.eventEndTime = this.eventEndTime
+		}
+	}
+
 }
