@@ -159,14 +159,14 @@ public class Item {
 		duplicatedItem.titleEnglish = this.titleEnglish;
 		duplicatedItem.contentEnglish = this.contentEnglish;
 		duplicatedItem.itemType = this.itemType;
-		duplicatedItem.isSensitive = this.isSensitive;
+		duplicatedItem.sensitive = this.sensitive;
 
-		if (duplicatedItem.itemType == ItemType.Event) {
+		if (duplicatedItem.itemType == ItemType.EVENT) {
 			duplicatedItem.eventLocation = this.eventLocation;
-			// TODO: I want to clear the dates but keep the hours.
-			duplicatedItem.eventStartTime = this.eventStartTime
-			duplicatedItem.eventEndTime = this.eventEndTime
+			duplicatedItem.eventStartTime = this.eventStartTime.plusDays(7);
+			duplicatedItem.eventEndTime = this.eventEndTime.plusDays(7);
 		}
+		return duplicatedItem;
 	}
 
 }
