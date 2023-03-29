@@ -319,6 +319,12 @@
                                    onclick="return window.confirm('Är du säker på att du vill ta bort posten?');"
                                    class="button secondary-action">Radera</a>
 
+                                <a th:href="@{/admin/duplicate(id=${item.id})}"
+                                   th:if="${item.id != null}"
+                                   sec:authorize="hasAuthority('post')"
+                                   class="button secondary-action">&#128203; Duplicera</a>
+
+
                                 <span th:case="DRAFT">
                                     <input class="button secondary-action" type="submit" name="save" value="Spara utkast" v-if="publishStatus == 'DRAFT'" />
                                     <input class="button primary-action" type="submit" name="publish" value="Publicera" v-if="publishStatus == 'DRAFT'" />

@@ -152,4 +152,21 @@ public class Item {
 		this.updated = LocalDateTime.now();
 	}
 
+	public Item duplicate() {
+		Item duplicatedItem = new Item();
+		duplicatedItem.titleSwedish = this.titleSwedish;
+		duplicatedItem.contentSwedish = this.contentSwedish;
+		duplicatedItem.titleEnglish = this.titleEnglish;
+		duplicatedItem.contentEnglish = this.contentEnglish;
+		duplicatedItem.itemType = this.itemType;
+		duplicatedItem.sensitive = this.sensitive;
+
+		if (duplicatedItem.itemType == ItemType.EVENT) {
+			duplicatedItem.eventLocation = this.eventLocation;
+			duplicatedItem.eventStartTime = this.eventStartTime.plusDays(7);
+			duplicatedItem.eventEndTime = this.eventEndTime.plusDays(7);
+		}
+		return duplicatedItem;
+	}
+
 }

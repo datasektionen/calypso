@@ -39,6 +39,25 @@ public class EditController {
 		return "edit";
 	}
 
+	@GetMapping("/admin/duplicate")
+	public String duplicateForm(@RequestParam(name = "id") Long id, Authentication auth, Model model) {
+		var user = (DAuthUserDetails) auth.getPrincipal();
+		var baseItem = itemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+		if (baseItem == null)
+			throw new ResourceNotFoundException();
+
+    var item = baseItem.duplicate();
+
+		item.setAuthor(user.getUser());
+		item.setAuthorDisplay(user.getName());
+		model.addAttribute("item", item);
+		model.addAttribute("now", LocalDateTime.now().format(formatter));
+		model.addAttribute("formatter", formatter);
+
+		return "edit";
+	}
+
 	@GetMapping("/admin/edit")
 	public String editForm(@RequestParam(name = "id") Long id, Model model) {
 		var item = itemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
