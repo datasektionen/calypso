@@ -81,9 +81,15 @@ public class EditController {
 		if (bindingResult.hasErrors())
 			return "edit";
 
+		var originalItem = itemRepository.findById(item.getId()).get();
 
-		if (item.getPublishAs() != null && !item.getPublishAs().isEmpty()) {
-			var mandates = ((DAuthUserDetails) auth.getPrincipal()).getMandates();
+		var user = (DAuthUserDetails) auth.getPrincipal();
+		if (originalItem != null && item.getAuthor() != user.getUser() ){
+			item.setPublishAs(originalItem.getPublishAs());
+			item.setPublishAsDisplay(originalItem.getPublishAsDisplay());
+		}
+		else if (item.getPublishAs() != null && !item.getPublishAs().isEmpty()) {
+			var mandates = user.getMandates();
 			String mandateDisplay = mandates.get(item.getPublishAs());
 			if (mandateDisplay != null)
 				item.setPublishAsDisplay(mandateDisplay);
