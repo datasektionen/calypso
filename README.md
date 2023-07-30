@@ -19,7 +19,7 @@ for development configuration. All config in this file will override the global
 
 ## Environment variables
 
-A login API-key can be received by [Systemansvarig](mailto:d-sys@d.kth.se)
+A login API-key can be received by [Systemansvarig](mailto:d-sys@datasektionen.se)
 
 | Name                         | Description                 | Default                 | Example                                  |
 | ---------------------------- | --------------------------- | ----------------------- | ---------------------------------------- |
