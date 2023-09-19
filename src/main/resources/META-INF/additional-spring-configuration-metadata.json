@@ -8,7 +8,12 @@
     {
       "name": "LOGIN_KEY",
       "type": "java.lang.String",
-      "description": "API key for login.datasektionen.se."
+      "description": "API key for login."
+    },
+    {
+      "name": "LOGIN_URL",
+      "type": "java.lang.String",
+      "description": "URL to login."
     }
   ]
 }

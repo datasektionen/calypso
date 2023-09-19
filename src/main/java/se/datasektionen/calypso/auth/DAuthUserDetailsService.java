@@ -41,7 +41,7 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 	public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
 		// Required variables
 		var t = token.getPrincipal().toString();
-		var url = "https://login.datasektionen.se/verify/" + t + ".json?api_key=" + config.getApiKey();
+		var url = config.getLoginUrl() + "/verify/" + t + ".json?api_key=" + config.getLoginApiKey();
 
 		var headers = new HttpHeaders();
 		headers.set("User-Agent", "Spring Framework/Java " + System.getProperty("java.version"));
