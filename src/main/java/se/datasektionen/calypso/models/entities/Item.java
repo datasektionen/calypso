@@ -160,7 +160,9 @@ public class Item {
 		duplicatedItem.contentEnglish = this.contentEnglish;
 		duplicatedItem.itemType = this.itemType;
 		duplicatedItem.sensitive = this.sensitive;
-
+		duplicatedItem.googleForm = this.googleForm;
+		duplicatedItem.facebookEvent = this.facebookEvent;
+		
 		if (duplicatedItem.itemType == ItemType.EVENT) {
 			duplicatedItem.eventLocation = this.eventLocation;
 			duplicatedItem.eventStartTime = this.eventStartTime.plusDays(7);
