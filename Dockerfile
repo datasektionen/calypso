@@ -1,6 +1,7 @@
 FROM amazoncorretto:11-alpine3.18 AS base
 
 WORKDIR /app
+ENV TZ=Europe/Stockholm
 
 FROM base AS builder
 
