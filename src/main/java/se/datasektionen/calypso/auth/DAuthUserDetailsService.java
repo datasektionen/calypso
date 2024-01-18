@@ -60,7 +60,7 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 
 		// Prepare Pls and Dfunkt API calls
 		var user = response.getUser();
-		var plsUrl = "https://pls.datasektionen.se/api/user/" + user + "/prometheus";
+		var plsUrl = "https://pls.datasektionen.se/api/user/" + user + "/calypso";
 
 		// Read permissions from Pls
 		var permissions = new RestTemplate()
