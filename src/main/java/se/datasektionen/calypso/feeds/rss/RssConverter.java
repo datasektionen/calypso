@@ -15,6 +15,7 @@ public class RssConverter {
 	 */
 	public static com.rometools.rome.feed.rss.Item toRssItem(Item item,
 															 Function<Item, String> titleMapper,
+															 Function<Item, String> authorMapper,
 															 Function<Item, String> contentMapper,
 															 Function<Item, String> linkMapper) {
 		var rssItem = new com.rometools.rome.feed.rss.Item();
@@ -24,6 +25,7 @@ public class RssConverter {
 		description.setValue(contentMapper.apply(item));
 
 		rssItem.setTitle(titleMapper.apply(item));
+		rssItem.setAuthor(authorMapper.apply(item));
 		rssItem.setDescription(description);
 		rssItem.setPubDate(ldtToDate(item.getPublishDate()));
 		rssItem.setLink(linkMapper.apply(item));

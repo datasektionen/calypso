@@ -38,17 +38,20 @@ public class RssFeeds {
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertSwedishItems() {
 		return fetchAndConvertItems(Item::getTitleSwedish,
+				Item::getAuthorDisplay,
 				Item::getContentSwedishProcessed,
 				i -> RssConstants.Swedish.LINK_BASE_URL + i.getId());
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertEnglishItems() {
 		return fetchAndConvertItems(Item::getTitleEnglish,
+				Item::getAuthorDisplay,
 				Item::getContentEnglishProcessed,
 				i -> RssConstants.English.LINK_BASE_URL + i.getId());
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertItems(Function<Item, String> titleMapper,
+																		Function<Item, String> authorMapper,
 																		Function<Item, String> contentMapper,
 																		Function<Item, String> linkMapper) {
 
@@ -62,7 +65,7 @@ public class RssFeeds {
 							.getContent()
 							.stream();
 		return (receptionRepository.get().getState() ? sensitive : all)
-				.map(i -> RssConverter.toRssItem(i, titleMapper, contentMapper, linkMapper))
+				.map(i -> RssConverter.toRssItem(i, titleMapper, authorMapper, contentMapper, linkMapper))
 				.collect(Collectors.toList());
 	}
 
