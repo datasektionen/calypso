@@ -73,13 +73,27 @@ public class EditController {
 	}
 
 	@PostMapping("/admin/edit")
-	public String doEdit(@RequestParam(required = false) String publish, @Valid Item item, BindingResult bindingResult, Model model) {
+	public String doEdit(Authentication auth, @RequestParam(required = false) String publish, @Valid Item item, BindingResult bindingResult, Model model) {
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
 		model.addAttribute("formatter", formatter);
 
 		// Check for form errors
 		if (bindingResult.hasErrors())
 			return "edit";
+
+		var originalItem = itemRepository.findById(item.getId()).get();
+
+		var user = (DAuthUserDetails) auth.getPrincipal();
+		if (originalItem != null && item.getAuthor() != user.getUser() ){
+			item.setPublishAs(originalItem.getPublishAs());
+			item.setPublishAsDisplay(originalItem.getPublishAsDisplay());
+		}
+		else if (item.getPublishAs() != null && !item.getPublishAs().isEmpty()) {
+			var mandates = user.getMandates();
+			String mandateDisplay = mandates.get(item.getPublishAs());
+			if (mandateDisplay != null)
+				item.setPublishAsDisplay(mandateDisplay);
+		}
 
 		// If the special publish param (name of a submit button) is present, we publish
 		if (publish != null)
