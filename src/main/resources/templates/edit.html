@@ -127,16 +127,16 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <div class="input-group-addon" id="fb"><i class="fa fa-fw"></i></div>
-                                <input type="text" class="form-control" title="Facebook-event (URL)"
-                                       placeholder="Facebook-event (URL)" th:field="*{facebookEvent}" />
+                                <input type="text" class="form-control" title="Adress should start with 'http://' or 'https://'"
+                                       placeholder="Facebook-event (URL)" th:field="*{facebookEvent}" pattern="^https:\/\/.*|^http:\/\/.*"/>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="input-group">
                             <div class="input-group-addon" id="gdocs"><i class="fa fa-fw"></i></div>
-                            <input type="text" class="form-control" title="Google Doc/Form (URL)"
-                                   placeholder="Google Doc/Form (URL)" th:field="*{googleForm}" />
+                            <input type="text" class="form-control" title="Adress should start with 'http://' or 'https://'"
+                                   placeholder="Google Doc/Form (URL)" th:field="*{googleForm}" pattern="^https:\/\/.*|^http:\/\/.*"/>
                         </div>
                     </div>
                     <div class="clear"></div>
