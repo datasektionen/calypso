@@ -20,7 +20,7 @@ public class DAuthEntryPoint implements AuthenticationEntryPoint {
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
 			throws IOException {
-		response.sendRedirect(config.getLoginUrl() + "/login?callback=" +
+		response.sendRedirect(config.getLoginFrontendUrl() + "/login?callback=" +
 				config.getBaseUrl() + "/auth/verify?token=");
 	}
 }

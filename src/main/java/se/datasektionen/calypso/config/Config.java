@@ -9,15 +9,18 @@ import org.springframework.stereotype.Component;
 public class Config {
 	private final String baseUrl;
 	private final String loginApiKey;
-	private final String loginUrl;
+	private final String loginFrontendUrl;
+	private final String loginApiUrl;
 
 	public Config(
 		@Value("${APPLICATION_URL}") String baseUrl,
 		@Value("${LOGIN_KEY}") String loginApiKey,
-		@Value("${LOGIN_URL:https://login.datasektionen.se}") String loginUrl
+		@Value("${LOGIN_FRONTEND_URL:https://login.datasektionen.se}") String loginFrontendUrl,
+		@Value("${LOGIN_API_URL:https://login.datasektionen.se}") String loginApiUrl
 	) {
 		this.baseUrl = baseUrl;
 		this.loginApiKey = loginApiKey;
-		this.loginUrl = loginUrl;
+		this.loginFrontendUrl = loginFrontendUrl;
+		this.loginApiUrl = loginApiUrl;
 	}
 }

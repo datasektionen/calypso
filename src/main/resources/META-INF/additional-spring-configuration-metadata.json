@@ -11,9 +11,14 @@
       "description": "API key for login."
     },
     {
-      "name": "LOGIN_URL",
+      "name": "LOGIN_FRONTEND_URL",
       "type": "java.lang.String",
-      "description": "URL to login."
+      "description": "URL to login frontend."
+    },
+    {
+      "name": "LOGIN_API_URL",
+      "type": "java.lang.String",
+      "description": "URL to login api."
     }
   ]
 }
