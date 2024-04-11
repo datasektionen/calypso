@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,10 @@ public interface ApiRepository extends CrudRepository<Item, Long> {
 	@Query("select e from Item e where e.itemType = 'EVENT' and e.publishDate <= CURRENT_TIMESTAMP and " +
 			"e.eventEndTime > CURRENT_TIMESTAMP order by e.eventStartTime asc")
 	List<Item> upcomingEvents();
+
+	@Query("select e from Item e where e.itemType = 'EVENT' and e.publishDate <= CURRENT_TIMESTAMP and " +
+		"e.eventEndTime > ?1 and e.eventStartTime < ?2 order by e.eventStartTime asc")
+	List<Item> eventsInTimeSpan(LocalDateTime startDate, LocalDateTime endDate);
 
 	@Query("select e from Item e where e.itemType = 'EVENT' and e.publishDate <= CURRENT_TIMESTAMP")
 	List<Item> allEvents();
