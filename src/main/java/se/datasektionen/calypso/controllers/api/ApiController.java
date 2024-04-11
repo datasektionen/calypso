@@ -5,13 +5,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
 import se.datasektionen.calypso.models.repositories.ReceptionRepository;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +28,7 @@ import java.util.stream.Collectors;
 public class ApiController {
 
 	private static final int PAGE_SIZE = 25;
+	private static final int MAX_TIME_SPAN_DAYS = 14;
 	private final ApiRepository apiRepository;
 	private final ReceptionRepository receptionRepository;
 
@@ -57,6 +62,25 @@ public class ApiController {
 		}
 
 		return apiRepository.upcomingEvents();
+	}
+
+	@RequestMapping("/event/span")
+	public Collection<Item> eventsInTimeSpan(
+		@RequestParam("startDate") LocalDateTime startDate,
+		@RequestParam("endDate") LocalDateTime endDate
+	) {
+		long days = startDate.until(endDate, ChronoUnit.DAYS);
+		if (days > MAX_TIME_SPAN_DAYS) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time span may not be larger than " + MAX_TIME_SPAN_DAYS + " days");
+		}
+		if (receptionRepository.get().getState()) {
+			return apiRepository.eventsInTimeSpan(startDate, endDate)
+				.stream()
+				.filter(i -> !i.isSensitive())
+				.collect(Collectors.toList());
+		}
+
+		return apiRepository.eventsInTimeSpan(startDate, endDate);
 	}
 
 	@RequestMapping("/item/{id}")
