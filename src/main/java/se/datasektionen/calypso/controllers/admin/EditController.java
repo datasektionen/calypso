@@ -47,7 +47,7 @@ public class EditController {
 		if (baseItem == null)
 			throw new ResourceNotFoundException();
 
-    var item = baseItem.duplicate();
+		var item = baseItem.duplicate();
 
 		item.setAuthor(user.getUser());
 		item.setAuthorDisplay(user.getName());
@@ -81,15 +81,16 @@ public class EditController {
 		if (bindingResult.hasErrors())
 			return "edit";
 
-		var originalItem = itemRepository.findById(item.getId()).get();
+		Item originalItem = null;
+		if (item.getId() != null) originalItem = itemRepository.findById(item.getId()).get();
 
 		var user = (DAuthUserDetails) auth.getPrincipal();
-		if (originalItem != null && item.getAuthor() != user.getUser() ){
+		var mandates = user.getMandates();
+		if (originalItem != null && !mandates.containsKey(item.getPublishAs())) {
 			item.setPublishAs(originalItem.getPublishAs());
 			item.setPublishAsDisplay(originalItem.getPublishAsDisplay());
 		}
 		else if (item.getPublishAs() != null && !item.getPublishAs().isEmpty()) {
-			var mandates = user.getMandates();
 			String mandateDisplay = mandates.get(item.getPublishAs());
 			if (mandateDisplay != null)
 				item.setPublishAsDisplay(mandateDisplay);
