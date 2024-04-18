@@ -14,7 +14,7 @@ import se.datasektionen.calypso.auth.DAuthUserDetails;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
-import se.datasektionen.calypso.models.repositories.ReceptionRepository;
+import se.datasektionen.calypso.Darkmode;
 
 import java.time.format.DateTimeFormatter;
 
@@ -27,7 +27,7 @@ public class ListController {
 
 	private final ItemRepository itemRepository;
 	private final DateTimeFormatter formatter;
-	private final ReceptionRepository receptionRepository;
+	private final Darkmode darkmode;
 
 	@RequestMapping("/admin/list")
 	public String index(@RequestParam(name = "itemType", required = false) String itemType,
@@ -56,17 +56,12 @@ public class ListController {
 			else
 				items = itemRepository.findAllByItemTypeAndAuthor(type, user.getUser(), pageable);
 
-		boolean receptionMode = receptionRepository.get() == null
-			? false // reception mode not initialized in db, return false
-			: receptionRepository.get().getState(); // get the state
-
-		// Populate model
 		model.addAttribute("formatter", formatter);
 		model.addAttribute("page", page);
 		model.addAttribute("items", items);
 		model.addAttribute("itemType", type);
 		model.addAttribute("onlyMe", onlyMe);
-		model.addAttribute("receptionMode", receptionMode);
+		model.addAttribute("receptionMode", darkmode.getCurrent());
 		return "list";
 	}
 

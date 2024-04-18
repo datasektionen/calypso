@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
 import se.datasektionen.calypso.config.Config;
-import se.datasektionen.calypso.models.repositories.ReceptionRepository;
+import se.datasektionen.calypso.Darkmode;
 
 import java.util.List;
 import java.util.function.Function;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class RssFeeds {
 
 	private final ApiRepository apiRepository;
-	private final ReceptionRepository receptionRepository;
+	private final Darkmode darkmode;
 	private final Config config;
 
 	public RssView swedishFeed() {
@@ -64,7 +64,7 @@ public class RssFeeds {
 							.findAllPublished(PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "publishDate")))
 							.getContent()
 							.stream();
-		return (receptionRepository.get().getState() ? sensitive : all)
+		return (darkmode.getCurrent() ? sensitive : all)
 				.map(i -> RssConverter.toRssItem(i, titleMapper, authorMapper, contentMapper, linkMapper))
 				.collect(Collectors.toList());
 	}
