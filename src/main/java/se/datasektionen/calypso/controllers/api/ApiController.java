@@ -15,7 +15,7 @@ import se.datasektionen.calypso.models.entities.ReceptionMode;
 import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ActivityRepository;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
-import se.datasektionen.calypso.models.repositories.ReceptionRepository;
+import se.datasektionen.calypso.Darkmode;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -33,7 +33,7 @@ public class ApiController {
 	private static final int PAGE_SIZE = 25;
 	private static final int MAX_TIME_SPAN_DAYS = 14;
 	private final ApiRepository apiRepository;
-	private final ReceptionRepository receptionRepository;
+	private final Darkmode darkmode;
 	private final ActivityRepository activityRepository;
 
 	@RequestMapping("/list")
@@ -43,8 +43,8 @@ public class ApiController {
 							@RequestParam(name = "page", defaultValue = "0") int page) {
 		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Direction.valueOf(sort), sortBy));
 
-		// Reception mode is on, filter sensitive events
-		if (receptionRepository.get().getState()) {
+		// Darkmode is on, filter sensitive events
+		if (darkmode.getCurrent()) {
 			return itemType == null
 					? apiRepository.findAllPublishedNonSensitive(pageable)
 					: apiRepository.findAllPublishedByItemTypeNonSensitive(ItemType.valueOfIgnoreCase(itemType), pageable);
@@ -57,7 +57,7 @@ public class ApiController {
 
 	@RequestMapping("/event")
 	public Collection<Item> upcomingEvents() {
-		if (receptionRepository.get().getState()) {
+		if (darkmode.getCurrent()) {
 			List<Item> items = apiRepository.upcomingEvents()
 				.stream()
 				.filter(i -> !i.isSensitive())
@@ -79,18 +79,14 @@ public class ApiController {
 					"Time span may not be larger than " + MAX_TIME_SPAN_DAYS + " days");
 		}
 
-		var isReception = Optional.ofNullable(receptionRepository.get())
-				.map(ReceptionMode::getState)
-				.orElse(false);
-
-		return apiRepository.eventsInTimeSpan(startDate, endDate, isReception);
+		return apiRepository.eventsInTimeSpan(startDate, endDate, darkmode.getCurrent());
 	}
 
 	@RequestMapping("/item/{id}")
 	public Item item(@PathVariable("id") long itemId) {
 		Optional<Item> item = apiRepository.findById(itemId);
 		if (item.isPresent()) {
-			if (receptionRepository.get().getState()) { // Reception mode is on
+			if (darkmode.getCurrent()) {
 				if (!item.get().isSensitive()) return item.get();
 			} else return item.get();
 		}

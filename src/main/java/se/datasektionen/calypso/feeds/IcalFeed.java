@@ -10,10 +10,9 @@ import org.springframework.stereotype.Service;
 
 import se.datasektionen.calypso.models.entities.ActivityPeriod;
 import se.datasektionen.calypso.models.entities.Item;
-import se.datasektionen.calypso.models.entities.ReceptionMode;
 import se.datasektionen.calypso.models.repositories.ActivityPeriodRepository;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
-import se.datasektionen.calypso.models.repositories.ReceptionRepository;
+import se.datasektionen.calypso.Darkmode;
 
 import static se.datasektionen.calypso.feeds.DateUtils.applyRecurrence;
 import static se.datasektionen.calypso.feeds.DateUtils.ldtToDate;
@@ -32,7 +31,7 @@ public class IcalFeed {
 	private static final String CALENDAR_EN_PRODUCT_ID = "-//Datasektionen//Calypso//EN";
 
 	private final ApiRepository apiRepository;
-	private final ReceptionRepository receptionRepository;
+	private final Darkmode darkmode;
 	private final ActivityPeriodRepository activityPeriodRepository;
 
 	public String renderIcsFeed(boolean english) {
@@ -46,9 +45,7 @@ public class IcalFeed {
 		ical.getTimezoneInfo().setDefaultTimezone(assignment);
 
 		var now = LocalDateTime.now();
-		var isReception = Optional.ofNullable(receptionRepository.get())
-				.map(ReceptionMode::getState)
-				.orElse(false);
+		var isReception = darkmode.getCurrent();
 
 		apiRepository.eventsInTimeSpan(now.minusMonths(2), now.plusYears(2), isReception)
 				.stream()
