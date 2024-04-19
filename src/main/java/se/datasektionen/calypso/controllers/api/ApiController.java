@@ -75,16 +75,15 @@ public class ApiController {
 	) {
 		long days = startDate.until(endDate, ChronoUnit.DAYS);
 		if (days > MAX_TIME_SPAN_DAYS) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time span may not be larger than " + MAX_TIME_SPAN_DAYS + " days");
-		}
-		if (receptionRepository.get().getState()) {
-			return apiRepository.eventsInTimeSpan(startDate, endDate)
-				.stream()
-				.filter(i -> !i.isSensitive())
-				.collect(Collectors.toList());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"Time span may not be larger than " + MAX_TIME_SPAN_DAYS + " days");
 		}
 
-		return apiRepository.eventsInTimeSpan(startDate, endDate);
+		var isReception = Optional.ofNullable(receptionRepository.get())
+				.map(ReceptionMode::getState)
+				.orElse(false);
+
+		return apiRepository.eventsInTimeSpan(startDate, endDate, isReception);
 	}
 
 	@RequestMapping("/item/{id}")

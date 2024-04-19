@@ -18,8 +18,9 @@ public interface ApiRepository extends CrudRepository<Item, Long> {
 	List<Item> upcomingEvents();
 
 	@Query("select e from Item e where e.itemType = 'EVENT' and e.publishDate <= CURRENT_TIMESTAMP and " +
-		"e.eventEndTime > ?1 and e.eventStartTime < ?2 order by e.eventStartTime asc")
-	List<Item> eventsInTimeSpan(LocalDateTime startDate, LocalDateTime endDate);
+			"e.eventEndTime > ?1 and e.eventStartTime < ?2 and (?3 = false or e.sensitive = false) " +
+			"order by e.eventStartTime asc")
+	List<Item> eventsInTimeSpan(LocalDateTime startDate, LocalDateTime endDate, boolean nonSensitiveOnly);
 
 	@Query("select e from Item e where e.itemType = 'EVENT' and e.publishDate <= CURRENT_TIMESTAMP")
 	List<Item> allEvents();
