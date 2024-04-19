@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
+<head>
+    <title>Nyheter & Event - Calypso @ Datasektionen.se</title>
+    <script type="text/javascript"></script>
+    <link rel="stylesheet" href="/css/overrides.css" />
+</head>
+<body>
+
+<div id="main">
+    <header>
+        <div class="header-inner">
+            <div class="row">
+                <div class="header-left col-md-2"></div>
+                <div class="col-md-8">
+                    <h2>Hantera aktivitet perioder</h2>
+                </div>
+                <div class="header-right col-md-2">
+                    <a th:href="@{/admin/activities/periods/new/{id}(id=${activity.id})}" class="primary-action">
+                        Skapa ny
+                    </a>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </header>
+    <div id="content">
+        <div th:if="${param.deleted}" class="alert alert-success alert-sm">
+            <i class="fa fa-fw fa-info-circle"></i>
+            Perioden med ID #<span th:text="${param.deleted}"></span> raderades.
+        </div>
+
+        <div>
+            <h3>
+                <strong>Aktiviteten:</strong>
+                <a th:href="@{/admin/activities/edit/{id}(id=${activity.id})}"
+                    class="primary-action"
+                >
+                    <span th:text="${activity.titleSwedish}"></span>
+                    <small th:text="'(' + ${activity.titleEnglish} + ')'"></small>
+                </a>
+            </h3>
+        </div>
+
+        <div class="alert alert-info alert-sm">
+            <i class="fa fa-fw fa-info-circle"></i>
+            Här kan du hantera perioder under vilka din aktivitet är aktiv.
+        </div>
+
+        <div class="table-responsive">
+            <table width="100%" class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="10%" style="text-align: center">Aktiv nu</th>
+                    <th width="12.5%" title="Inklusive" style="text-align: center">Startdatum</th>
+                    <th width="12.5%" title="Inklusive" style="text-align: center">Slutdatum</th>
+                    <th width="15%">Internt Namn</th>
+                    <th width="15%">Upprepning</th>
+                    <th width="10%" style="text-align: center">Eventstart</th>
+                    <th width="10%" style="text-align: center">Eventslut</th>
+                    <th width="15%">Eventplats</th>
+                </tr>
+                </thead>
+                <tbody th:unless="${#lists.isEmpty(periods)}">
+                <tr th:each="period : ${periods}">
+                    <td style="vertical-align: middle; text-align: center">
+                        <th:block th:switch="${period.isActive(null)}">
+                            <th:block th:case="true">
+                                <i class="far fa-check-circle text-success"></i>
+                            </th:block>
+                            <th:block th:case="false">
+                                <i class="far fa-circle"></i>
+                            </th:block>
+                        </th:block>
+                    </td>
+                    <td style="vertical-align: middle; text-align: center" th:text="${period.startDate}"></td>
+                    <td style="vertical-align: middle; text-align: center" th:text="${period.endDate}"></td>
+                    <td style="vertical-align: middle;">
+                        <a th:href="@{/admin/activities/periods/edit/{id}(id=${period.id})}">
+                            <strong th:text="${period.name}"></strong>
+                        </a>
+                    </td>
+                    <td style="vertical-align: middle;"
+                        th:text="${periodFormatter.format(period.recurrence)}"
+                    ></td>
+                    <td style="vertical-align: middle; text-align: center"
+                        th:text="${period.startTime}"
+                    ></td>
+                    <td style="vertical-align: middle; text-align: center"
+                        th:text="${period.endTime}"
+                    ></td>
+                    <td style="vertical-align: middle;"
+                        th:text="${period.location}"
+                    ></td>
+                </tr>
+                </tbody>
+                <tbody th:if="${#lists.isEmpty(periods)}">
+                <tr>
+                    <td colspan="8">
+                        <div class="text-center">
+                            <br>
+                            <h4>
+                                Ingen period hittades för de givna kriterierna,
+                                <a th:href="@{/admin/activities/periods/new/{id}(id=${activity.id})}">
+                                    skapa ny?
+                                </a>
+                            </h4>
+                            <br>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
