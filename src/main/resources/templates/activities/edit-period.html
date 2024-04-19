@@ -35,6 +35,7 @@
 
             <input type="hidden" name="activityId" th:value="${period.activity.id}" />
             <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{recurrence}" id="recurrence" />
 
             <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
                 <strong>Något blev fel under redigeringen:</strong>
@@ -60,8 +61,97 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="recurrence" class="form-label-block">Upprepning:</label>
-                    <input class="form-control input" required type="text" id="recurrence" th:field="*{recurrence}" />
+                    <label for="recurrence" class="form-label-block">Upprepning (från startdatum):</label>
+
+                    <div class="radio" style="height: 4em">
+                        <input class="form-control"
+                            type="radio"
+                            name="recurrence-type"
+                            value="daily"
+                            id="recurrence-type-daily" />
+                        <label for="recurrence-type-daily">
+                            Varje
+                            <input class="form-control input"
+                                style="width: 5em; display: inline-block; margin-left: 0.5em; margin-right: 0.5em"
+                                type="number"
+                                value="1"
+                                min="1"
+                                id="recurrence-daily"
+                            />
+                            dag(ar)
+                        </label>
+                    </div>
+                    <div class="radio" style="height: 4em">
+                        <input class="form-control"
+                            type="radio"
+                            name="recurrence-type"
+                            value="weekly"
+                            id="recurrence-type-weekly" />
+                        <label for="recurrence-type-weekly">
+                            Varje
+                            <input class="form-control input"
+                                style="width: 5em; display: inline-block; margin-left: 0.5em; margin-right: 0.5em"
+                                type="number"
+                                value="1"
+                                min="1"
+                                id="recurrence-weekly"
+                            />
+                            vecka(or)
+                        </label>
+                    </div>
+                    <div class="radio" style="height: 4em">
+                        <input class="form-control"
+                            type="radio"
+                            name="recurrence-type"
+                            value="monthly"
+                            id="recurrence-type-monthly" />
+                        <label for="recurrence-type-monthly">
+                            Varje
+                            <input class="form-control input"
+                                style="width: 5em; display: inline-block; margin-left: 0.5em; margin-right: 0.5em"
+                                type="number"
+                                value="1"
+                                min="1"
+                                id="recurrence-monthly"
+                            />
+                            månad(er)
+                        </label>
+                    </div>
+                    <div class="radio" style="height: 4em">
+                        <input class="form-control"
+                            type="radio"
+                            name="recurrence-type"
+                            value="yearly"
+                            id="recurrence-type-yearly" />
+                        <label for="recurrence-type-yearly">
+                            Varje
+                            <input class="form-control input"
+                                style="width: 5em; display: inline-block; margin-left: 0.5em; margin-right: 0.5em"
+                                type="number"
+                                value="1"
+                                min="1"
+                                id="recurrence-yearly"
+                            />
+                            år
+                        </label>
+                    </div>
+                    <div class="radio" style="height: 4em">
+                        <input class="form-control"
+                            checked
+                            type="radio"
+                            name="recurrence-type"
+                            value="advanced"
+                            id="recurrence-type-advanced" />
+                        <label for="recurrence-type-advanced">
+                            Avancerade (ISO 8601 Duration):
+                            <input class="form-control input"
+                                style="width: 15em; display: inline-block; margin-left: 0.5em"
+                                pattern="P[A-Z0-9]+"
+                                th:value="*{recurrence}"
+                                id="recurrence-advanced"
+                            />
+                        </label>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -122,6 +212,24 @@ for (el of document.querySelectorAll("[data-post-to]")) {
         }
     });
 }
+</script>
+
+<script>
+const recurrence = document.getElementById("recurrence"); // hidden
+
+function updateRecurrence() {
+    const selType = document.querySelector('input[name="recurrence-type"]:checked').value;
+    const selValue = document.getElementById(`recurrence-${selType}`).value;
+    if (selType === "advanced") {
+        recurrence.value = selValue;
+    } else {
+        const tag = selType[0].toUpperCase(); // use a data- attribute if this becomes unmanageable
+        recurrence.value = "P" + selValue + tag;
+    }
+}
+
+document.querySelectorAll('[id^="recurrence-"]')
+    .forEach(el => el.addEventListener("change", updateRecurrence));
 </script>
 
 </body>
