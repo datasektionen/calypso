@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
+
+import se.datasektionen.calypso.acl.SecurityTarget;
 import se.datasektionen.calypso.models.constraints.Event;
 import se.datasektionen.calypso.models.enums.ItemType;
 
@@ -26,7 +28,7 @@ import java.time.LocalDateTime;
 @Event
 @EntityListeners(ItemListener.class)
 @Data
-public class Item {
+public class Item implements SecurityTarget {
 
 	@Transient
 	@JsonIgnore
