@@ -9,8 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
+import se.datasektionen.calypso.models.entities.Activity;
 import se.datasektionen.calypso.models.entities.Item;
+import se.datasektionen.calypso.models.entities.ReceptionMode;
 import se.datasektionen.calypso.models.enums.ItemType;
+import se.datasektionen.calypso.models.repositories.ActivityRepository;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
 import se.datasektionen.calypso.models.repositories.ReceptionRepository;
 
@@ -31,6 +34,7 @@ public class ApiController {
 	private static final int MAX_TIME_SPAN_DAYS = 14;
 	private final ApiRepository apiRepository;
 	private final ReceptionRepository receptionRepository;
+	private final ActivityRepository activityRepository;
 
 	@RequestMapping("/list")
 	public Page<Item> items(@RequestParam(name = "itemType", required = false) String itemType,
@@ -92,6 +96,20 @@ public class ApiController {
 			} else return item.get();
 		}
 		throw new ResourceNotFoundException();
+	}
+
+	@GetMapping("/activities")
+	public Page<Activity> listActivities(@RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+			@RequestParam(name = "sort", defaultValue = "DESC") Direction sort,
+			@RequestParam(name = "page", defaultValue = "0") int page) {
+		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sort, sortBy));
+
+		// Reception mode is on, filter sensitive events
+		if (Optional.ofNullable(receptionRepository.get()).map(ReceptionMode::getState).orElse(false)) {
+			return activityRepository.findBySensitiveFalse(pageable);
+		} else {
+			return activityRepository.findAll(pageable);
+		}
 	}
 
 }

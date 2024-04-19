@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
+<head>
+    <title>Nyheter & Event - Calypso @ Datasektionen.se</title>
+    <script type="text/javascript"></script>
+    <link rel="stylesheet" href="/css/overrides.css" />
+</head>
+<body>
+
+<div id="main">
+    <header>
+        <div class="header-inner">
+            <div class="row">
+                <div class="header-left col-md-2"></div>
+                <div class="col-md-8">
+                    <h2>Redigera aktiviteter</h2>
+                </div>
+                <div class="header-right col-md-2">
+                    <a href="/admin/activities/new" class="primary-action">Skapa ny</a>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </header>
+    <div id="content">
+        <div sec:authorize="!hasAuthority('editor')" class="alert alert-muted alert-sm">
+            <i class="fa fa-fw fa-info-circle"></i>
+            Eftersom du saknar redaktörsrättigheter kan du endast se och redigera dina egna aktiviteter.
+        </div>
+
+        <div th:if="${param.deleted}" class="alert alert-success alert-sm">
+            <i class="fa fa-fw fa-info-circle"></i>
+            Aktiviteten med ID #<span th:text="${param.deleted}"></span> raderades.
+        </div>
+
+        <div th:if="${receptionMode}">
+            <div class="alert alert-info">Mottagningsläget är för närvarande påslaget. Aktiviteter markerade som känsliga kommer inte exponeras av APIet eller synas på hemsidan.</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 text-muted" style="padding-top: 5px;">
+                <small th:text="${'Totalt ' + activities.totalElements + ' objekt du kan redigera.'}"></small>
+            </div>
+            <div class="col-md-2 text-muted" style="padding-top: 5px; padding-bottom: 10px; text-align: right;">
+                <div sec:authorize="hasAuthority('editor')">
+                    <form method="get" name="authorSelector" style="display: flex; align-items: center; gap: 10px">
+                        <label for="author" class="form-label-block">Författare:</label>
+                        <input class="form-control input" placeholder="<kthid>" name="author" th:value="${author}" style="min-width: 7em;" />
+                        <button class="button secondary-action" type="submit" style="padding-top: 5px; padding-bottom: 5px">
+                            Filtrera
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table width="100%" class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="10%" title="Har någon period som är aktiv i dag" style="text-align: center">
+                        Aktiv nu
+                    </th>
+                    <th width="40%">Titel</th>
+                    <th width="20%">Författare</th>
+                    <th width="10%"
+                        title="Mörklagda aktiviter kommer mörkläggas (inte visas) när mottagningsläge är påslaget."
+                        style="text-align: center"
+                    >
+                        Mörklägg
+                    </th>
+                    <th width="20%" style="text-align: center">Perioder</th>
+                </tr>
+                </thead>
+                <tbody th:unless="${#lists.isEmpty(activities)}">
+                <tr th:each="activity : ${activities}">
+                    <td style="vertical-align: middle; text-align: center">
+                        <th:block th:switch="${activity.isActive()}">
+                            <th:block th:case="true">
+                                <i class="far fa-check-circle text-success"></i>
+                            </th:block>
+                            <th:block th:case="false">
+                                <i class="far fa-circle"></i>
+                            </th:block>
+                        </th:block>
+                    </td>
+                    <td>
+                        <a th:href="@{/admin/activities/edit/{id}(id=${activity.id})}">
+                            <strong th:text="${activity.titleSwedish}"></strong>
+                            <br />
+                            <small th:text="${activity.titleEnglish}"></small>
+                        </a>
+                    </td>
+                    <td style="vertical-align: middle;" th:text="${activity.authorDisplay}"></td>
+                    <td style="vertical-align: middle; text-align: center">
+                        <th:block th:switch="${activity.sensitive}">
+                            <th:block th:case="true">
+                                Ja
+                            </th:block>
+                            <th:block th:case="false">
+                                Nej
+                            </th:block>
+                        </th:block>
+                    </td>
+                    <td style="vertical-align: middle; text-align: center">
+                        <th:block th:switch="${activity.periods.size()}">
+                            <strong th:case="0">Inga perioder</strong>
+                            <strong th:case="1">1 period</strong>
+                            <strong th:case="*" th:text="${activity.periods.size + ' perioder'}"></strong>
+                        </th:block>
+                        <br />
+                        <a th:href="@{/admin/activities/periods/list/{id}(id=${activity.id})}">
+                            (Hantera)
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+                <tbody th:if="${activities.getTotalElements() == 0}">
+                <tr>
+                    <td colspan="5">
+                        <div class="text-center">
+                            <br>
+                            <h4>Ingen aktivitet hittades för de givna kriterierna</h4>
+                            <br>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-pagination" th:if="${activities.getTotalElements() > 0}">
+            <ul class="pagination">
+                <li th:class="${activities.number eq 0} ? 'disabled' : ''">
+                    <a th:unless="${page == 0}" th:href="@{${'/admin/activities/list'}(page=${activities.number-1},author=${author})}">&laquo;</a>
+                    <a th:if="${page == 0}" class="disabled" href="javascript:void(0);">&laquo;</a>
+                </li>
+
+                <li th:each="pageNo : ${#numbers.sequence(0, activities.totalPages - 1)}" th:class="${activities.number == pageNo} ? 'active' : ''">
+                    <a th:if="${activities.number == pageNo}" href="javascript:void(0);" class="disabled">
+                        <span th:text="${pageNo + 1}"></span>
+                    </a>
+                    <a th:unless="${activities.number == pageNo}" th:href="@{${'/admin/activities/list'}(page=${pageNo},author=${author})}">
+                        <span th:text="${pageNo + 1}"></span>
+                    </a>
+                </li>
+                <li th:class="${activities.number + 1 ge activities.totalPages} ? 'disabled' : ''">
+                    <a th:unless="${activities.isLast()}" th:href="@{${'/admin/activities/list'}(page=${page+1},author=${author})}">&raquo;</a>
+                    <a th:if="${activities.isLast()}" href="javascript:void(0);">&raquo;</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

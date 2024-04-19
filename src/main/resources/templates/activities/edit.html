@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
+<head>
+    <title>Redigera aktivitet</title>
+    <script type="text/javascript"></script>
+    <link rel="stylesheet" href="/css/overrides.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" />
+    <script src="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script type="text/javascript">
+        var content_en = new SimpleMDE({
+            element: document.getElementById("content_en"),
+            autosave: {
+                uniqueId: "e45187795f3b134414e55776_en"
+            },
+            forceSync: true,
+            hideIcons: ['image', 'side-by-side', 'fullscreen', 'guide'],
+            parsingConfig: {
+                allowAtxHeaderWithoutSpace: true
+            },
+            spellChecker: false
+        });
+        var content_sv = new SimpleMDE({
+            element: document.getElementById("content_sv"),
+            autosave: {
+                uniqueId: "e45187795f3b134414e55776_sv"
+            },
+            forceSync: true,
+            hideIcons: ['image', 'side-by-side', 'fullscreen', 'guide'],
+            parsingConfig: {
+                allowAtxHeaderWithoutSpace: true
+            },
+            spellChecker: false
+        });
+    </script>
+</head>
+<body>
+
+<div id="main">
+    <form action="#" th:action="@{/admin/activities/edit}" th:object="${activity}" method="POST" enctype="multipart/form-data">
+        <header>
+            <div class="header-inner">
+                <div class="row">
+                    <div class="header-left col-md-2"></div>
+                    <div class="col-md-8">
+                        <h2>Redigera aktivitet</h2>
+                    </div>
+                    <div class="header-right col-md-2">
+                        <a href="/admin/activities/list" class="primary-action">
+                            Tillbaka
+                        </a>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </header>
+        <div id="content">
+            <div th:if="${param.saved}" class="alert alert-success alert-sm">
+                <i class="fa fa-fw fa-info-circle"></i>
+                Aktiviteten har sparats med framgång!
+            </div>
+
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{updated}" />
+            <input type="hidden" th:field="*{author}" />
+            <input type="hidden" th:field="*{authorDisplay}" />
+
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                <strong>Något blev fel under redigeringen:</strong>
+                <ul>
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="col-xs-12">
+                        <input type="text" th:field="*{titleSwedish}" class="ds-primary-input" placeholder="Titel (svenska)"/>
+                        <input type="text" th:field="*{titleEnglish}" class="ds-secondary-input" placeholder="Titel (engelska)" />
+                    </div>
+                    <div class="clear"></div>
+
+                    <div class="col-md-6">
+                        <div class="form-label-block" style="padding-bottom: 5px;">Innehåll (svenska):</div>
+                        <textarea th:field="*{contentSwedish}" title="Innehåll (svenska)" id="content_sv"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-label-block" style="padding-bottom: 5px;">Innehåll (engelska):</div>
+                        <textarea th:field="*{contentEnglish}" title="Innehåll (engelska)" id="content_en"></textarea>
+                    </div>
+
+                    <div class="col-xs-12" style="height: 50px;"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="sidebar toolbox" id="sidebar">
+                        <h3 style="margin-top: 0;">Metadata</h3>
+                        <div class="col-xs-12">
+                            <div class="form-group row">
+                                <div class="form-label-inline col-xs-4" style="padding-right: 0px;">Mörklägg: &nbsp;</div>
+                                <div class="col-xs-8" style="padding-left: 10px;">
+                                   <span class="checkbox">
+                                        <input type="checkbox" name="sensitive" value="true" th:checked="${activity.sensitive}" id="sensitive" />
+                                        <label for="sensitive" class="form-label-narrow">Dölj automatiskt under mottagningen</label>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <div class="footer-toolbar" id="footerButtons">
+                <div class="footer-toolbar-inner row">
+                    <div class="footer-toolbar-info col-md-8">
+                        <strong>Publicerat innehåll uppdateras på siten direkt när du trycker på spara.</strong>
+                        <span th:if="${activity.id != null}" th:inline="text">
+                            Senaste version sparad [[${activity.updated.format(formatter)}]]
+                        </span>
+                        <span th:if="${activity.id == null}">
+                            Aktiviteten har inte ännu sparats i systemet.
+                        </span>
+                    </div>
+                    <div class="footer-toolbar-action-buttons col-md-4 text-right">
+                        <div id="publish_activity">
+                            <button
+                                th:if="${activity.id != null}"
+                                sec:authorize="hasAuthority('editor')"
+                                th:data-post-to="@{/admin/activities/delete/{id}(id=${activity.id})}"
+                                data-confirm="Är du säker på att du vill ta bort aktiviteten?"
+                                class="button secondary-action"
+                                type="button"
+                            >
+                                Radera
+                            </button>
+
+                            <input class="button primary-action" type="submit" name="save" th:value="${activity.id == null ? 'Skapa' : 'Uppdatera'}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<script>
+for (el of document.querySelectorAll("[data-post-to]")) {
+    el.addEventListener("click", (event) => {
+        if (el.dataset.confirm === undefined || confirm(el.dataset.confirm)) {
+            const form = document.createElement("form");
+            form.method = "post";
+            form.action = el.dataset.postTo;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+</script>
+
+</body>
+</html>
