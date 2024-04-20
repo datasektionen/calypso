@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +40,7 @@ public class ListController {
 		var type = ItemType.valueOfIgnoreCase(itemType);
 		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.valueOf(sort), sortBy));
 		var user = (DAuthUserDetails) auth.getPrincipal();
-		var editor = user.getAuthorities().contains(new SimpleGrantedAuthority("editor"));
+		var editor = user.isEditor();
 		Page<Item> items;
 
 

@@ -2,7 +2,6 @@ package se.datasektionen.calypso.acl;
 
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import se.datasektionen.calypso.auth.DAuthUserDetails;
 
 import java.io.Serializable;
@@ -20,10 +19,8 @@ public class CalypsoPermissionsEvaluator implements PermissionEvaluator {
 		}
 
 		if (maybeTarget instanceof SecurityTarget target) {
-			var editor = user.getAuthorities().contains(new SimpleGrantedAuthority("editor"));
-
 			// Editors always have access
-			if (editor)
+			if (user.isEditor())
 				return true;
 
 			return user.getUser().equals(target.getAuthor());
