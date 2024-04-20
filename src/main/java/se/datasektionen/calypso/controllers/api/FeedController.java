@@ -20,20 +20,20 @@ public class FeedController {
 	@RequestMapping(produces = "text/calendar", method = RequestMethod.GET, value = "/ical")
 	@ResponseBody
 	public String eventFeedSwedish() {
-		return icalFeed.renderIcsFeedSwedish();
+		return icalFeed.renderIcsFeed(false);
 	}
 
 	@RequestMapping(produces = "text/calendar", method = RequestMethod.GET, value = "/ical_en")
 	@ResponseBody
 	public String eventFeed() {
-		return icalFeed.renderIcsFeedEnglish();
+		return icalFeed.renderIcsFeed(true);
 	}
 
 	@RequestMapping(produces = "application/rss+xml", method = RequestMethod.GET, value = "/rss")
 	public RssView rssFeedSwedish() {
 		return rssFeeds.swedishFeed();
 	}
-    
+
 	@RequestMapping(produces = "application/rss+xml", method = RequestMethod.GET, value = "/rss_en")
 	public RssView rssFeedEnglish() {
 		return rssFeeds.englishFeed();
