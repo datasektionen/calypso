@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -73,8 +72,7 @@ public class ActivityController {
         }
 
         var user = (DAuthUserDetails) auth.getPrincipal();
-        var editor = user.getAuthorities().contains(new SimpleGrantedAuthority("editor"));
-        if (!editor) {
+        if (!user.isEditor()) {
             // prevent spoofing
             activity.setAuthor(user.getUser());
             activity.setAuthorDisplay(user.getName());
@@ -102,8 +100,7 @@ public class ActivityController {
         var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sort, sortBy));
 
         var user = (DAuthUserDetails) auth.getPrincipal();
-        var editor = user.getAuthorities().contains(new SimpleGrantedAuthority("editor"));
-        if (!editor) {
+        if (!user.isEditor()) {
             author = user.getUser();
         }
 

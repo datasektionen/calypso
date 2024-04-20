@@ -3,6 +3,7 @@ package se.datasektionen.calypso.auth;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -11,6 +12,8 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class DAuthUserDetails implements UserDetails {
+	private static final GrantedAuthority EDITOR_AUTH = new SimpleGrantedAuthority("editor");
+
 	private String user;
 	private String token;
 	private String firstName;
@@ -51,6 +54,10 @@ public class DAuthUserDetails implements UserDetails {
 
 	public String getName() {
 		return this.firstName + " " + this.lastName;
+	}
+
+	public boolean isEditor() {
+		return this.getAuthorities().contains(EDITOR_AUTH);
 	}
 
 }
