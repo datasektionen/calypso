@@ -3,16 +3,24 @@ package se.datasektionen.calypso.feeds;
 import biweekly.Biweekly;
 import biweekly.ICalendar;
 import biweekly.component.VEvent;
+import biweekly.io.TimezoneAssignment;
 import biweekly.property.Color;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import se.datasektionen.calypso.models.entities.ActivityPeriod;
 import se.datasektionen.calypso.models.entities.Item;
+import se.datasektionen.calypso.models.entities.ReceptionMode;
+import se.datasektionen.calypso.models.repositories.ActivityPeriodRepository;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
 import se.datasektionen.calypso.models.repositories.ReceptionRepository;
 
+import static se.datasektionen.calypso.feeds.DateUtils.applyRecurrence;
 import static se.datasektionen.calypso.feeds.DateUtils.ldtToDate;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -25,73 +33,78 @@ public class IcalFeed {
 
 	private final ApiRepository apiRepository;
 	private final ReceptionRepository receptionRepository;
+	private final ActivityPeriodRepository activityPeriodRepository;
 
-	public String renderIcsFeedSwedish() {
+	public String renderIcsFeed(boolean english) {
 		var ical = new ICalendar();
 		ical.setName(CALENDAR_NAME);
 		ical.setColor(CALENDAR_COLOR);
-		ical.setProductId(CALENDAR_SV_PRODUCT_ID);
+		ical.setProductId(english ? CALENDAR_EN_PRODUCT_ID : CALENDAR_SV_PRODUCT_ID);
 
-		var isReception = receptionRepository.get();
+		var tz = TimeZone.getTimeZone("Europe/Stockholm");
+		var assignment = new TimezoneAssignment(tz, "Europe/Stockholm");
+		ical.getTimezoneInfo().setDefaultTimezone(assignment);
 
-		apiRepository
-				.allEvents()
+		var now = LocalDateTime.now();
+		var isReception = Optional.ofNullable(receptionRepository.get())
+				.map(ReceptionMode::getState)
+				.orElse(false);
+
+		apiRepository.eventsInTimeSpan(now.minusMonths(2), now, isReception)
 				.stream()
-				.filter(e ->
-					e.getEventStartTime() != null && e.getEventEndTime() != null &&
-					LocalDateTime.now().minusMonths(2)
-					.compareTo(e.getEventStartTime()) < 0 &&
-					!(isReception.getState() && e.isSensitive())
-				)
-				.map(IcalFeed::toEventSwedish)
+				.map(e -> toEvent(e, english))
+				.forEach(ical::addEvent);
+
+		activityPeriodRepository.findAllAfter(now.toLocalDate(), isReception)
+				.stream()
+				.map(p -> toEvent(p, english))
 				.forEach(ical::addEvent);
 
 		return Biweekly.write(ical).go();
 	}
 
-	public String renderIcsFeedEnglish() {
-		var ical = new ICalendar();
-		ical.setName(CALENDAR_NAME);
-		ical.setColor(CALENDAR_COLOR);
-		ical.setProductId(CALENDAR_EN_PRODUCT_ID);
-
-		var isReception = receptionRepository.get();
-
-		apiRepository
-				.allEvents()
-				.stream()
-				.filter(e ->
-					e.getEventStartTime() != null && e.getEventEndTime() != null &&
-					LocalDateTime.now().minusMonths(2)
-					.compareTo(e.getEventStartTime()) < 0 &&
-					!(isReception.getState() && e.isSensitive())
-				)
-				.map(IcalFeed::toEventEnglish)
-				.forEach(ical::addEvent);
-
-		return Biweekly.write(ical).go();
-	}
-
-
-	private static VEvent toEventSwedish(Item e) {
+	private static VEvent toEvent(Item e, boolean english) {
 		var event = new VEvent();
-		event.setUid(String.valueOf(e.getId()));
-		event.setSummary(e.getTitleSwedish());
-		event.setDescription(e.getContentSwedish());
+		event.setUid(e.getId().toString());
+		event.setLocation(e.getEventLocation());
 		event.setDateStart(ldtToDate(e.getEventStartTime()));
 		event.setDateEnd(ldtToDate(e.getEventEndTime()));
-		event.setLocation(e.getEventLocation());
+
+		if (english) {
+			event.setSummary(e.getTitleEnglish());
+			event.setDescription(e.getContentEnglish());
+		} else {
+			event.setSummary(e.getTitleSwedish());
+			event.setDescription(e.getContentSwedish());
+		}
+
 		return event;
 	}
 
-	private static VEvent toEventEnglish(Item e) {
+	private static VEvent toEvent(ActivityPeriod period, boolean english) {
+		var activity = period.getActivity();
+
 		var event = new VEvent();
-		event.setUid(String.valueOf(e.getId()));
-		event.setSummary(e.getTitleEnglish());
-		event.setDescription(e.getContentEnglish());
-		event.setDateStart(ldtToDate(e.getEventStartTime()));
-		event.setDateEnd(ldtToDate(e.getEventEndTime()));
-		event.setLocation(e.getEventLocation());
+		event.setUid("A" + activity.getId().toString() + "P" + period.getId().toString());
+		event.setLocation(period.getLocation());
+		event.setDateStart(ldtToDate(period.getStartDate().atTime(period.getStartTime())));
+		event.setDateEnd(ldtToDate(period.getStartDate().atTime(period.getEndTime())));
+
+		applyRecurrence(
+				event,
+				period.getStartDate(),
+				period.getEndDate(),
+				period.getRecurrence(),
+				period.getStartTime());
+
+		if (english) {
+			event.setSummary(activity.getTitleEnglish());
+			event.setDescription(activity.getContentEnglish());
+		} else {
+			event.setSummary(activity.getTitleSwedish());
+			event.setDescription(activity.getContentSwedish());
+		}
+
 		return event;
 	}
 
