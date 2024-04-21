@@ -16,9 +16,11 @@ public class Darkmode {
 	}
 
 	public boolean getCurrent() {
-		var response = new RestTemplate()
-			.exchange(config.getDarkmodeUrl(), HttpMethod.GET, new HttpEntity<>(null, null), boolean.class)
+		var url = config.getDarkmodeUrl();
+		if (url == "true") return true;
+		if (url == "false") return false;
+		return new RestTemplate()
+			.exchange(url, HttpMethod.GET, new HttpEntity<>(null, null), boolean.class)
 			.getBody();
-		return response;
 	}
 }
