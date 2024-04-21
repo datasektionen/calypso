@@ -21,12 +21,13 @@ for development configuration. All config in this file will override the global
 
 All necessary environment variables are set automatically when running with docker compose.
 
-| Name                         | Description                 | Default                        | Example                                  |
-| ---------------------------- | --------------------------- | ------------------------------ | ---------------------------------------- |
-| LOGIN_KEY                    | Login key                   | ---                            | ---                                      |
-| LOGIN_FRONTEND_URL           | URL from browser to login   | https://login.datasektionen.se | http://localhost:7002/                   |
-| LOGIN_API_URL                | URL from backend to login   | https://login.datasektionen.se | http://login:7002/                       |
-| APPLICATION_URL              | URL where calypso is hosted | ---                            | http://localhost.datasektionen.se:8080   |
-| JDBC_DATABASE_URL            | URL to database             | ---                            | jdbc:postgresql://localhost:5432/calypso |
-| JDBC_DATABASE_USERNAME       | Database username           | ---                            | user                                     |
-| JDBC_DATABASE_PASSWORD       | Database password           | ---                            | password                                 |
+| Name                         | Description                          | Default                           | Example                                  |
+| ---------------------------- | ------------------------------------ | --------------------------------- | ---------------------------------------- |
+| LOGIN_KEY                    | Login key                            | ---                               | ---                                      |
+| LOGIN_FRONTEND_URL           | URL from browser to login            | https://login.datasektionen.se    | http://localhost:7002/                   |
+| LOGIN_API_URL                | URL from backend to login            | https://login.datasektionen.se    | http://login:7002/                       |
+| APPLICATION_URL              | URL where calypso is hosted          | ---                               | http://localhost.datasektionen.se:8080   |
+| JDBC_DATABASE_URL            | URL to database                      | ---                               | jdbc:postgresql://localhost:5432/calypso |
+| JDBC_DATABASE_USERNAME       | Database username                    | ---                               | user                                     |
+| JDBC_DATABASE_PASSWORD       | Database password                    | ---                               | password                                 |
+| DARKMODE_URL                 | URL to darkmode or `true` or `false` | https://darkmode.datasektionen.se | http://localhost:2000                    |
