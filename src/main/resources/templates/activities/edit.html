@@ -58,7 +58,7 @@
         <div id="content">
             <div th:if="${param.saved}" class="alert alert-success alert-sm">
                 <i class="fa fa-fw fa-info-circle"></i>
-                Aktiviteten har sparats!
+                Aktiviteten har sparats! <a th:href="@{/admin/activities/periods/list/{id}(id=${activity.id})}">Hantera perioder</a>
             </div>
 
             <input type="hidden" th:field="*{id}" />
