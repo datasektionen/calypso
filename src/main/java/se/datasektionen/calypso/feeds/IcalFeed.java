@@ -50,12 +50,12 @@ public class IcalFeed {
 				.map(ReceptionMode::getState)
 				.orElse(false);
 
-		apiRepository.eventsInTimeSpan(now.minusMonths(2), now, isReception)
+		apiRepository.eventsInTimeSpan(now.minusMonths(2), now.plusYears(2), isReception)
 				.stream()
 				.map(e -> toEvent(e, english))
 				.forEach(ical::addEvent);
 
-		activityPeriodRepository.findAllAfter(now.toLocalDate(), isReception)
+		activityPeriodRepository.findAllAfter(now.toLocalDate().minusMonths(2), isReception)
 				.stream()
 				.map(p -> toEvent(p, english))
 				.forEach(ical::addEvent);
