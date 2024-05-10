@@ -11,7 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Activity;
 import se.datasektionen.calypso.models.entities.Item;
-import se.datasektionen.calypso.models.entities.ReceptionMode;
 import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ActivityRepository;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
@@ -100,7 +99,7 @@ public class ApiController {
 		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sort, sortBy));
 
 		// Reception mode is on, filter sensitive events
-		if (Optional.ofNullable(receptionRepository.get()).map(ReceptionMode::getState).orElse(false)) {
+		if (darkmode.getCurrent()) {
 			return activityRepository.findBySensitiveFalse(pageable);
 		} else {
 			return activityRepository.findAll(pageable);
