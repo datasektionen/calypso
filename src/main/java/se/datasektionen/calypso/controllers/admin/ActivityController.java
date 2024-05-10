@@ -23,9 +23,8 @@ import lombok.RequiredArgsConstructor;
 import se.datasektionen.calypso.auth.DAuthUserDetails;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Activity;
-import se.datasektionen.calypso.models.entities.ReceptionMode;
 import se.datasektionen.calypso.models.repositories.ActivityRepository;
-import se.datasektionen.calypso.models.repositories.ReceptionRepository;
+import se.datasektionen.calypso.Darkmode;
 
 @Controller
 @PreAuthorize("hasAuthority('post')")
@@ -36,7 +35,7 @@ public class ActivityController {
     private static final int PAGE_SIZE = 50;
 
     private final ActivityRepository activityRepository;
-    private final ReceptionRepository receptionRepository;
+    private final Darkmode darkmode;
     private final DateTimeFormatter formatter;
 
     private String showEditForm(Activity activity, Model model) {
@@ -111,15 +110,11 @@ public class ActivityController {
             activities = activityRepository.findAllByAuthor(author, pageable);
         }
 
-        boolean receptionMode = Optional.ofNullable(receptionRepository.get())
-                .map(ReceptionMode::getState)
-                .orElse(false);
-
         // Populate model
         model.addAttribute("page", page);
         model.addAttribute("activities", activities);
         model.addAttribute("author", author);
-        model.addAttribute("receptionMode", receptionMode);
+        model.addAttribute("receptionMode", darkmode.getCurrent());
 
         return "activities/list";
     }
