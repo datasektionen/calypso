@@ -17,8 +17,8 @@ public class Darkmode {
 
 	public boolean getCurrent() {
 		var url = config.getDarkmodeUrl();
-		if (url == "true") return true;
-		if (url == "false") return false;
+		if ("true".equals(url)) return true;
+		if ("false".equals(url)) return false;
 		return new RestTemplate()
 			.exchange(url, HttpMethod.GET, new HttpEntity<>(null, null), boolean.class)
 			.getBody();
