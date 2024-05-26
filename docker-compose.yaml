@@ -15,8 +15,7 @@ services:
       LOGIN_API_URL: http://login:7002/
       LOGIN_KEY: asdf
       DARKMODE_URL: false
-    ports:
-      - "3000:8080"
+      PORT: 3000
   login:
     image: ghcr.io/datasektionen/nyckeln-under-dorrmattan
     ports:
