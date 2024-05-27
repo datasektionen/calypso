@@ -1,7 +1,7 @@
 job "calypso" {
   type = "service"
 
-  group "bawang" {
+  group "calypso" {
     network {
       port "http" { }
     }
