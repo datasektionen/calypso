@@ -11,10 +11,9 @@ job "calypso" {
       port     = "http"
       provider = "nomad"
       tags = [
-        "traefik-external.enable=true",
-        "traefik-external.http.routers.calypso.rule=Host(`calypso.datasektionen.se`)",
-        "traefik-external.http.routers.calypso.entrypoints=websecure",
-        "traefik-external.http.routers.calypso.tls.certresolver=default",
+        "traefik.enable=true",
+        "traefik.http.routers.calypso.rule=Host(`calypso.datasektionen.se`)",
+        "traefik.http.routers.calypso.tls.certresolver=default",
 
         "traefik-internal.enable=true",
         "traefik-internal.http.routers.calypso.rule=Host(`calypso.nomad.dsekt.internal`)",
