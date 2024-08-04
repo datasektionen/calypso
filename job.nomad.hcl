@@ -15,8 +15,9 @@ job "calypso" {
         "traefik.http.routers.calypso.rule=Host(`calypso.datasektionen.se`)",
         "traefik.http.routers.calypso.tls.certresolver=default",
 
-        "traefik-internal.enable=true",
-        "traefik-internal.http.routers.calypso.rule=Host(`calypso.nomad.dsekt.internal`)",
+        "traefik.enable=true",
+        "traefik.http.routers.calypso-internal.rule=Host(`calypso.nomad.dsekt.internal`)",
+        "traefik.http.routers.calypso-internal.entrypoints=web-internal",
       ]
     }
 
