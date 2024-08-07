@@ -1,7 +1,6 @@
 package se.datasektionen.calypso.controllers.admin;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 import javax.validation.Valid;
 

@@ -40,14 +40,14 @@ public class RssFeeds {
 		return fetchAndConvertItems(Item::getTitleSwedish,
 				Item::getAuthorDisplay,
 				Item::getContentSwedishProcessed,
-				i -> RssConstants.Swedish.LINK_BASE_URL + i.getId());
+				i -> RssConstants.Swedish.LINKER.apply(i.getId()));
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertEnglishItems() {
 		return fetchAndConvertItems(Item::getTitleEnglish,
 				Item::getAuthorDisplay,
 				Item::getContentEnglishProcessed,
-				i -> RssConstants.English.LINK_BASE_URL + i.getId());
+				i -> RssConstants.English.LINKER.apply(i.getId()));
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertItems(Function<Item, String> titleMapper,
