@@ -18,7 +18,6 @@ import static se.datasektionen.calypso.feeds.DateUtils.applyRecurrence;
 import static se.datasektionen.calypso.feeds.DateUtils.ldtToDate;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.TimeZone;
 
 @Service
