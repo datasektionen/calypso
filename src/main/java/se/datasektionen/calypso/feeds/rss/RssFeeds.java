@@ -22,49 +22,54 @@ public class RssFeeds {
 	private final Darkmode darkmode;
 	private final Config config;
 
-	public RssView swedishFeed() {
-		return new RssView(fetchAndConvertSwedishItems(),
+	public RssView swedishFeed(boolean important) {
+		return new RssView(fetchAndConvertSwedishItems(important),
 				config.getBaseUrl() + RssConstants.Swedish.FEED_URL,
 				RssConstants.Swedish.TITLE,
 				RssConstants.Swedish.DESCRIPTION);
 	}
 
-	public RssView englishFeed() {
-		return new RssView(fetchAndConvertEnglishItems(),
+	public RssView englishFeed(boolean important) {
+		return new RssView(fetchAndConvertEnglishItems(important),
 				config.getBaseUrl() + RssConstants.English.FEED_URL,
 				RssConstants.English.TITLE,
 				RssConstants.English.DESCRIPTION);
 	}
 
-	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertSwedishItems() {
-		return fetchAndConvertItems(Item::getTitleSwedish,
+	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertSwedishItems(boolean important) {
+		return fetchAndConvertItems(important,
+				Item::getTitleSwedish,
 				Item::getAuthorDisplay,
 				Item::getContentSwedishProcessed,
 				i -> RssConstants.Swedish.LINKER.apply(i.getId()));
 	}
 
-	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertEnglishItems() {
-		return fetchAndConvertItems(Item::getTitleEnglish,
+	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertEnglishItems(boolean important) {
+		return fetchAndConvertItems(important,
+				Item::getTitleEnglish,
 				Item::getAuthorDisplay,
 				Item::getContentEnglishProcessed,
 				i -> RssConstants.English.LINKER.apply(i.getId()));
 	}
 
-	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertItems(Function<Item, String> titleMapper,
+	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertItems(boolean important,
+																		Function<Item, String> titleMapper,
 																		Function<Item, String> authorMapper,
 																		Function<Item, String> contentMapper,
 																		Function<Item, String> linkMapper) {
-
-		Stream<Item> sensitive = apiRepository
-								.findAllPublished(PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "publishDate")))
-								.getContent()
-								.stream()
-								.filter(i -> !i.isSensitive());
-		Stream<Item> all = apiRepository
+		Stream<Item> items = apiRepository
 							.findAllPublished(PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "publishDate")))
 							.getContent()
 							.stream();
-		return (darkmode.getCurrent() ? sensitive : all)
+		
+		if (darkmode.getCurrent()) {
+			items = items.filter(i -> !i.isSensitive());
+		}
+		if (important) {
+			items = items.filter(Item::isSticky);
+		}
+		
+		return items
 				.map(i -> RssConverter.toRssItem(i, titleMapper, authorMapper, contentMapper, linkMapper))
 				.collect(Collectors.toList());
 	}

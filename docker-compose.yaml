@@ -6,6 +6,8 @@ services:
 
   web:
     build: .
+    ports:
+      - 3000:3000
     environment:
       JDBC_DATABASE_URL: "jdbc:postgresql://db:5432/postgres"
       JDBC_DATABASE_USERNAME: postgres
