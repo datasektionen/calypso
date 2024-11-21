@@ -58,17 +58,13 @@ public class RssFeeds {
 																		Function<Item, String> contentMapper,
 																		Function<Item, String> linkMapper) {
 		Stream<Item> items = apiRepository
-							.findAllPublished(PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "publishDate")))
-							.getContent()
-							.stream();
-		
-		if (darkmode.getCurrent()) {
-			items = items.filter(i -> !i.isSensitive());
-		}
-		if (important) {
-			items = items.filter(Item::isSticky);
-		}
-		
+				.findAllPublishedWithFilters(
+						darkmode.getCurrent(),
+						important,
+						PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "publishDate")))
+				.getContent()
+				.stream();
+
 		return items
 				.map(i -> RssConverter.toRssItem(i, titleMapper, authorMapper, contentMapper, linkMapper))
 				.collect(Collectors.toList());

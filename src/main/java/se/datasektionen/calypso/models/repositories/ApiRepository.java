@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 
@@ -36,6 +38,17 @@ public interface ApiRepository extends CrudRepository<Item, Long> {
 
 	@Query("select i from Item i where i.publishDate <= CURRENT_TIMESTAMP and i.sensitive = false")
 	Page<Item> findAllPublishedNonSensitive(Pageable pageable);
+
+	@Query("""
+			   SELECT i FROM Item i
+			   WHERE i.publishDate <= CURRENT_TIMESTAMP
+			     AND (:darkmode = false OR i.sensitive = false)
+			     AND (:important = false OR i.sticky = true)
+			""")
+	Page<Item> findAllPublishedWithFilters(
+			@Param("darkmode") boolean darkmode,
+			@Param("important") boolean important,
+			Pageable pageable);
 
 	@Override
 	@Query("select i from Item i where i.publishDate <= CURRENT_TIMESTAMP and i.id = ?1")
