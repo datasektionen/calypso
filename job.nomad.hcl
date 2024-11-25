@@ -37,8 +37,8 @@ JDBC_DATABASE_PASSWORD={{ .database_password }}
 {{ end }}
 JDBC_DATABASE_URL=jdbc:postgresql://postgres.dsekt.internal:5432/calypso
 JDBC_DATABASE_USERNAME=calypso
-LOGIN_FRONTEND_URL=https://login.datasektionen.se
-LOGIN_API_URL=https://login.datasektionen.se
+LOGIN_FRONTEND_URL=https://logout.datasektionen.se/legacyapi
+LOGIN_API_URL=http://logout.nomad.dsekt.internal/legacyapi
 APPLICATION_URL=https://calypso.datasektionen.se
 DARKMODE_URL=https://darkmode.datasektionen.se
 PORT={{ env "NOMAD_PORT_http" }}
