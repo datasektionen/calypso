@@ -284,7 +284,7 @@
 
             <div class="footer-toolbar" id="footerButtons">
                 <div class="footer-toolbar-inner row">
-                    <div class="footer-toolbar-info col-md-8">
+                    <div class="footer-toolbar-info col-md-6">
                         <span th:if="!${item.publishDate}">
                             <strong>Kom ihåg att spara posten som utkast medan du jobbar.</strong>
                             <span th:unless="${#fields.hasErrors('*')}">
@@ -309,7 +309,7 @@
                             </span>
                         </span>
                     </div>
-                    <div class="footer-toolbar-action-buttons col-md-4 text-right">
+                    <div class="footer-toolbar-action-buttons col-md-6 text-right">
                         <div id="publish_post">
 
                             <th:block th:switch="${item.getPublishStatus().name()}">
@@ -336,6 +336,7 @@
                                     <input class="button primary-action" type="submit" name="save" value="Köa publicering" v-if="publishStatus == 'QUEUED'" />
                                 </span>
                                 <span th:case="PUBLISHED">
+                                    <a th:href="@{https://datasektionen.se/nyheter/{id}(id=${item.id})}" class="button secondary-action">Visa</a>
                                     <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
                                 </span>
                             </th:block>
