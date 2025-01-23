@@ -336,7 +336,7 @@
                                     <input class="button primary-action" type="submit" name="save" value="Köa publicering" v-if="publishStatus == 'QUEUED'" />
                                 </span>
                                 <span th:case="PUBLISHED">
-                                    <a th:href="@{https://datasektionen.se/nyheter/{id}(id=${item.id})}" class="button secondary-action">Visa</a>
+                                    <a th:href="@{https://datasektionen.se/nyheter/{id}(id=${item.id})}" target="_blank" class="button secondary-action">Visa</a>
                                     <input class="button primary-action" type="submit" name="save" value="Uppdatera" />
                                 </span>
                             </th:block>
