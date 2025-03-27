@@ -50,11 +50,13 @@ public class Activity implements SecurityTarget {
 	@Column(nullable = false)
 	@NotBlank
 	@Size(min = 8, message = "Titel (svenska) måste vara minst åtta tecken")
+	@Size(max = 255, message = "Titel (svenska) får vara högst 255 tecken")
 	private String titleSwedish;
 
 	@Column(nullable = false)
 	@NotBlank
 	@Size(min = 8, message = "Titel (engelska) måste vara minst åtta tecken")
+	@Size(max = 255, message = "Titel (engelska) får vara högst 255 tecken")
 	private String titleEnglish;
 
 	@Column(nullable = false)
