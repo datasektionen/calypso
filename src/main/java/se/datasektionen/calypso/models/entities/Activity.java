@@ -76,12 +76,14 @@ public class Activity implements SecurityTarget {
 
 	@Column(nullable = false, length = 10000)
 	@NotBlank
-	@Size(min = 50, max = 9999, message = "Innehåll (svenska) måste vara minst 50 tecken")
+	@Size(min = 50, message = "Innehåll (svenska) måste vara minst 50 tecken")
+	@Size(max = 9999, message = "Innehåll (svenska) får vara högst 9999 tecken")
 	private String contentSwedish;
 
 	@Column(nullable = false, length = 10000)
 	@NotBlank
-	@Size(min = 50, max = 9999, message = "Innehåll (engelska) måste vara minst 50 tecken")
+	@Size(min = 50, message = "Innehåll (engelska) måste vara minst 50 tecken")
+	@Size(max = 9999, message = "Innehåll (engelska) får vara högst 9999 tecken")
 	private String contentEnglish;
 
 	@OneToMany(mappedBy = "activity", cascade = { CascadeType.ALL })
