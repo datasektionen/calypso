@@ -104,7 +104,7 @@ public class Item implements SecurityTarget {
 	private String contentEnglish;
 
 	@Column
-    @Size(max = 255, message = "Eventplats får vara högst 255 tecken")
+	@Size(max = 255, message = "Eventplats får vara högst 255 tecken")
 	private String eventLocation;
 
 	@Column
@@ -114,11 +114,11 @@ public class Item implements SecurityTarget {
 	private LocalDateTime eventEndTime;
 
 	@Column
-    @Size(max = 255, message = "Facebook-URL får vara högst 255 tecken")
+	@Size(max = 255, message = "Facebook-URL får vara högst 255 tecken")
 	private String facebookEvent;
 
 	@Column
-    @Size(max = 255, message = "Google-URL får vara högst 255 tecken")
+	@Size(max = 255, message = "Google-URL får vara högst 255 tecken")
 	private String googleForm;
 
 	@Enumerated(EnumType.STRING)
