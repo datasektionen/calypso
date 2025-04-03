@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       th:replace="layout :: layout(~{::title},~{::link},~{::script},~{::#main})">
 <head>
-    <title>Redigera post</title>
+    <title>Redigera inlägg</title>
     <script type="text/javascript"></script>
     <link rel="stylesheet" href="/css/overrides.css" />
     <link rel="stylesheet" href="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" />
@@ -81,7 +81,7 @@
                 <div class="row">
                     <div class="header-left col-md-2"></div>
                     <div class="col-md-8">
-                        <h2>Redigera post</h2>
+                        <h2>Redigera inlägg</h2>
                     </div>
                     <div class="header-right col-md-2" id="headerButtons">
                         <th:block th:switch="${item.getPublishStatus().name()}">
@@ -206,21 +206,21 @@
                                 <div sec:authorize="hasAuthority('sticky')" class="col-xs-8" style="padding-left: 10px;">
                                     <span th:if="${item.sticky}" class="checkbox">
                                         <input type="checkbox" name="sticky" value="true" checked id="sticky1" />
-                                        <label for="sticky1" class="form-label-narrow">Viktig post</label>
+                                        <label for="sticky1" class="form-label-narrow">Viktigt inlägg</label>
                                     </span>
                                     <span th:unless="${item.sticky}" class="checkbox">
                                         <input type="checkbox" name="sticky" value="true" id="sticky2" />
-                                        <label for="sticky2" class="form-label-narrow">Viktig post</label>
+                                        <label for="sticky2" class="form-label-narrow">Viktigt inlägg</label>
                                     </span>
                                 </div>
                                 <div sec:authorize="!hasAuthority('sticky')" class="col-xs-8" style="padding-left: 10px;">
                                     <span th:if="${item.sticky}" class="checkbox">
                                         <input readonly disabled type="checkbox" name="sticky" value="true" checked id="sticky3" />
-                                        <label for="sticky3" class="form-label-narrow">Viktig post</label>
+                                        <label for="sticky3" class="form-label-narrow">Viktigt inlägg</label>
                                     </span>
                                     <span th:unless="${item.sticky}" class="checkbox">
                                         <input readonly disabled type="checkbox" name="sticky" value="true" id="sticky4" />
-                                        <label for="sticky4" class="form-label-narrow">Viktig post</label>
+                                        <label for="sticky4" class="form-label-narrow">Viktigt inlägg</label>
                                     </span>
                                 </div>
 
@@ -246,12 +246,12 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="content_type" class="form-label-block">Posttyp:</label>
+                                <label for="content_type" class="form-label-block">Inläggstyp:</label>
                                 <div class="form-input-group">
                                     <select class="form-control" id="content_type" th:field="*{itemType}" v-model="contentType">
                                         <option th:each="itemType : ${T(se.datasektionen.calypso.models.enums.ItemType).values()}"
                                                 th:value="${itemType}"
-                                                th:text="${#strings.capitalize(itemType.name().toLowerCase())}">
+                                                th:text="${itemType.name() == 'POST' ? 'Inlägg' : #strings.capitalize(itemType.name().toLowerCase())}">
                                         </option>
                                     </select>
                                 </div>
@@ -286,17 +286,17 @@
                 <div class="footer-toolbar-inner row">
                     <div class="footer-toolbar-info col-md-6">
                         <span th:if="!${item.publishDate}">
-                            <strong>Kom ihåg att spara posten som utkast medan du jobbar.</strong>
+                            <strong>Kom ihåg att spara inlägget som utkast medan du jobbar.</strong>
                             <span th:unless="${#fields.hasErrors('*')}">
                                 <span th:if="${item.id != null}" th:inline="text">
                                     Senaste utkast sparat [[${item.updated.format(formatter)}]]
                                 </span>
                                 <span th:if="${item.id == null}">
-                                    Posten har inte ännu sparats i systemet.
+                                    Inlägget har ännu inte sparats i systemet.
                                 </span>
                             </span>
                             <span th:if="${#fields.hasErrors('*')}">
-                                Rätta till de fel som uppstod under redigeringen för att spara posten.
+                                Rätta till de fel som uppstod under redigeringen för att spara inlägget.
                             </span>
                         </span>
                         <span th:if="${item.publishDate}">
@@ -305,7 +305,7 @@
                                 Senaste version sparad [[${item.updated.format(formatter)}]]
                             </span>
                             <span th:if="${item.id == null}">
-                                Posten har inte ännu sparats i systemet.
+                                Inlägget har ännu inte sparats i systemet.
                             </span>
                         </span>
                     </div>
@@ -316,7 +316,7 @@
                                 <a th:href="@{/admin/delete/{id}(id=${item.id})}"
                                    th:if="${item.id != null}"
                                    sec:authorize="hasAuthority('editor')"
-                                   onclick="return window.confirm('Är du säker på att du vill ta bort posten?');"
+                                   onclick="return window.confirm('Är du säker på att du vill ta bort inlägget?');"
                                    class="button secondary-action">Radera</a>
 
                                 <a th:href="@{/admin/duplicate(id=${item.id})}"
