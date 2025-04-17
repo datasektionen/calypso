@@ -25,7 +25,7 @@ public class RssConverter {
 
 		var imageEnclosure = new Enclosure();
 		imageEnclosure.setType("image/png");
-		imageEnclosure.setUrl("https://wallpapercave.com/wp/wp4033948.jpg"); //meow :3
+		imageEnclosure.setUrl("https://dsekt-assets.s3.amazonaws.com/calypsotest.png"); //meow :3
 
 		var description = new Description();
 		description.setType(Content.HTML);
