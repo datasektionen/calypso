@@ -114,6 +114,9 @@ public class Item implements SecurityTarget {
 	@Column
 	private String googleForm;
 
+	@Column
+	private String imageURL;
+
 	@Enumerated(EnumType.STRING)
 	public ItemType getItemType() {
 		return itemType;
@@ -162,6 +165,7 @@ public class Item implements SecurityTarget {
 		duplicatedItem.contentEnglish = this.contentEnglish;
 		duplicatedItem.itemType = this.itemType;
 		duplicatedItem.sensitive = this.sensitive;
+		duplicatedItem.imageURL = this.imageURL;
 
 		if (duplicatedItem.itemType == ItemType.EVENT) {
 			duplicatedItem.eventLocation = this.eventLocation;

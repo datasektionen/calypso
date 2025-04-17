@@ -86,6 +86,9 @@ public class Activity implements SecurityTarget {
 	@ToString.Exclude
 	private List<ActivityPeriod> periods;
 
+	@Column
+	private String imageURL;
+
 	@JsonGetter("contentSwedish")
 	public String getContentSwedishProcessed() {
 		return RENDERER.render(PARSER.parse(contentSwedish)).replace("\\", "");

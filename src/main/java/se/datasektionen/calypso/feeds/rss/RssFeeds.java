@@ -41,7 +41,8 @@ public class RssFeeds {
 				Item::getTitleSwedish,
 				Item::getAuthorDisplay,
 				Item::getContentSwedishProcessed,
-				i -> RssConstants.Swedish.LINKER.apply(i.getId()));
+				i -> RssConstants.Swedish.LINKER.apply(i.getId()),
+				Item::getImageURL);
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertEnglishItems(boolean important) {
@@ -49,14 +50,16 @@ public class RssFeeds {
 				Item::getTitleEnglish,
 				Item::getAuthorDisplay,
 				Item::getContentEnglishProcessed,
-				i -> RssConstants.English.LINKER.apply(i.getId()));
+				i -> RssConstants.English.LINKER.apply(i.getId()),
+				Item::getImageURL);
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertItems(boolean important,
 																		Function<Item, String> titleMapper,
 																		Function<Item, String> authorMapper,
 																		Function<Item, String> contentMapper,
-																		Function<Item, String> linkMapper) {
+																		Function<Item, String> linkMapper,
+															 			Function<Item, String> imageMapper) {
 		Stream<Item> items = apiRepository
 				.findAllPublishedWithFilters(
 						darkmode.getCurrent(),
@@ -65,8 +68,10 @@ public class RssFeeds {
 				.getContent()
 				.stream();
 
+//skicka bild till rssConverter
+//Skala ner bild, kanske lite komprimering.
 		return items
-				.map(i -> RssConverter.toRssItem(i, titleMapper, authorMapper, contentMapper, linkMapper))
+				.map(i -> RssConverter.toRssItem(i, titleMapper, authorMapper, contentMapper, linkMapper, imageMapper))
 				.collect(Collectors.toList());
 	}
 

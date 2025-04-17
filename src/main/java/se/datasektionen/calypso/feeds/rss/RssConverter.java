@@ -20,12 +20,9 @@ public class RssConverter {
 															 Function<Item, String> titleMapper,
 															 Function<Item, String> authorMapper,
 															 Function<Item, String> contentMapper,
-															 Function<Item, String> linkMapper) {
+															 Function<Item, String> linkMapper,
+															 Function<Item, String> imageMapper) {
 		var rssItem = new com.rometools.rome.feed.rss.Item();
-
-		var imageEnclosure = new Enclosure();
-		imageEnclosure.setType("image/png");
-		imageEnclosure.setUrl("https://dsekt-assets.s3.amazonaws.com/calypsotest.png"); //meow :3
 
 		var description = new Description();
 		description.setType(Content.HTML);
@@ -36,6 +33,12 @@ public class RssConverter {
 		rssItem.setDescription(description);
 		rssItem.setPubDate(ldtToDate(item.getPublishDate()));
 		rssItem.setLink(linkMapper.apply(item));
+
+		var imageEnclosure = new Enclosure();
+		imageEnclosure.setType("image/png");
+		imageEnclosure.setUrl(imageMapper.apply(item));
+		// imageEnclosure.setUrl("https://dsekt-assets.s3.amazonaws.com/calypsotest.png"); //meow :3
+
 		rssItem.setEnclosures(List.of(imageEnclosure));
 		return rssItem;
 	}
