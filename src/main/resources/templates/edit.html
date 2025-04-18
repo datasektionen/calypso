@@ -183,7 +183,14 @@
                                     </div>
 
                                     <div th:if="${#authentication.getPrincipal().getMandates().size() > 0}">
-                                        <select id="publishAs" class="form-select form-control" name="publishAs">
+                                        <select id="publishAs"
+                                                class="form-select form-control"
+                                                name="publishAs"
+                                                th:disabled="${!#authentication.getPrincipal().getMandates().containsKey(item.publishAs) && item.id > 0}">
+                                            <option th:if="${!#authentication.getPrincipal().getMandates().containsKey(item.publishAs)}"
+                                                    th:value="${item.publishAs}"
+                                                    th:text="${item.publishAsDisplay}"
+                                                    th:selected="true"></option>
                                             <optgroup label="Dina positioner">
                                                 <option th:each="mandate : ${#authentication.getPrincipal().getMandates()}"
                                                         th:value="${mandate.getKey()}"
