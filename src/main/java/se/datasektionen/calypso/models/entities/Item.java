@@ -55,11 +55,13 @@ public class Item implements SecurityTarget {
 	@Column(nullable = false)
 	@NotNull
 	@Size(min = 8, message = "Titel (svenska) måste vara minst åtta tecken")
+	@Size(max = 255, message = "Titel (svenska) får vara högst 255 tecken")
 	private String titleSwedish;
 
 	@Column(nullable = false)
 	@NotNull
 	@Size(min = 8, message = "Titel (engelska) måste vara minst åtta tecken")
+	@Size(max = 255, message = "Titel (engelska) får vara högst 255 tecken")
 	private String titleEnglish;
 
 	@Column(nullable = false)
@@ -91,15 +93,18 @@ public class Item implements SecurityTarget {
 
 	@Column(nullable = false, length = 10000)
 	@NotNull
-	@Size(min = 50, max = 9999, message = "Innehåll (svenska) måste vara minst 50 tecken")
+	@Size(min = 50, message = "Innehåll (svenska) måste vara minst 50 tecken")
+	@Size(max = 9999, message = "Innehåll (svenska) får vara högst 9999 tecken")
 	private String contentSwedish;
 
 	@Column(nullable = false, length = 10000)
 	@NotNull
-	@Size(min = 50, max = 9999, message = "Innehåll (engelska) måste vara minst 50 tecken")
+	@Size(min = 50, message = "Innehåll (engelska) måste vara minst 50 tecken")
+	@Size(max = 9999, message = "Innehåll (engelska) får vara högst 9999 tecken")
 	private String contentEnglish;
 
 	@Column
+	@Size(max = 255, message = "Eventplats får vara högst 255 tecken")
 	private String eventLocation;
 
 	@Column
@@ -109,9 +114,11 @@ public class Item implements SecurityTarget {
 	private LocalDateTime eventEndTime;
 
 	@Column
+	@Size(max = 255, message = "Facebook-URL får vara högst 255 tecken")
 	private String facebookEvent;
 
 	@Column
+	@Size(max = 255, message = "Google-URL får vara högst 255 tecken")
 	private String googleForm;
 
 	@Enumerated(EnumType.STRING)
