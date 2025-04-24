@@ -8,8 +8,6 @@ import se.datasektionen.calypso.models.entities.Item;
 
 import java.util.function.Function;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 import static se.datasektionen.calypso.feeds.DateUtils.ldtToDate;
@@ -24,7 +22,7 @@ public class RssConverter {
 															 Function<Item, String> authorMapper,
 															 Function<Item, String> contentMapper,
 															 Function<Item, String> linkMapper,
-															 Function<Item, MultipartFile> imageMapper) {
+															 Function<Item, String> imageKeynameMapper) {
 		var rssItem = new com.rometools.rome.feed.rss.Item();
 
 		var description = new Description();

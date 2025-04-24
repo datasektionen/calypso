@@ -25,7 +25,8 @@ public class EditController {
 
 	private final ItemRepository itemRepository;
 	private final DateTimeFormatter formatter;
-
+	private final S3Service s3Service;
+	
 	@GetMapping("/admin/new")
 	public String newForm(Authentication auth, Model model) {
 		var user = (DAuthUserDetails) auth.getPrincipal();
@@ -82,9 +83,8 @@ public class EditController {
 		model.addAttribute("formatter", formatter);
 
 		System.out.println(image);
-		//need to check if img (PNG, JPEG, WEBP, GIF, Bitmap, .kra)
-		//if (awesome){
-		model.addAttribute("image", image);
+		//if (actually an image){
+			//save to s3 and get 
 		//}
 		// Check for form errors
 		if (bindingResult.hasErrors())

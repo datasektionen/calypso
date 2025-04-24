@@ -44,7 +44,7 @@ public class RssFeeds {
 				Item::getAuthorDisplay,
 				Item::getContentSwedishProcessed,
 				i -> RssConstants.Swedish.LINKER.apply(i.getId()),
-				Item::getImage);
+				Item::getImageUrl);
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertEnglishItems(boolean important) {
@@ -53,7 +53,7 @@ public class RssFeeds {
 				Item::getAuthorDisplay,
 				Item::getContentEnglishProcessed,
 				i -> RssConstants.English.LINKER.apply(i.getId()),
-				Item::getImage);
+				Item::getImageUrl);
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertItems(boolean important,
@@ -61,7 +61,7 @@ public class RssFeeds {
 																		Function<Item, String> authorMapper,
 																		Function<Item, String> contentMapper,
 																		Function<Item, String> linkMapper,
-															 			Function<Item, MultipartFile> imageMapper) {
+															 			Function<Item, String> imageMapper) {
 		Stream<Item> items = apiRepository
 				.findAllPublishedWithFilters(
 						darkmode.getCurrent(),
