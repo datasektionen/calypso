@@ -3,6 +3,7 @@ package se.datasektionen.calypso.feeds.rss;
 import com.rometools.rome.feed.rss.Content;
 import com.rometools.rome.feed.rss.Description;
 import com.rometools.rome.feed.rss.Enclosure;
+import com.rometools.rome.feed.rss.Guid;
 
 import se.datasektionen.calypso.models.entities.Item;
 
@@ -23,6 +24,10 @@ public class RssConverter {
 															 Function<Item, String> linkMapper) {
 		var rssItem = new com.rometools.rome.feed.rss.Item();
 
+		var guid = new Guid();
+		guid.setPermaLink(false);
+		guid.setValue(linkMapper.apply(item));
+
 		var imageEnclosure = new Enclosure();
 		imageEnclosure.setType("image/png");
 		imageEnclosure.setUrl("https://dsekt-assets.s3.amazonaws.com/calypsotest.png"); //meow :3
@@ -37,6 +42,8 @@ public class RssConverter {
 		rssItem.setPubDate(ldtToDate(item.getPublishDate()));
 		rssItem.setLink(linkMapper.apply(item));
 		rssItem.setEnclosures(List.of(imageEnclosure));
+		rssItem.setGuid(guid);
+
 		return rssItem;
 	}
 
