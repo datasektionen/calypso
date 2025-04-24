@@ -91,6 +91,11 @@
             <artifactId>commonmark</artifactId>
             <version>0.17.0</version>
         </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.31.23</version>
+        </dependency>
     </dependencies>
 
     <properties>

@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
+import org.springframework.web.multipart.MultipartFile;
 
 import se.datasektionen.calypso.acl.SecurityTarget;
 
@@ -87,7 +88,7 @@ public class Activity implements SecurityTarget {
 	private List<ActivityPeriod> periods;
 
 	@Column
-	private String imageURL;
+	private MultipartFile image;
 
 	@JsonGetter("contentSwedish")
 	public String getContentSwedishProcessed() {

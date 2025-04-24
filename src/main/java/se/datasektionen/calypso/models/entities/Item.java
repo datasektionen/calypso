@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
+import org.springframework.web.multipart.MultipartFile;
 
 import se.datasektionen.calypso.acl.SecurityTarget;
 import se.datasektionen.calypso.models.constraints.Event;
@@ -115,7 +116,7 @@ public class Item implements SecurityTarget {
 	private String googleForm;
 
 	@Column
-	private String imageURL;
+	private MultipartFile image;
 
 	@Enumerated(EnumType.STRING)
 	public ItemType getItemType() {
@@ -165,7 +166,7 @@ public class Item implements SecurityTarget {
 		duplicatedItem.contentEnglish = this.contentEnglish;
 		duplicatedItem.itemType = this.itemType;
 		duplicatedItem.sensitive = this.sensitive;
-		duplicatedItem.imageURL = this.imageURL;
+		duplicatedItem.image = this.image;
 
 		if (duplicatedItem.itemType == ItemType.EVENT) {
 			duplicatedItem.eventLocation = this.eventLocation;

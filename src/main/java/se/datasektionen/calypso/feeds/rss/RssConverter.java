@@ -7,6 +7,9 @@ import com.rometools.rome.feed.rss.Enclosure;
 import se.datasektionen.calypso.models.entities.Item;
 
 import java.util.function.Function;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 import static se.datasektionen.calypso.feeds.DateUtils.ldtToDate;
@@ -21,7 +24,7 @@ public class RssConverter {
 															 Function<Item, String> authorMapper,
 															 Function<Item, String> contentMapper,
 															 Function<Item, String> linkMapper,
-															 Function<Item, String> imageMapper) {
+															 Function<Item, MultipartFile> imageMapper) {
 		var rssItem = new com.rometools.rome.feed.rss.Item();
 
 		var description = new Description();
@@ -36,7 +39,8 @@ public class RssConverter {
 
 		var imageEnclosure = new Enclosure();
 		imageEnclosure.setType("image/png");
-		imageEnclosure.setUrl(imageMapper.apply(item));
+		
+		imageEnclosure.setUrl("imageMapper.apply(item)");
 		// imageEnclosure.setUrl("https://dsekt-assets.s3.amazonaws.com/calypsotest.png"); //meow :3
 
 		rssItem.setEnclosures(List.of(imageEnclosure));
