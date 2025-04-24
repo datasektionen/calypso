@@ -70,6 +70,25 @@
             data: Data,
             methods: Methods
         });
+
+        const dropArea = document.getElementById("drop-area");
+        const inputFile = document.getElementById("input-file");
+        const imageView = document.getElementById("img-view");
+        inputFile.addEventListener("change", uploadImage);
+        function uploadImage() {
+            const imgLink = URL.createObjectURL(inputFile.files[0]);
+            imageView.style.backgroundImage = `url(${imgLink})`;
+            imageView.textContent = "";
+            imageView.style.border = 0;
+        }
+        dropArea.addEventListener("dragover", function(e) {
+            e.preventDefault();
+        });
+        dropArea.addEventListener("drop", function(e) {
+            e.preventDefault();
+            inputFile.files = e.dataTransfer.files;
+            uploadImage();
+        });
     </script>
 </head>
 <body>
@@ -149,10 +168,14 @@
                         <div class="form-label-block" style="padding-bottom: 5px;">Innehåll (engelska):</div>
                         <textarea th:field="*{contentEnglish}" title="Innehåll (engelska)" id="content_en"></textarea>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-label-block" style="padding-bottom: 5px;">Bild</div>                      
-                        <input type="text" th:field="*{imageURL}" class="ds-secondary-input" placeholder="URL till bild" />
-
+                    <div>
+                        <label for="input-file" id="drop-area">
+                            <input type="file" accept="image/*" id="input-file" style="visibility: hidden;">
+                            <div id="img-view">
+                                <p>Drag and drop or click here<br>to upload image</p>
+                                <span>Upload any images from desktop</span>
+                            </div>
+                        </label>
                     </div>
                     <div class="col-xs-12" style="height: 50px;"></div>
                 </div>
