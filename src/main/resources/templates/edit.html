@@ -170,8 +170,10 @@
                     </div>
                     <div>
                         <label for="input-file" id="drop-area">
-                            <input type="file" accept="image/*" id="input-file" style="visibility: hidden;" th:field="*{googleForm}">
+                            <input type="file" accept="image/*" name="image" id="input-file" style="visibility: hidden;">
                             <div id="img-view">
+                                <!-- TODO -> bild får inte vara för stor, typ mindre än 1MB. spring.http.multipart.max-file-size=10MB
+                                  Och så funkar det inte. -->
                                 <p>Drag and drop or click here<br>to upload image</p>
                                 <span>Upload any images from desktop</span>
                             </div>

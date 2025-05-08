@@ -13,6 +13,7 @@ import se.datasektionen.calypso.auth.DAuthUserDetails;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
+import se.datasektionen.calypso.s3.S3Service;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -78,14 +79,15 @@ public class EditController {
 	//https://howtodoinjava.com/spring-boot/spring-boot-file-upload-rest-api/
 	//payloaden är formaterad som multipart? så lägg in input och printa en massa saker, 
 	@PostMapping("/admin/edit")
-	public String doEdit(@RequestParam(required = false) String publish, @RequestParam("image") MultipartFile image, @Valid Item item, BindingResult bindingResult, Model model) {
+	public String doEdit(@RequestParam(required = false) String publish, @RequestParam(required = false, value = "image") MultipartFile image, @Valid Item item, BindingResult bindingResult, Model model) {
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
 		model.addAttribute("formatter", formatter);
-
+		System.out.println("hahaha");
 		System.out.println(image);
-		//if (actually an image){
-			//save to s3 and get 
-		//}
+
+		if (true){
+			item.setImageURL("blablab");
+		}
 		// Check for form errors
 		if (bindingResult.hasErrors())
 			return "edit";

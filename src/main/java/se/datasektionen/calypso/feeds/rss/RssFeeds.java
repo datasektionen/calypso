@@ -44,7 +44,7 @@ public class RssFeeds {
 				Item::getAuthorDisplay,
 				Item::getContentSwedishProcessed,
 				i -> RssConstants.Swedish.LINKER.apply(i.getId()),
-				Item::getImageUrl);
+				Item::getImageURL);
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertEnglishItems(boolean important) {
@@ -53,7 +53,7 @@ public class RssFeeds {
 				Item::getAuthorDisplay,
 				Item::getContentEnglishProcessed,
 				i -> RssConstants.English.LINKER.apply(i.getId()),
-				Item::getImageUrl);
+				Item::getImageURL);
 	}
 
 	private List<com.rometools.rome.feed.rss.Item> fetchAndConvertItems(boolean important,
