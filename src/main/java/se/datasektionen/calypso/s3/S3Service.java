@@ -2,11 +2,11 @@ package se.datasektionen.calypso.s3;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.io.File;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class S3Service {
@@ -19,22 +19,21 @@ public class S3Service {
         this.bucketName = bucketName;
     }
 
-    public String uploadImage(File image, Long itemId) {
-        var index = image.getName().lastIndexOf(".");
+    public String uploadImage(MultipartFile image, Long itemId) {
+        var index = image.getOriginalFilename().lastIndexOf(".");
 
-        var extension = index == -1 ? ".png" : image.getName().substring(index);
-
-        if (extension != ".png" && extension != ".jpeg" && extension != ".jpg") return null;
-
+        var extension = index == -1 ? ".png" : image.getOriginalFilename().substring(index);
+        if (!extension.equals(".png") && !extension.equals(".jpeg") && !extension.equals(".jpg")) { 
+            return null;
+        } //TODO: should error if you sent funny extension
         var key = "images/" + itemId.toString() + extension;
+
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
-                .acl(ObjectCannedACL.PUBLIC_READ)
                 .build();
-
         try {
-            s3Client.putObject(request, image.toPath());
+            s3Client.putObject(request, RequestBody.fromInputStream(image.getInputStream(), image.getSize()));
             return "https://" + bucketName + ".s3.eu-north-1.amazonaws.com/" + key;
         } catch (Exception e) {
             e.printStackTrace();

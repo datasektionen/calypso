@@ -37,9 +37,8 @@ public class RssConverter {
 
 		var imageEnclosure = new Enclosure();
 		imageEnclosure.setType("image/png");
-		
-		imageEnclosure.setUrl("imageMapper.apply(item)");
-		// imageEnclosure.setUrl("https://dsekt-assets.s3.amazonaws.com/calypsotest.png"); //meow :3
+
+		imageEnclosure.setUrl(item.getImageURL());
 
 		rssItem.setEnclosures(List.of(imageEnclosure));
 		return rssItem;

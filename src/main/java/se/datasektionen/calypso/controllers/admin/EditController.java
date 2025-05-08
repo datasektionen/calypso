@@ -82,12 +82,7 @@ public class EditController {
 	public String doEdit(@RequestParam(required = false) String publish, @RequestParam(required = false, value = "image") MultipartFile image, @Valid Item item, BindingResult bindingResult, Model model) {
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
 		model.addAttribute("formatter", formatter);
-		System.out.println("hahaha");
-		System.out.println(image);
 
-		if (true){
-			item.setImageURL("blablab");
-		}
 		// Check for form errors
 		if (bindingResult.hasErrors())
 			return "edit";
@@ -97,6 +92,11 @@ public class EditController {
 			item.setPublishDate(LocalDateTime.now());
 
 		item = itemRepository.save(item);
+
+		if (!image.isEmpty()){
+			item.setImageURL(s3Service.uploadImage(image, item.getId()));
+			item = itemRepository.save(item);
+		}
 
 		return "redirect:/admin/edit?saved=true&id=" + item.getId();
 	}
