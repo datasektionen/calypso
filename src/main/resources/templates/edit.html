@@ -128,9 +128,10 @@
             <input type="hidden" th:field="*{authorDisplay}" />
             <input type="hidden" th:field="*{updated}" />
 
-            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+            <div th:if="${#fields.hasErrors('*') or imageError != null}" class="alert alert-danger">
                 <strong>Något blev fel under redigeringen:</strong>
                 <ul>
+                    <li th:if="${imageError}" th:text="${imageError}"></li>
                     <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
                 </ul>
             </div>
@@ -174,10 +175,14 @@
                             <div id="img-view">
                                 <!-- TODO -> bild får inte vara för stor, typ mindre än 1MB. spring.http.multipart.max-file-size=10MB
                                   Och så funkar det inte. -->
+                                  <!-- Lägg till check att fil är för stor... hårdkodad -->
                                 <p>Drag and drop or click here<br>to upload image</p>
                                 <span>Upload any images from desktop</span>
                             </div>
                         </label>
+                        <div th:if="${item.imageURL != null}">
+                            <img th:src="${item.imageURL}" alt="Uploaded image" style="max-width: 100%; height: auto;" />
+                        </div>
                     </div>
                     <div class="col-xs-12" style="height: 50px;"></div>
                 </div>

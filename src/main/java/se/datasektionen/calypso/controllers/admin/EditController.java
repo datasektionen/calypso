@@ -76,8 +76,6 @@ public class EditController {
 		return "edit";
 	}
 
-	//https://howtodoinjava.com/spring-boot/spring-boot-file-upload-rest-api/
-	//payloaden är formaterad som multipart? så lägg in input och printa en massa saker, 
 	@PostMapping("/admin/edit")
 	public String doEdit(@RequestParam(required = false) String publish, @RequestParam(required = false, value = "image") MultipartFile image, @Valid Item item, BindingResult bindingResult, Model model) {
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
@@ -94,7 +92,14 @@ public class EditController {
 		item = itemRepository.save(item);
 
 		if (!image.isEmpty()){
-			item.setImageURL(s3Service.uploadImage(image, item.getId()));
+			String result = s3Service.uploadImage(image, item.getId());
+
+			// Check if file extension is any of .png, .jpeg, .jpg
+			if (result == null){
+				return "edit";
+			}
+
+			item.setImageURL(result);
 			item = itemRepository.save(item);
 		}
 

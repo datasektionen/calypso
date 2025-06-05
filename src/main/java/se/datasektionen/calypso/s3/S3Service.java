@@ -20,12 +20,13 @@ public class S3Service {
     }
 
     public String uploadImage(MultipartFile image, Long itemId) {
+
         var index = image.getOriginalFilename().lastIndexOf(".");
 
         var extension = index == -1 ? ".png" : image.getOriginalFilename().substring(index);
         if (!extension.equals(".png") && !extension.equals(".jpeg") && !extension.equals(".jpg")) { 
-            return null;
-        } //TODO: should error if you sent funny extension
+            return null; //TODO: should error if you sent funny extension
+        } 
         var key = "images/" + itemId.toString() + extension;
 
         PutObjectRequest request = PutObjectRequest.builder()

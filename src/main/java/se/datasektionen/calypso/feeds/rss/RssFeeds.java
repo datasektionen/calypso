@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.repositories.ApiRepository;
@@ -70,8 +69,6 @@ public class RssFeeds {
 				.getContent()
 				.stream();
 
-//skicka bild till rssConverter
-//Skala ner bild, kanske lite komprimering.
 		return items
 				.map(i -> RssConverter.toRssItem(i, titleMapper, authorMapper, contentMapper, linkMapper, imageMapper))
 				.collect(Collectors.toList());
