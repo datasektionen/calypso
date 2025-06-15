@@ -23,6 +23,6 @@ public class FileUploadExceptionAdvice {
 
         // Redirect back to the referer (previous page)
         String referer = request.getHeader("Referer");
-        return new RedirectView(referer != null ? referer+"?blabla" : "/");
+        return new RedirectView(referer != null ? referer : "/");
     }
 }
