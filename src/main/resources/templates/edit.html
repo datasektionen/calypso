@@ -73,11 +73,11 @@
 
         const dropArea = document.getElementById("input-file-area");
         const inputFile = document.getElementById("input-file");
-        const imageView = document.getElementById("img-view");
+        const imageView = document.getElementById("img-display");
         inputFile.addEventListener("change", uploadImage);
         function uploadImage() {
             const imgLink = URL.createObjectURL(inputFile.files[0]);
-            imageView.style.backgroundImage = `url(${imgLink})`;
+            imageView.src = `${imgLink}`;
             imageView.textContent = "";
             imageView.style.border = 0;
         }
@@ -172,10 +172,11 @@
                     <div class="drop-area"> 
                         <label id="input-file-area" >
                             <input type="file" accept="image/*" name="image" id="input-file" style="visibility: hidden; height: 0px;">
-                            <div id="img-view">
+                            <div class="img-group">
+                                <img id="img-display" style="width: 100%; padding: 10px;">
                                 <i class="fa fa-5x fa-upload"></i>
-                                <!-- TODO, no BIG icon class -->
                                 <div>Dra och släpp en bild eller klicka här för att ladda upp en bild</div>
+                                <p>Endast bilder som är 1920x1080 dimensionerade och är av typen .jpg, .png, .jpeg accepteras</p>
                             </div>
                         </label> 
                     </div>
