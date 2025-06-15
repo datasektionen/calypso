@@ -22,7 +22,7 @@ public class RssConverter {
 															 Function<Item, String> authorMapper,
 															 Function<Item, String> contentMapper,
 															 Function<Item, String> linkMapper,
-															 Function<Item, String> imageKeynameMapper) {
+															 Function<Item, String> imageURLMapper) {
 		var rssItem = new com.rometools.rome.feed.rss.Item();
 
 		var description = new Description();
@@ -35,8 +35,10 @@ public class RssConverter {
 		rssItem.setPubDate(ldtToDate(item.getPublishDate()));
 		rssItem.setLink(linkMapper.apply(item));
 
+		var index = item.getImageURL().lastIndexOf(".");
+		String extension = item.getImageURL().substring(index);
 		var imageEnclosure = new Enclosure();
-		imageEnclosure.setType("image/png");
+		imageEnclosure.setType("image/" + extension);
 
 		imageEnclosure.setUrl(item.getImageURL());
 
