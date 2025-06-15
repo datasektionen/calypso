@@ -8,6 +8,8 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import se.datasektionen.calypso.util.FileUtils;
+
 @Service
 public class S3Service {
 
@@ -21,12 +23,8 @@ public class S3Service {
 
     public String uploadImage(MultipartFile image, Long itemId) {
 
-        var index = image.getOriginalFilename().lastIndexOf(".");
-
-        var extension = index == -1 ? ".png" : image.getOriginalFilename().substring(index);
-        if (!extension.equals(".png") && !extension.equals(".jpeg") && !extension.equals(".jpg")) { 
-            return null; //TODO: should error if you sent funny extension
-        } 
+        var extension = FileUtils.getFileExtension(image);
+    
         var key = "images/" + itemId.toString() + extension;
 
         PutObjectRequest request = PutObjectRequest.builder()

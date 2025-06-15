@@ -60,7 +60,7 @@ public class RssFeeds {
 																		Function<Item, String> authorMapper,
 																		Function<Item, String> contentMapper,
 																		Function<Item, String> linkMapper,
-															 			Function<Item, String> imageMapper) {
+															 			Function<Item, String> imageURLMapper) {
 		Stream<Item> items = apiRepository
 				.findAllPublishedWithFilters(
 						darkmode.getCurrent(),
@@ -70,7 +70,7 @@ public class RssFeeds {
 				.stream();
 
 		return items
-				.map(i -> RssConverter.toRssItem(i, titleMapper, authorMapper, contentMapper, linkMapper, imageMapper))
+				.map(i -> RssConverter.toRssItem(i, titleMapper, authorMapper, contentMapper, linkMapper, imageURLMapper))
 				.collect(Collectors.toList());
 	}
 

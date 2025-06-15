@@ -14,8 +14,12 @@ import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
 import se.datasektionen.calypso.s3.S3Service;
+import se.datasektionen.calypso.util.FileUtils;
 
 import javax.validation.Valid;
+
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -88,6 +92,25 @@ public class EditController {
 		// If the special publish param (name of a submit button) is present, we publish
 		if (publish != null)
 			item.setPublishDate(LocalDateTime.now());
+
+		if (!image.isEmpty()){
+			String extension = FileUtils.getFileExtension(image);
+			if (!extension.equals(".png") && !extension.equals(".jpeg") && !extension.equals(".jpg")) {
+	            model.addAttribute("imageError", "Endast .png, .jpeg eller .jpg är tillåtna.");
+				return "edit";//TODO: should error if you sent funny extension
+	        }
+
+			try {
+				int[] imageDimensions = FileUtils.getImageDimensions(image);
+				if (imageDimensions[0] != 1920 && imageDimensions[1] != 1080){
+					model.addAttribute("imageError", "Bildens dimensioner måste vara 1920x1080");
+					return "edit";
+				}
+			} catch (IOException exception) {
+				model.addAttribute("imageError", "Kunde inte läsa in bilden");
+				return "edit";
+			}
+		}
 
 		item = itemRepository.save(item);
 
