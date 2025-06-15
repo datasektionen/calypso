@@ -97,7 +97,7 @@ public class EditController {
 			String extension = FileUtils.getFileExtension(image);
 			if (!extension.equals(".png") && !extension.equals(".jpeg") && !extension.equals(".jpg")) {
 	            model.addAttribute("imageError", "Endast .png, .jpeg eller .jpg är tillåtna.");
-				return "edit";//TODO: should error if you sent funny extension
+				return "edit";
 	        }
 
 			try {

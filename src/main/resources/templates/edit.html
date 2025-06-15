@@ -71,7 +71,7 @@
             methods: Methods
         });
 
-        const dropArea = document.getElementById("drop-area");
+        const dropArea = document.getElementById("input-file-area");
         const inputFile = document.getElementById("input-file");
         const imageView = document.getElementById("img-view");
         inputFile.addEventListener("change", uploadImage);
@@ -169,20 +169,18 @@
                         <div class="form-label-block" style="padding-bottom: 5px;">Innehåll (engelska):</div>
                         <textarea th:field="*{contentEnglish}" title="Innehåll (engelska)" id="content_en"></textarea>
                     </div>
-                    <div>
-                        <label for="input-file" id="drop-area">
-                            <input type="file" accept="image/*" name="image" id="input-file" style="visibility: hidden;">
+                    <div class="drop-area"> 
+                        <label id="input-file-area" >
+                            <input type="file" accept="image/*" name="image" id="input-file" style="visibility: hidden; height: 0px;">
                             <div id="img-view">
-                                <!-- TODO -> bild får inte vara för stor, typ mindre än 1MB. spring.http.multipart.max-file-size=10MB
-                                  Och så funkar det inte. -->
-                                  <!-- Lägg till check att fil är för stor... hårdkodad -->
-                                <p>Drag and drop or click here<br>to upload image</p>
-                                <span>Upload any images from desktop</span>
+                                <i class="fa fa-5x fa-upload"></i>
+                                <!-- TODO, no BIG icon class -->
+                                <div>Dra och släpp en bild eller klicka här för att ladda upp en bild</div>
                             </div>
-                        </label>
-                        <div th:if="${item.imageURL != null}">
-                            <img th:src="${item.imageURL}" alt="Uploaded image" style="max-width: 100%; height: auto;" />
-                        </div>
+                        </label> 
+                    </div>
+                    <div th:if="${item.imageURL != null}">
+                        <img th:src="${item.imageURL}" alt="Uploaded image" style="max-width: 100%; height: auto;" />
                     </div>
                     <div class="col-xs-12" style="height: 50px;"></div>
                 </div>
