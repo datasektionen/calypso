@@ -18,7 +18,7 @@ import se.datasektionen.calypso.util.FileUtils;
 
 import javax.validation.Valid;
 
-import java.io.File;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,7 +31,7 @@ public class EditController {
 	private final ItemRepository itemRepository;
 	private final DateTimeFormatter formatter;
 	private final S3Service s3Service;
-	
+
 	@GetMapping("/admin/new")
 	public String newForm(Authentication auth, Model model) {
 		var user = (DAuthUserDetails) auth.getPrincipal();
@@ -55,7 +55,7 @@ public class EditController {
 		if (baseItem == null)
 			throw new ResourceNotFoundException();
 
-    var item = baseItem.duplicate();
+		var item = baseItem.duplicate();
 
 		item.setAuthor(user.getUser());
 		item.setAuthorDisplay(user.getName());
@@ -81,7 +81,9 @@ public class EditController {
 	}
 
 	@PostMapping("/admin/edit")
-	public String doEdit(@RequestParam(required = false) String publish, @RequestParam(required = false, value = "image") MultipartFile image, @Valid Item item, BindingResult bindingResult, Model model) {
+	public String doEdit(@RequestParam(required = false) String publish,
+			@RequestParam(required = false, value = "image") MultipartFile file, @Valid Item item,
+			BindingResult bindingResult, Model model) {
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
 		model.addAttribute("formatter", formatter);
 
@@ -93,32 +95,55 @@ public class EditController {
 		if (publish != null)
 			item.setPublishDate(LocalDateTime.now());
 
-		if (!image.isEmpty()){
-			String extension = FileUtils.getFileExtension(image);
-			if (!extension.equals(".png") && !extension.equals(".jpeg") && !extension.equals(".jpg")) {
-	            model.addAttribute("imageError", "Endast .png, .jpeg eller .jpg är tillåtna.");
-				return "edit";
-	        }
-
+		if (!file.isEmpty()) {
 			try {
+				// implicitly parse entire file to see if it is an image
+				BufferedImage image = FileUtils.convertFileToImage(file);
+
 				int[] imageDimensions = FileUtils.getImageDimensions(image);
-				if (imageDimensions[0] != 1920 && imageDimensions[1] != 1080){
+
+				if (!(imageDimensions[0] == 1920 && imageDimensions[1] == 1080)) {
 					model.addAttribute("imageError", "Bildens dimensioner måste vara 1920x1080");
 					return "edit";
 				}
+
+				String extension = FileUtils.getImageExtension(file);
+				// TODO: mime typer, så öh, finns ens image/jpg?
+				if (!extension.equals("image/png") && !extension.equals("image/jpeg")
+						&& !extension.equals("image/jpg")) {
+					model.addAttribute("imageError", "Endast .png, .jpeg eller .jpg är tillåtna.");
+					return "edit";
+				}
+
+				String nameExtension = "image/" + FileUtils.getNameExtension(file);
+
+				if (!nameExtension.equals(extension)) {
+					model.addAttribute("imageError", "Din filändelse matchar inte typen av din fil");
+					return "edit";
+				}
+
 			} catch (IOException exception) {
-				model.addAttribute("imageError", "Kunde inte läsa in bilden");
+				model.addAttribute("imageError", "Kunde inte läsa in bilden: " + exception);
 				return "edit";
 			}
 		}
 
 		item = itemRepository.save(item);
 
-		if (!image.isEmpty()){
-			String result = s3Service.uploadImage(image, item.getId());
+		if (!file.isEmpty()) {
+			String extension;
+
+			try {
+				extension = FileUtils.getImageExtension(file);
+			} catch (IOException e) {
+				model.addAttribute("imageError", "Något gick fel");
+				return "edit";
+			}
+
+			String result = s3Service.uploadImage(file, extension, item.getId());
 
 			// Check if file extension is any of .png, .jpeg, .jpg
-			if (result == null){
+			if (result == null) {
 				return "edit";
 			}
 

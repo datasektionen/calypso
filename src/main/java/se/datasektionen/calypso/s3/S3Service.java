@@ -1,5 +1,7 @@
 package se.datasektionen.calypso.s3;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +23,7 @@ public class S3Service {
         this.bucketName = bucketName;
     }
 
-    public String uploadImage(MultipartFile image, Long itemId) {
-
-        var extension = FileUtils.getFileExtension(image);
-    
+    public String uploadImage(MultipartFile image, String extension, Long itemId) {
         var key = "images/" + itemId.toString() + extension;
 
         PutObjectRequest request = PutObjectRequest.builder()
