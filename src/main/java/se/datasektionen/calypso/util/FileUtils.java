@@ -4,11 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-
-import java.util.Iterator;
-
 
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +13,7 @@ public class FileUtils {
         BufferedImage image = ImageIO.read(file.getInputStream());
 
         if (image == null) {
-            throw new IOException("File is not a valid image"); //är detta rätt exception att kasta?
+            throw new IOException("File is not a valid image");
         }
 
         return image;
@@ -34,12 +29,16 @@ public class FileUtils {
     public static String getNameExtension(MultipartFile file) {
         var index = file.getOriginalFilename().lastIndexOf(".");
 
-        var extension = index == -1 ? null : file.getOriginalFilename().substring(index);
+        var extension = index == -1 ? null : file.getOriginalFilename().substring(index+1);
 
+        if (extension.equals("jpg")){
+            extension = "jpeg";
+        }
+        
         return extension;
     }
 
-    public static int[] getImageDimensions(BufferedImage image) throws IOException {
+    public static int[] getImageDimensions(BufferedImage image) {
         return new int[] { image.getWidth(), image.getHeight() };
     }
 }

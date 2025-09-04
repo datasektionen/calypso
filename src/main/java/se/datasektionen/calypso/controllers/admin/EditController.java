@@ -97,7 +97,7 @@ public class EditController {
 
 		if (!file.isEmpty()) {
 			try {
-				// implicitly parse entire file to see if it is an image
+				// Implicitly check if file is an image
 				BufferedImage image = FileUtils.convertFileToImage(file);
 
 				int[] imageDimensions = FileUtils.getImageDimensions(image);
@@ -108,9 +108,8 @@ public class EditController {
 				}
 
 				String extension = FileUtils.getImageExtension(file);
-				// TODO: mime typer, så öh, finns ens image/jpg?
-				if (!extension.equals("image/png") && !extension.equals("image/jpeg")
-						&& !extension.equals("image/jpg")) {
+
+				if (!extension.equals("image/png") && !extension.equals("image/jpeg")) {
 					model.addAttribute("imageError", "Endast .png, .jpeg eller .jpg är tillåtna.");
 					return "edit";
 				}
@@ -131,21 +130,9 @@ public class EditController {
 		item = itemRepository.save(item);
 
 		if (!file.isEmpty()) {
-			String extension;
-
-			try {
-				extension = FileUtils.getImageExtension(file);
-			} catch (IOException e) {
-				model.addAttribute("imageError", "Något gick fel");
-				return "edit";
-			}
+			String extension = FileUtils.getNameExtension(file);
 
 			String result = s3Service.uploadImage(file, extension, item.getId());
-
-			// Check if file extension is any of .png, .jpeg, .jpg
-			if (result == null) {
-				return "edit";
-			}
 
 			item.setImageURL(result);
 			item = itemRepository.save(item);
