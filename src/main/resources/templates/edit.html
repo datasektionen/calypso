@@ -180,6 +180,10 @@
                             </div>
                         </label> 
                     </div>
+                    <div class="col-xs-12">
+                        <input type="text" name="imageAltText" class="ds-secondary-input"
+                            placeholder="Bildens alt-text" th:field="*{imageAltText}">
+                    </div>
                     <div th:if="${item.imageURL != null}">
                         <img th:src="${item.imageURL}" alt="Uploaded image" style="max-width: 100%; height: auto;" />
                     </div>

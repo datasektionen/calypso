@@ -118,6 +118,8 @@ public class Item implements SecurityTarget {
 	@Column
 	private String imageURL;
 
+	@Column
+	private String imageAltText;
 	@Enumerated(EnumType.STRING)
 	public ItemType getItemType() {
 		return itemType;
@@ -167,6 +169,7 @@ public class Item implements SecurityTarget {
 		duplicatedItem.itemType = this.itemType;
 		duplicatedItem.sensitive = this.sensitive;
 		duplicatedItem.imageURL = this.imageURL;
+		duplicatedItem.imageAltText = this.imageAltText;
 
 		if (duplicatedItem.itemType == ItemType.EVENT) {
 			duplicatedItem.eventLocation = this.eventLocation;
