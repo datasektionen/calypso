@@ -19,7 +19,6 @@ public class FileUtils {
         return image;
     }
 
-    //TODO: tika only checks the header for information, might be ok?
     public static String getImageExtension(MultipartFile image) throws IOException{
         Tika tika = new Tika();
         

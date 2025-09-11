@@ -18,10 +18,8 @@ public class FileUploadExceptionAdvice {
     public RedirectView handleMaxSizeException(MaxUploadSizeExceededException exc,
                                                HttpServletRequest request,
                                                RedirectAttributes redirectAttributes) {
-         // Store the error message
         redirectAttributes.addFlashAttribute("imageError", "Bildens filstorlek får inte överskrida " + maxFileSize);
 
-        // Redirect back to the referer (previous page)
         String referer = request.getHeader("Referer");
         return new RedirectView(referer != null ? referer : "/");
     }
