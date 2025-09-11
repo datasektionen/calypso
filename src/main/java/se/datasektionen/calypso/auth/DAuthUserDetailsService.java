@@ -58,23 +58,25 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 		if (response.getUser() == null || response.getFirstName() == null)
 			throw new UsernameNotFoundException("Token rendered empty or malformed response");
 
-		// Prepare Pls and Dfunkt API calls
+		// Prepare hive API calls
 		var user = response.getUser();
-		var plsUrl = "https://pls.datasektionen.se/api/user/" + user + "/calypso";
+		var permissionsUrl = "https://hive.datasektionen.se/api/v1/user/" + user + "/permissions";
 
-		// Read permissions from Pls
+		headers.set("Authorization", "Bearer " + config.getHiveApiKey());
+
+		// Read permissions from hive
 		var permissions = new RestTemplate()
-				.exchange(plsUrl, HttpMethod.GET, new HttpEntity<>(null, headers), String[].class);
+				.exchange(permissionsUrl, HttpMethod.GET, new HttpEntity<>(null, headers), String[].class);
 		List<GrantedAuthority> authorities = Arrays.stream(permissions.getBody())
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 
-		// Try to get mandates from DFunkt
+		// Try to get mandates from hive
 		Map<String, String> mandates = new HashMap<>();
-		var dFunktUrl = "https://dfunkt.datasektionen.se/api/user/kthid/" + user + "/current";
+		var mandatesUrl = "https://hive.datasektionen.se/api/v1/tagged/author-pseudonym/memberships/"+user;
 		try {
 			var mandatesHttp = new RestTemplate()
-					.exchange(dFunktUrl, HttpMethod.GET, new HttpEntity<>(null, headers), DFunktResponse.class);
+					.exchange(mandatesUrl, HttpMethod.GET, new HttpEntity<>(null, headers), DFunktResponse.class);
 
 			mandates = mandatesHttp
 					.getBody()

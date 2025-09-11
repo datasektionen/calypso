@@ -203,7 +203,7 @@
                             <div class="form-group row">
                                 <div class="form-label-inline col-xs-4" style="padding-right: 0;">Synlighet: &nbsp;</div>
 
-                                <div sec:authorize="hasAuthority('sticky')" class="col-xs-8" style="padding-left: 10px;">
+                                <div sec:authorize="hasAuthority('mark-important')" class="col-xs-8" style="padding-left: 10px;">
                                     <span th:if="${item.sticky}" class="checkbox">
                                         <input type="checkbox" name="sticky" value="true" checked id="sticky1" />
                                         <label for="sticky1" class="form-label-narrow">Viktigt inlägg</label>
@@ -213,7 +213,7 @@
                                         <label for="sticky2" class="form-label-narrow">Viktigt inlägg</label>
                                     </span>
                                 </div>
-                                <div sec:authorize="!hasAuthority('sticky')" class="col-xs-8" style="padding-left: 10px;">
+                                <div sec:authorize="!hasAuthority('mark-important')" class="col-xs-8" style="padding-left: 10px;">
                                     <span th:if="${item.sticky}" class="checkbox">
                                         <input readonly disabled type="checkbox" name="sticky" value="true" checked id="sticky3" />
                                         <label for="sticky3" class="form-label-narrow">Viktigt inlägg</label>
@@ -225,7 +225,7 @@
                                 </div>
 
                                 <div class="clearfix"></div>
-                                <div sec:authorize="!hasAuthority('sticky')" class="col-xs-12">
+                                <div sec:authorize="!hasAuthority('mark-important')" class="col-xs-12">
                                     <small class="text-ultra-muted">Du saknar rättighet att ändra den här inställningen</small>
                                 </div>
                             </div>
@@ -315,7 +315,7 @@
                             <th:block th:switch="${item.getPublishStatus().name()}">
                                 <a th:href="@{/admin/delete/{id}(id=${item.id})}"
                                    th:if="${item.id != null}"
-                                   sec:authorize="hasAuthority('editor')"
+                                   sec:authorize="hasAuthority('manage-all')"
                                    onclick="return window.confirm('Är du säker på att du vill ta bort inlägget?');"
                                    class="button secondary-action">Radera</a>
 

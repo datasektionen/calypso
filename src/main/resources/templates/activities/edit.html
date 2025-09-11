@@ -127,7 +127,7 @@
                         <div id="publish_activity">
                             <button
                                 th:if="${activity.id != null}"
-                                sec:authorize="hasAuthority('editor')"
+                                sec:authorize="hasAuthority('manage-all')"
                                 th:data-post-to="@{/admin/activities/delete/{id}(id=${activity.id})}"
                                 data-confirm="Är du säker på att du vill ta bort aktiviteten?"
                                 class="button secondary-action"

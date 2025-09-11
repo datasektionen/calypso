@@ -12,7 +12,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class DAuthUserDetails implements UserDetails {
-	private static final GrantedAuthority EDITOR_AUTH = new SimpleGrantedAuthority("editor");
+	private static final GrantedAuthority EDITOR_AUTH = new SimpleGrantedAuthority("manage-all");
 
 	private String user;
 	private String token;
