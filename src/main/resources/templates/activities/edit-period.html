@@ -181,7 +181,7 @@
                         <div id="publish_period">
                             <button
                                 th:if="${period.id != null}"
-                                sec:authorize="hasAuthority('editor')"
+                                sec:authorize="hasAuthority('manage-all')"
                                 th:data-post-to="@{/admin/activities/periods/delete/{id}(id=${period.id})}"
                                 data-confirm="Är du säker på att du vill ta bort perioden?"
                                 class="button secondary-action"

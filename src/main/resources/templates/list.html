@@ -29,7 +29,7 @@
         </div>
     </header>
     <div id="content">
-        <div sec:authorize="!hasAuthority('editor')" class="alert alert-muted alert-sm">
+        <div sec:authorize="!hasAuthority('manage-all')" class="alert alert-muted alert-sm">
             <i class="fa fa-fw fa-info-circle"></i>
             Eftersom du saknar redaktörsrättigheter kan du endast se och redigera dina egna inlägg.
         </div>
@@ -48,7 +48,7 @@
                 <small th:text="${'Totalt ' + items.totalElements + ' objekt du kan redigera.'}"></small>
             </div>
             <div class="col-md-2 text-muted" style="padding-top: 5px; text-align: right;">
-                <div sec:authorize="hasAuthority('editor')">
+                <div sec:authorize="hasAuthority('manage-all')">
                     <form method="get" name="onlyMeSelector">
                         <input type="hidden" name="itemType" th:value="${itemType}">
                         <input type="hidden" name="page" th:value="${page}">
