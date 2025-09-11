@@ -70,6 +70,25 @@
             data: Data,
             methods: Methods
         });
+
+        const dropArea = document.getElementById("input-file-area");
+        const inputFile = document.getElementById("input-file");
+        const imageView = document.getElementById("img-display");
+        inputFile.addEventListener("change", uploadImage);
+        function uploadImage() {
+            const imgLink = URL.createObjectURL(inputFile.files[0]);
+            imageView.src = `${imgLink}`;
+            imageView.textContent = "";
+            imageView.style.border = 0;
+        }
+        dropArea.addEventListener("dragover", function(e) {
+            e.preventDefault();
+        });
+        dropArea.addEventListener("drop", function(e) {
+            e.preventDefault();
+            inputFile.files = e.dataTransfer.files;
+            uploadImage();
+        });
     </script>
 </head>
 <body>
@@ -109,9 +128,10 @@
             <input type="hidden" th:field="*{authorDisplay}" />
             <input type="hidden" th:field="*{updated}" />
 
-            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+            <div th:if="${#fields.hasErrors('*') or imageError != null}" class="alert alert-danger">
                 <strong>Något blev fel under redigeringen:</strong>
                 <ul>
+                    <li th:if="${imageError}" th:text="${imageError}"></li>
                     <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
                 </ul>
             </div>
@@ -149,7 +169,24 @@
                         <div class="form-label-block" style="padding-bottom: 5px;">Innehåll (engelska):</div>
                         <textarea th:field="*{contentEnglish}" title="Innehåll (engelska)" id="content_en"></textarea>
                     </div>
-
+                    <div class="drop-area"> 
+                        <label id="input-file-area" >
+                            <input type="file" accept="image/*" name="image" id="input-file" style="visibility: hidden; height: 0px;">
+                            <div class="img-group">
+                                <img id="img-display" style="width: 100%; padding: 10px;">
+                                <i class="fa fa-5x fa-upload"></i>
+                                <div>Dra och släpp en bild eller klicka här för att ladda upp en bild</div>
+                                <p>Endast bilder som är 1920x1080 dimensionerade och är av typen .jpg, .png, .jpeg accepteras</p>
+                            </div>
+                        </label> 
+                    </div>
+                    <div class="col-xs-12">
+                        <input type="text" name="imageAltText" class="ds-secondary-input"
+                            placeholder="Bildens alt-text" th:field="*{imageAltText}">
+                    </div>
+                    <div th:if="${item.imageURL != null}">
+                        <img th:src="${item.imageURL}" alt="Uploaded image" style="max-width: 100%; height: auto;" />
+                    </div>
                     <div class="col-xs-12" style="height: 50px;"></div>
                 </div>
                 <div class="col-md-3">

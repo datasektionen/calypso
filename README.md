@@ -30,4 +30,7 @@ All necessary environment variables are set automatically when running with dock
 | JDBC_DATABASE_URL            | URL to database                      | ---                               | jdbc:postgresql://localhost:5432/calypso |
 | JDBC_DATABASE_USERNAME       | Database username                    | ---                               | user                                     |
 | JDBC_DATABASE_PASSWORD       | Database password                    | ---                               | password                                 |
+| S3_BUCKET_NAME               | Amazon AWS s3 bucket name            | ---                               | dsekt-awesome-bucket-name                |
+| S3_ACCESS_KEY_ID             | Amazon AWS IAM access key id         | ---                               | ABCDEFGHJIKLMNOPQRST                     |
+| S3_SECRET_ACCESS_KEY         | Amazon AWS IAM secret access key     | ---                               | abcdefghjiklmnopqrstuvxyz123456789secret |
 | DARKMODE_URL                 | URL to darkmode or `true` or `false` | https://darkmode.datasektionen.se | http://localhost:2000                    |

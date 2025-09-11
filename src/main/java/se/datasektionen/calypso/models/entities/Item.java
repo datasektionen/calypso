@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
+import org.springframework.web.multipart.MultipartFile;
 
 import se.datasektionen.calypso.acl.SecurityTarget;
 import se.datasektionen.calypso.models.constraints.Event;
@@ -121,6 +122,11 @@ public class Item implements SecurityTarget {
 	@Size(max = 255, message = "Google-URL får vara högst 255 tecken")
 	private String googleForm;
 
+	@Column
+	private String imageURL;
+
+	@Column
+	private String imageAltText;
 	@Enumerated(EnumType.STRING)
 	public ItemType getItemType() {
 		return itemType;
@@ -169,6 +175,8 @@ public class Item implements SecurityTarget {
 		duplicatedItem.contentEnglish = this.contentEnglish;
 		duplicatedItem.itemType = this.itemType;
 		duplicatedItem.sensitive = this.sensitive;
+		duplicatedItem.imageURL = this.imageURL;
+		duplicatedItem.imageAltText = this.imageAltText;
 
 		if (duplicatedItem.itemType == ItemType.EVENT) {
 			duplicatedItem.eventLocation = this.eventLocation;
