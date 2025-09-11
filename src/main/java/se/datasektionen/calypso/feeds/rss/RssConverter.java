@@ -3,6 +3,7 @@ package se.datasektionen.calypso.feeds.rss;
 import com.rometools.rome.feed.rss.Content;
 import com.rometools.rome.feed.rss.Description;
 import com.rometools.rome.feed.rss.Enclosure;
+import com.rometools.rome.feed.rss.Guid;
 
 import se.datasektionen.calypso.models.entities.Item;
 
@@ -25,6 +26,10 @@ public class RssConverter {
 															 Function<Item, String> imageURLMapper) {
 		var rssItem = new com.rometools.rome.feed.rss.Item();
 
+		var guid = new Guid();
+		guid.setPermaLink(false);
+		guid.setValue(linkMapper.apply(item));
+
 		var description = new Description();
 		description.setType(Content.HTML);
 		description.setValue(contentMapper.apply(item));
@@ -43,6 +48,8 @@ public class RssConverter {
 		imageEnclosure.setUrl(item.getImageURL());
 
 		rssItem.setEnclosures(List.of(imageEnclosure));
+		rssItem.setGuid(guid);
+
 		return rssItem;
 	}
 
