@@ -7,9 +7,15 @@ Spring Boot with Spring MVC + Spring Data JPA + Spring Security + Thymeleaf + Po
 
 ## Development
 
+Run: `docker compose up --build`
+
+Or:
+
 1. Configure environment variables
 2. `mvn -DskipTests clean dependency:list install`
 3. `java -jar target/calypso-1.0-SNAPSHOT.jar`
+
+The web UI runs on `localhost:3000`.
 
 -----------
 
