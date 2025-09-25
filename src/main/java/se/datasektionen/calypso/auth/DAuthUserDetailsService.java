@@ -81,7 +81,6 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 					.getBody()
 					.stream()
 					.collect(Collectors.toMap(Group::getGroup_id, Group::getGroup_name));
-					// .collect(Collectors.toMap(Group::getGroup_id, Group::getGroup_name));
 
 			System.out.println(mandates.toString());
 		} catch (Exception ignore) {
