@@ -7,7 +7,10 @@ Spring Boot with Spring MVC + Spring Data JPA + Spring Security + Thymeleaf + Po
 
 ## Development
 
-Run: `docker compose up --build`
+Run with container (recommended): `docker compose up --build`
+
+> [!NOTE]
+> Docker watch functionality is not yet configured.
 
 Or:
 
