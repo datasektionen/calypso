@@ -34,11 +34,13 @@ job "calypso" {
 {{ with nomadVar "nomad/jobs/calypso" }}
 LOGIN_KEY={{ .login_api_key }}
 JDBC_DATABASE_PASSWORD={{ .database_password }}
+HIVE_API_KEY={{ .hive_api_key }}
 {{ end }}
 JDBC_DATABASE_URL=jdbc:postgresql://postgres.dsekt.internal:5432/calypso
 JDBC_DATABASE_USERNAME=calypso
 LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
 LOGIN_API_URL=http://sso.nomad.dsekt.internal/legacyapi
+HIVE_URL=http://hive.nomad.dsekt.internal
 APPLICATION_URL=https://calypso.datasektionen.se
 DARKMODE_URL=https://darkmode.datasektionen.se
 PORT={{ env "NOMAD_PORT_http" }}
