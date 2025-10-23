@@ -58,7 +58,6 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 
 		// Prepare hive API calls
 		var user = response.getUser();
-		//HIVE_URL environmnet
 		var permissionsUrl = config.getHiveApiUrl() + "/api/v1/user/" + user + "/permissions";
 
 		headers.set("Authorization", "Bearer " + config.getHiveApiKey());
@@ -74,7 +73,6 @@ public class DAuthUserDetailsService implements AuthenticationUserDetailsService
 
 		// Try to get mandates from hive
 		Map<String, String> mandates = new HashMap<>();
-		//TODO hive_url
 		var mandatesUrl = config.getHiveApiUrl() + "/api/v1/tagged/author-pseudonym/memberships/"+user;
 		try {
 			var mandatesHttp = new RestTemplate()

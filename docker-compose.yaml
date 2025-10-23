@@ -17,8 +17,7 @@ services:
       LOGIN_API_URL: http://nyckeln:7002/
       LOGIN_KEY: asdf
       HIVE_URL: http://nyckeln:7004
-      HIVE_SECRET: skibidi
-      HIVE_API_KEY: abcdefgh-ijkl-mnop-qrst-uvwzyåäöjadu
+      HIVE_API_KEY: skibidi-development
       DARKMODE_URL: false
       PORT: 3000
   nyckeln:
@@ -29,7 +28,6 @@ services:
       - source: nyckeln.yaml
         target: /config.yaml
     ports:
-      - 7001:7001
       - 7002:7002
       - 7003:7003
       - 7004:7004
@@ -67,15 +65,12 @@ configs:
           first_name: Ture
           family_name: Teknolog
           pls_permissions:
-            sso:
-              - admin
             calypso:
               - drek
               - dfunk
           hive_tags:
             - id: personal_email
               content: turetek@gmail.com
-
       hive:
         tokens:
           - secret: aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa
