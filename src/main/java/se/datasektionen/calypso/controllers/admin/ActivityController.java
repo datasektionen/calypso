@@ -81,7 +81,7 @@ public class ActivityController {
         return "redirect:/admin/activities/edit/" + activity.getId() + "?saved=true";
     }
 
-    @PreAuthorize("hasAuthority('editor')")
+    @PreAuthorize("hasAuthority('manage-all')")
     @PostMapping("/delete/{id}")
     public String doDelete(@PathVariable long id) {
         activityRepository.deleteById(id);

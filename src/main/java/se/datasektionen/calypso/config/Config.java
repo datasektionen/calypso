@@ -12,18 +12,24 @@ public class Config {
 	private final String loginFrontendUrl;
 	private final String loginApiUrl;
 	private final String darkmodeUrl;
+	private final String hiveApiKey;
+	private final String hiveApiUrl;
 
 	public Config(
 		@Value("${APPLICATION_URL}") String baseUrl,
 		@Value("${LOGIN_KEY}") String loginApiKey,
 		@Value("${LOGIN_FRONTEND_URL:https://login.datasektionen.se}") String loginFrontendUrl,
 		@Value("${LOGIN_API_URL:https://login.datasektionen.se}") String loginApiUrl,
-		@Value("${DARKMODE_URL:https://darkmode.datasektionen.se}") String darkmodeUrl
+		@Value("${DARKMODE_URL:https://darkmode.datasektionen.se}") String darkmodeUrl,
+		@Value("${HIVE_API_KEY}") String hiveApiKey,
+		@Value("${HIVE_URL:https://hive.datasektionen.se}") String hiveApiUrl
 	) {
 		this.baseUrl = baseUrl;
 		this.loginApiKey = loginApiKey;
 		this.loginFrontendUrl = loginFrontendUrl;
 		this.loginApiUrl = loginApiUrl;
 		this.darkmodeUrl = darkmodeUrl;
+		this.hiveApiKey = hiveApiKey;
+		this.hiveApiUrl = hiveApiUrl;
 	}
 }

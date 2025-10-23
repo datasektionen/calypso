@@ -90,7 +90,7 @@ public class EditController {
 		return "redirect:/admin/edit?saved=true&id=" + item.getId();
 	}
 
-	@PreAuthorize("hasAuthority('editor')")
+	@PreAuthorize("hasAuthority('manage-all')")
 	@RequestMapping("/admin/delete/{id}")
 	public String delete(@PathVariable long id) {
 		itemRepository.deleteById(id);

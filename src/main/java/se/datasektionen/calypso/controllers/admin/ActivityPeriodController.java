@@ -82,7 +82,7 @@ public class ActivityPeriodController {
         return "redirect:/admin/activities/periods/edit/" + period.getId() + "?saved=true";
     }
 
-    @PreAuthorize("hasAuthority('editor')")
+    @PreAuthorize("hasAuthority('manage-all')")
     @PostMapping("/delete/{id}")
     public String doDelete(@PathVariable long id) {
         // need to fetch first to extract activity ID for redirect
