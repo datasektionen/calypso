@@ -8,6 +8,7 @@ import com.rometools.rome.feed.rss.Guid;
 import se.datasektionen.calypso.models.entities.Item;
 
 import java.util.function.Function;
+
 import java.util.List;
 
 import static se.datasektionen.calypso.feeds.DateUtils.ldtToDate;
@@ -21,16 +22,13 @@ public class RssConverter {
 															 Function<Item, String> titleMapper,
 															 Function<Item, String> authorMapper,
 															 Function<Item, String> contentMapper,
-															 Function<Item, String> linkMapper) {
+															 Function<Item, String> linkMapper,
+															 Function<Item, String> imageURLMapper) {
 		var rssItem = new com.rometools.rome.feed.rss.Item();
 
 		var guid = new Guid();
 		guid.setPermaLink(false);
 		guid.setValue(linkMapper.apply(item));
-
-		var imageEnclosure = new Enclosure();
-		imageEnclosure.setType("image/png");
-		imageEnclosure.setUrl("https://dsekt-assets.s3.amazonaws.com/calypsotest.png"); //meow :3
 
 		var description = new Description();
 		description.setType(Content.HTML);
@@ -41,6 +39,14 @@ public class RssConverter {
 		rssItem.setDescription(description);
 		rssItem.setPubDate(ldtToDate(item.getPublishDate()));
 		rssItem.setLink(linkMapper.apply(item));
+
+		var index = item.getImageURL().lastIndexOf(".");
+		String extension = item.getImageURL().substring(index);
+		var imageEnclosure = new Enclosure();
+		imageEnclosure.setType("image/" + extension);
+
+		imageEnclosure.setUrl(item.getImageURL());
+
 		rssItem.setEnclosures(List.of(imageEnclosure));
 		rssItem.setGuid(guid);
 
