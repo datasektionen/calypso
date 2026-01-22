@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,9 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import lombok.RequiredArgsConstructor;
-import se.datasektionen.calypso.auth.DAuthUserDetails;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Activity;
 import se.datasektionen.calypso.models.repositories.ActivityRepository;
@@ -45,11 +47,10 @@ public class ActivityController {
     }
 
     @GetMapping("/new")
-    public String newForm(Authentication auth, Model model) {
-        var user = (DAuthUserDetails) auth.getPrincipal();
+    public String newForm(@AuthenticationPrincipal OidcUser user, Authentication auth, Model model) {
 
         var activity = new Activity();
-        activity.setAuthor(user.getUser());
+        activity.setAuthor(user.getName()); //TODO
         activity.setAuthorDisplay(user.getName());
 
         return this.showEditForm(activity, model);
@@ -63,16 +64,16 @@ public class ActivityController {
     }
 
     @PostMapping("/edit")
-    public String doEdit(@Valid Activity activity, Authentication auth, BindingResult bindingResult) {
+    public String doEdit(@AuthenticationPrincipal OidcUser user, 
+            @Valid Activity activity, Authentication auth, BindingResult bindingResult) {
         // check for form errors
         if (bindingResult.hasErrors()) {
             return "activities/edit";
         }
 
-        var user = (DAuthUserDetails) auth.getPrincipal();
-        if (!user.isEditor()) {
+        if (true) { //TODO this was get editor
             // prevent spoofing
-            activity.setAuthor(user.getUser());
+            activity.setAuthor(user.getName());
             activity.setAuthorDisplay(user.getName());
         }
 
@@ -89,7 +90,8 @@ public class ActivityController {
     }
 
     @RequestMapping("/list")
-    public String list(@RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+    public String list(@AuthenticationPrincipal OidcUser user,
+            @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
             @RequestParam(name = "sort", defaultValue = "DESC") Sort.Direction sort,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "author", defaultValue = "") String author,
@@ -97,9 +99,8 @@ public class ActivityController {
 
         var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sort, sortBy));
 
-        var user = (DAuthUserDetails) auth.getPrincipal();
-        if (!user.isEditor()) {
-            author = user.getUser();
+        if (true) { //isEditor
+            author = user.getName(); //TODO
         }
 
         Page<Activity> activities;

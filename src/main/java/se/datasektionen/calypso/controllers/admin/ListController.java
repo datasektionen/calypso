@@ -1,6 +1,7 @@
 package se.datasektionen.calypso.controllers.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import se.datasektionen.calypso.auth.DAuthUserDetails;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
@@ -30,7 +31,8 @@ public class ListController {
 	private final Darkmode darkmode;
 
 	@RequestMapping("/admin/list")
-	public String index(@RequestParam(name = "itemType", required = false) String itemType,
+	public String index(@AuthenticationPrincipal OidcUser user,
+						@RequestParam(name = "itemType", required = false) String itemType,
 	                    @RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
 	                    @RequestParam(name = "sort", defaultValue = "DESC") String sort,
 	                    @RequestParam(name = "page", defaultValue = "0") int page,
@@ -39,8 +41,7 @@ public class ListController {
 		// Common objects
 		var type = ItemType.valueOfIgnoreCase(itemType);
 		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.valueOf(sort), sortBy));
-		var user = (DAuthUserDetails) auth.getPrincipal();
-		var editor = user.isEditor();
+		var editor = true; //TODO when i know the permissions :)))
 		Page<Item> items;
 
 
@@ -49,12 +50,13 @@ public class ListController {
 			if (!onlyMe && editor)
 				items = itemRepository.findAll(pageable);
 			else
-				items = itemRepository.findAllByAuthor(user.getUser(), pageable);
+				items = itemRepository.findAllByAuthor(user.getName(), pageable); //TODO hm:thinking:, this actually
+			//searches in the item repository...
 		else
 			if (!onlyMe && editor)
 				items = itemRepository.findAllByItemType(type, pageable);
 			else
-				items = itemRepository.findAllByItemTypeAndAuthor(type, user.getUser(), pageable);
+				items = itemRepository.findAllByItemTypeAndAuthor(type, user.getName(), pageable);
 
 		model.addAttribute("formatter", formatter);
 		model.addAttribute("page", page);

@@ -1,0 +1,25 @@
+FROM amazoncorretto:17-alpine3.19 AS base
+
+WORKDIR /app
+ENV TZ=Europe/Stockholm
+
+FROM base AS builder
+
+RUN apk add maven
+
+COPY pom.xml system.properties ./
+
+RUN mvn -DskipTests clean dependency:list install
+
+COPY src src
+
+RUN mvn -DskipTests clean dependency:list install
+
+FROM base AS runner
+
+COPY --from=builder /app/target/calypso-1.0-SNAPSHOT.jar .
+COPY run.sh .
+RUN chmod +x run.sh
+RUN apk --no-cache add nginx
+
+ENTRYPOINT ["/app/run.sh"]

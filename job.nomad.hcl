@@ -33,14 +33,19 @@ job "calypso" {
         data        = <<ENV
 {{ with nomadVar "nomad/jobs/calypso" }}
 LOGIN_KEY={{ .login_api_key }}
+OIDC_SECRET={{ .oidc_secret }}
 JDBC_DATABASE_PASSWORD={{ .database_password }}
 HIVE_API_KEY={{ .hive_api_key }}
 {{ end }}
 JDBC_DATABASE_URL=jdbc:postgresql://postgres.dsekt.internal:5432/calypso
 JDBC_DATABASE_USERNAME=calypso
+//TODO
 LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
 LOGIN_API_URL=http://sso.nomad.dsekt.internal/legacyapi
 HIVE_URL=http://hive.nomad.dsekt.internal
+OIDC_PROVIDER=http://sso.nomad.dsekt.internal/op
+OIDC_ID=calypso
+REDIRECT_URL=https://calypso.datasektionen.se/
 APPLICATION_URL=https://calypso.datasektionen.se
 DARKMODE_URL=https://darkmode.datasektionen.se
 PORT={{ env "NOMAD_PORT_http" }}

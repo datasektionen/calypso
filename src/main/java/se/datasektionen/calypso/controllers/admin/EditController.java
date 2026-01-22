@@ -3,11 +3,12 @@ package se.datasektionen.calypso.controllers.admin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import se.datasektionen.calypso.auth.DAuthUserDetails;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
@@ -25,11 +26,10 @@ public class EditController {
 	private final DateTimeFormatter formatter;
 
 	@GetMapping("/admin/new")
-	public String newForm(Authentication auth, Model model) {
-		var user = (DAuthUserDetails) auth.getPrincipal();
+	public String newForm(@AuthenticationPrincipal OidcUser user, Authentication auth, Model model) {
 
 		var item = new Item();
-		item.setAuthor(user.getUser());
+		item.setAuthor(user.getName());  //TODO
 		item.setAuthorDisplay(user.getName());
 
 		model.addAttribute("item", item);
@@ -40,16 +40,15 @@ public class EditController {
 	}
 
 	@GetMapping("/admin/duplicate")
-	public String duplicateForm(@RequestParam(name = "id") Long id, Authentication auth, Model model) {
-		var user = (DAuthUserDetails) auth.getPrincipal();
+	public String duplicateForm(@AuthenticationPrincipal OidcUser user, @RequestParam(name = "id") Long id, Authentication auth, Model model) {
 		var baseItem = itemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
 		if (baseItem == null)
 			throw new ResourceNotFoundException();
 
-    var item = baseItem.duplicate();
+    	var item = baseItem.duplicate();
 
-		item.setAuthor(user.getUser());
+		item.setAuthor(user.getName());
 		item.setAuthorDisplay(user.getName());
 		model.addAttribute("item", item);
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
