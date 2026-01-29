@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
@@ -59,37 +60,38 @@ public class SecurityConfig {
 
                 Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
 
-                // 👉 example claim name (varies by provider)
-                List<String> roles = oidcUser.getClaimAsStringList("roles");
-
-                if (roles != null) {
-                    for (String role : roles) {
-                        mappedAuthorities.add(
-                            new SimpleGrantedAuthority("ROLE_" + role)
-                        );
-                    }
-                }
-
                 var permissionObj = oidcUser.getAttributes().get("permissions");
 
-                if (permissionObj instanceof JSONArray) {
-                    JSONArray permissionsArray = (JSONArray) permissionObj;
-                    for (Object item : permissionsArray) {
-                        if (item instanceof JSONObject) {
-                            JSONObject permission = (JSONObject) item;
-                            String id = permission.getAsString("id");
-                            System.out.println(id);
-                            if (id != null) {
-                                mappedAuthorities.add(new SimpleGrantedAuthority(id));
-                            }
-                        }
-                    }
+                if (!(permissionObj instanceof JSONArray)) {
+                    throw new OAuth2AuthenticationException(
+                        new OAuth2Error("Data fetched from OIDC is not a JSONArray: " + permissionObj),
+                        "User not authorized" //TODO: test
+                    );
                 }
 
+                JSONArray permissionsArray = (JSONArray) permissionObj;
+
+                for (Object item : permissionsArray) {
+                    if (!(item instanceof JSONObject)) {
+                        // Very unsure if this will ever run
+                        throw new OAuth2AuthenticationException(
+                            new OAuth2Error("Data inside of JSONArray is not a JSONObject: " + item),
+                            "User not authorized"
+                        );
+                    }
+
+                    JSONObject permission = (JSONObject) item;
+
+                    String id = permission.getAsString("id");
+
+                    if (id != null) {
+                        mappedAuthorities.add(new SimpleGrantedAuthority(id));
+                    }
+                    //TODO, maybe print a warning that the user has null authorties (somehjow)
+                }
+                
                 System.out.println("Permissions type: " + permissionObj.getClass());
-                // keep existing authorities if needed
                 System.out.println(mappedAuthorities);
-                System.out.println("sksisbsiksissbsiskisbs");
 
                 return new DefaultOidcUser(
                         mappedAuthorities,
