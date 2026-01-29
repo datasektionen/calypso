@@ -1,6 +1,8 @@
 package se.datasektionen.calypso.controllers.admin;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -9,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,11 +51,12 @@ public class ActivityController {
     }
 
     @GetMapping("/new")
-    public String newForm(@AuthenticationPrincipal OidcUser user, Authentication auth, Model model) {
+    public String newForm(@AuthenticationPrincipal Authentication auth, Model model) {
+        var user = (DefaultOidcUser) auth.getPrincipal();
 
         var activity = new Activity();
-        activity.setAuthor(user.getName()); //TODO
-        activity.setAuthorDisplay(user.getName());
+        activity.setAuthor(user.getName());
+        activity.setAuthorDisplay(user.getFullName());
 
         return this.showEditForm(activity, model);
     }
@@ -64,17 +69,21 @@ public class ActivityController {
     }
 
     @PostMapping("/edit")
-    public String doEdit(@AuthenticationPrincipal OidcUser user, 
-            @Valid Activity activity, Authentication auth, BindingResult bindingResult) {
+    public String doEdit(@Valid Activity activity, Authentication auth, BindingResult bindingResult) {
         // check for form errors
         if (bindingResult.hasErrors()) {
             return "activities/edit";
         }
 
-        if (true) { //TODO this was get editor
+        var user = (DefaultOidcUser) auth.getPrincipal();
+        boolean canManageAll = user.getAuthorities().stream()
+			.map(GrantedAuthority::getAuthority)
+			.anyMatch(authority -> authority.equals("manage-all"));
+
+        if (!canManageAll) {
             // prevent spoofing
             activity.setAuthor(user.getName());
-            activity.setAuthorDisplay(user.getName());
+            activity.setAuthorDisplay(user.getFullName());
         }
 
         activity = activityRepository.save(activity);
@@ -90,17 +99,21 @@ public class ActivityController {
     }
 
     @RequestMapping("/list")
-    public String list(@AuthenticationPrincipal OidcUser user,
-            @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+    public String list(@RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
             @RequestParam(name = "sort", defaultValue = "DESC") Sort.Direction sort,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "author", defaultValue = "") String author,
             Authentication auth, Model model) {
+        var user = (DefaultOidcUser) auth.getPrincipal();
 
         var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sort, sortBy));
 
-        if (true) { //isEditor
-            author = user.getName(); //TODO
+        boolean canManageAll = user.getAuthorities().stream()
+			.map(GrantedAuthority::getAuthority)
+			.anyMatch(authority -> authority.equals("manage-all"));
+
+        if (!canManageAll) {
+            author = user.getName();
         }
 
         Page<Activity> activities;

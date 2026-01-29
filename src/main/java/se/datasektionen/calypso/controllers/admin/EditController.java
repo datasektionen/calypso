@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Item;
@@ -26,11 +27,12 @@ public class EditController {
 	private final DateTimeFormatter formatter;
 
 	@GetMapping("/admin/new")
-	public String newForm(@AuthenticationPrincipal OidcUser user, Authentication auth, Model model) {
+	public String newForm(Authentication auth, Model model) {
+		var user = (DefaultOidcUser) auth.getPrincipal();
 
 		var item = new Item();
-		item.setAuthor(user.getName());  //TODO
-		item.setAuthorDisplay(user.getName());
+		item.setAuthor(user.getName());
+		item.setAuthorDisplay(user.getFullName());
 
 		model.addAttribute("item", item);
 		model.addAttribute("now", LocalDateTime.now().format(formatter));
@@ -40,7 +42,9 @@ public class EditController {
 	}
 
 	@GetMapping("/admin/duplicate")
-	public String duplicateForm(@AuthenticationPrincipal OidcUser user, @RequestParam(name = "id") Long id, Authentication auth, Model model) {
+	public String duplicateForm(@RequestParam(name = "id") Long id, Authentication auth, Model model) {
+		var user = (DefaultOidcUser) auth.getPrincipal();
+
 		var baseItem = itemRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
 		if (baseItem == null)
