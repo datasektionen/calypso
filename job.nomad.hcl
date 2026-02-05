@@ -39,9 +39,6 @@ HIVE_API_KEY={{ .hive_api_key }}
 {{ end }}
 JDBC_DATABASE_URL=jdbc:postgresql://postgres.dsekt.internal:5432/calypso
 JDBC_DATABASE_USERNAME=calypso
-//TODO
-LOGIN_FRONTEND_URL=https://sso.datasektionen.se/legacyapi
-LOGIN_API_URL=http://sso.nomad.dsekt.internal/legacyapi
 HIVE_URL=http://hive.nomad.dsekt.internal
 OIDC_PROVIDER=http://sso.nomad.dsekt.internal/op
 OIDC_ID=calypso

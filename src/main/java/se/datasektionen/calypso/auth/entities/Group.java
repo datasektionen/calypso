@@ -1,5 +1,5 @@
 
-package se.datasektionen.calypso.auth.entities.memberships;
+package se.datasektionen.calypso.auth.entities;
 
 import lombok.Data;
 
@@ -12,4 +12,3 @@ public class Group {
 	private String tag_content;
 
 }
-//TODO remove even more? could just fetch strings 

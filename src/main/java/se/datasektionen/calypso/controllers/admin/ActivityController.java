@@ -1,8 +1,6 @@
 package se.datasektionen.calypso.controllers.admin;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -13,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import lombok.RequiredArgsConstructor;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
@@ -77,8 +73,8 @@ public class ActivityController {
 
         var user = (DefaultOidcUser) auth.getPrincipal();
         boolean canManageAll = user.getAuthorities().stream()
-			.map(GrantedAuthority::getAuthority)
-			.anyMatch(authority -> authority.equals("manage-all"));
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(authority -> authority.equals("manage-all"));
 
         if (!canManageAll) {
             // prevent spoofing
@@ -109,8 +105,8 @@ public class ActivityController {
         var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sort, sortBy));
 
         boolean canManageAll = user.getAuthorities().stream()
-			.map(GrantedAuthority::getAuthority)
-			.anyMatch(authority -> authority.equals("manage-all"));
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(authority -> authority.equals("manage-all"));
 
         if (!canManageAll) {
             author = user.getName();

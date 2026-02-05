@@ -1,7 +1,7 @@
 package se.datasektionen.calypso.auth;
 
 import se.datasektionen.calypso.config.Config;
-import se.datasektionen.calypso.auth.entities.memberships.Group;
+import se.datasektionen.calypso.auth.entities.Group;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,24 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.nimbusds.jose.shaded.json.JSONArray;
@@ -53,9 +47,9 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // only if you really want this
+                .csrf()
+                .disable()
                 .authorizeHttpRequests(auth -> auth
-                        .mvcMatchers("/debug/**").permitAll()
                         .mvcMatchers("/admin/**").authenticated()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth -> oauth
@@ -84,8 +78,7 @@ public class SecurityConfig {
                 if (!(permissionObj instanceof JSONArray)) {
                     throw new OAuth2AuthenticationException(
                             new OAuth2Error("Data fetched from OIDC is not a JSONArray: " + permissionObj),
-                            "User not authorized" // TODO: test
-                    );
+                            "User not authorized");
                 }
 
                 JSONArray permissionsArray = (JSONArray) permissionObj;
@@ -99,8 +92,7 @@ public class SecurityConfig {
                         mappedAuthorities.add(new SimpleGrantedAuthority(id));
                     }
                 }
-                // kolla din chatty gippy
-                // Try to get mandates from hive
+
                 var mandatesUrl = config.getHiveApiUrl() + "/api/v1/tagged/author-pseudonym/memberships/"
                         + user.getName();
 

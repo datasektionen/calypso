@@ -17,7 +17,7 @@ services:
       OIDC_ID: bombo-id
       OIDC_SECRET: clat-secret
       REDIRECT_URL: http://localhost:3000/login/oauth2/code/datasektionen
-      HIVE_URL: http://nyckeln:7004 #also remember to remove this #men varför... va?
+      HIVE_URL: http://nyckeln:7004
       HIVE_API_KEY: skibidi-development
       DARKMODE_URL: false
       PORT: 3000

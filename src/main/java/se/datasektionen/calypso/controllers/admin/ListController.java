@@ -43,19 +43,19 @@ public class ListController {
 
 	@RequestMapping("/admin/list")
 	public String index(@RequestParam(name = "itemType", required = false) String itemType,
-	                    @RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
-	                    @RequestParam(name = "sort", defaultValue = "DESC") String sort,
-	                    @RequestParam(name = "page", defaultValue = "0") int page,
-						@RequestParam(name = "onlyMe", defaultValue = "false") boolean onlyMe,
-	                    Authentication auth, Model model) {
+			@RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
+			@RequestParam(name = "sort", defaultValue = "DESC") String sort,
+			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "onlyMe", defaultValue = "false") boolean onlyMe,
+			Authentication auth, Model model) {
 		// Common objects
 		var type = ItemType.valueOfIgnoreCase(itemType);
 		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.valueOf(sort), sortBy));
 		var user = (DefaultOidcUser) auth.getPrincipal();
 		Set<String> permissions = user.getAuthorities().stream()
-			.map(GrantedAuthority::getAuthority)
-			.collect(Collectors.toSet());
-		var editor = permissions.contains("manage-all"); 
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toSet());
+		var editor = permissions.contains("manage-all");
 		Page<Item> items;
 
 		// Items
@@ -64,12 +64,11 @@ public class ListController {
 				items = itemRepository.findAll(pageable);
 			else
 				items = itemRepository.findAllByAuthor(auth.getName(), pageable);
-			//searches in the item repository...
+		// searches in the item repository...
+		else if (!onlyMe && editor)
+			items = itemRepository.findAllByItemType(type, pageable);
 		else
-			if (!onlyMe && editor)
-				items = itemRepository.findAllByItemType(type, pageable);
-			else
-				items = itemRepository.findAllByItemTypeAndAuthor(type, auth.getName(), pageable);
+			items = itemRepository.findAllByItemTypeAndAuthor(type, auth.getName(), pageable);
 
 		model.addAttribute("formatter", formatter);
 		model.addAttribute("page", page);
