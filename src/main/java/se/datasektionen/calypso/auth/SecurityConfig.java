@@ -1,25 +1,38 @@
 package se.datasektionen.calypso.auth;
 
 import se.datasektionen.calypso.config.Config;
+import se.datasektionen.calypso.auth.entities.memberships.Group;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
@@ -28,20 +41,26 @@ import com.nimbusds.jose.shaded.json.JSONObject;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private Config config;
+    private final WebClient webClient;
+
+    @Autowired
+    public SecurityConfig(Config config, WebClient webClient) {
+        this.config = config;
+        this.webClient = webClient;
+    }
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // only if you really want this
-            .authorizeHttpRequests(auth -> auth
-                .mvcMatchers("/debug/**").permitAll()
-                .mvcMatchers("/admin/**").authenticated()
-                .anyRequest().authenticated()
-            )
-            .oauth2Login(oauth -> oauth
-                .userInfoEndpoint(userInfo -> userInfo
-                    .oidcUserService(oidcUserService())
-                )
-            );
+                .csrf(csrf -> csrf.disable()) // only if you really want this
+                .authorizeHttpRequests(auth -> auth
+                        .mvcMatchers("/debug/**").permitAll()
+                        .mvcMatchers("/admin/**").authenticated()
+                        .anyRequest().authenticated())
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .oidcUserService(oidcUserService())));
 
         return http.getOrBuild();
     }
@@ -56,30 +75,22 @@ public class SecurityConfig {
             public OidcUser loadUser(OidcUserRequest userRequest)
                     throws OAuth2AuthenticationException {
 
-                OidcUser oidcUser = delegate.loadUser(userRequest);
+                OidcUser user = delegate.loadUser(userRequest);
 
                 Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
 
-                var permissionObj = oidcUser.getAttributes().get("permissions");
+                var permissionObj = user.getAttributes().get("permissions");
 
                 if (!(permissionObj instanceof JSONArray)) {
                     throw new OAuth2AuthenticationException(
-                        new OAuth2Error("Data fetched from OIDC is not a JSONArray: " + permissionObj),
-                        "User not authorized" //TODO: test
+                            new OAuth2Error("Data fetched from OIDC is not a JSONArray: " + permissionObj),
+                            "User not authorized" // TODO: test
                     );
                 }
 
                 JSONArray permissionsArray = (JSONArray) permissionObj;
 
                 for (Object item : permissionsArray) {
-                    if (!(item instanceof JSONObject)) {
-                        // Very unsure if this will ever run
-                        throw new OAuth2AuthenticationException(
-                            new OAuth2Error("Data inside of JSONArray is not a JSONObject: " + item),
-                            "User not authorized"
-                        );
-                    }
-
                     JSONObject permission = (JSONObject) item;
 
                     String id = permission.getAsString("id");
@@ -87,17 +98,33 @@ public class SecurityConfig {
                     if (id != null) {
                         mappedAuthorities.add(new SimpleGrantedAuthority(id));
                     }
-                    //TODO, maybe print a warning that the user has null authorties (somehjow)
                 }
-                
-                System.out.println("Permissions type: " + permissionObj.getClass());
-                System.out.println(mappedAuthorities);
+                // kolla din chatty gippy
+                // Try to get mandates from hive
+                var mandatesUrl = config.getHiveApiUrl() + "/api/v1/tagged/author-pseudonym/memberships/"
+                        + user.getName();
+
+                List<Group> groups = webClient.get()
+                        .uri(mandatesUrl)
+                        .headers(h -> h.setBearerAuth(config.getHiveApiKey()))
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<Group>>() {
+                        })
+                        .block();
+
+                Map<String, String> mandates = groups.stream()
+                        .collect(Collectors.toMap(
+                                Group::getGroup_id,
+                                Group::getGroup_name));
+
+                Map<String, Object> attributes = new HashMap<>(user.getClaims());
+
+                attributes.put("mandates", mandates);
 
                 return new DefaultOidcUser(
                         mappedAuthorities,
-                        oidcUser.getIdToken(),
-                        oidcUser.getUserInfo()
-                );
+                        user.getIdToken(),
+                        new OidcUserInfo(attributes));
             }
         };
     }
