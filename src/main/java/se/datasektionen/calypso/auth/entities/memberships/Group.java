@@ -12,3 +12,4 @@ public class Group {
 	private String tag_content;
 
 }
+//TODO remove even more? could just fetch strings 

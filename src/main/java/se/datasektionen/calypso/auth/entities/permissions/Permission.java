@@ -9,3 +9,4 @@ public class Permission {
 
 	private String scope;
 }
+//TODO might remove
