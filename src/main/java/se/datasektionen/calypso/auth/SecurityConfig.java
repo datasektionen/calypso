@@ -1,15 +1,13 @@
 package se.datasektionen.calypso.auth;
 
-import se.datasektionen.calypso.config.Config;
-import se.datasektionen.calypso.auth.entities.Group;
-
+import com.nimbusds.jose.shaded.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,9 +25,8 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.jose.shaded.json.JSONObject;
+import se.datasektionen.calypso.auth.entities.Group;
+import se.datasektionen.calypso.config.Config;
 
 @Configuration
 @EnableWebSecurity
@@ -45,78 +42,91 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http)
+        throws Exception {
         http
-                .csrf()
-                .disable()
-                .authorizeHttpRequests(auth -> auth
-                        .mvcMatchers("/admin/**").authenticated()
-                        .anyRequest().authenticated())
-                .oauth2Login(oauth -> oauth
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .oidcUserService(oidcUserService())));
+            .csrf()
+            .disable()
+            .authorizeHttpRequests()
+            .mvcMatchers("/admin/**")
+            .authenticated()
+            .and()
+            .oauth2Login(oauth ->
+                oauth.userInfoEndpoint(userInfo ->
+                    userInfo.oidcUserService(oidcUserService())
+                )
+            );
 
         return http.getOrBuild();
     }
 
     @Bean
     public OidcUserService oidcUserService() {
-
         OidcUserService delegate = new OidcUserService();
 
         return new OidcUserService() {
             @Override
             public OidcUser loadUser(OidcUserRequest userRequest)
-                    throws OAuth2AuthenticationException {
-
+                throws OAuth2AuthenticationException {
                 OidcUser user = delegate.loadUser(userRequest);
-
                 Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-
                 var permissionObj = user.getAttributes().get("permissions");
 
                 if (!(permissionObj instanceof JSONArray)) {
                     throw new OAuth2AuthenticationException(
-                            new OAuth2Error("Data fetched from OIDC is not a JSONArray: " + permissionObj),
-                            "User not authorized");
+                        new OAuth2Error(
+                            "Data fetched from OIDC is not a JSONArray: " +
+                                permissionObj
+                        ),
+                        "User not authorized"
+                    );
                 }
 
                 JSONArray permissionsArray = (JSONArray) permissionObj;
 
                 for (Object item : permissionsArray) {
                     JSONObject permission = (JSONObject) item;
-
                     String id = permission.getAsString("id");
-
                     if (id != null) {
                         mappedAuthorities.add(new SimpleGrantedAuthority(id));
                     }
                 }
 
-                var mandatesUrl = config.getHiveApiUrl() + "/api/v1/tagged/author-pseudonym/memberships/"
-                        + user.getName();
+                var mandatesUrl =
+                    config.getHiveApiUrl() +
+                    "/api/v1/tagged/author-pseudonym/memberships/" +
+                    user.getName();
 
-                List<Group> groups = webClient.get()
-                        .uri(mandatesUrl)
-                        .headers(h -> h.setBearerAuth(config.getHiveApiKey()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<Group>>() {
-                        })
-                        .block();
+                List<Group> groups = webClient
+                    .get()
+                    .uri(mandatesUrl)
+                    .headers(h -> h.setBearerAuth(config.getHiveApiKey()))
+                    .retrieve()
+                    .bodyToMono(
+                        new ParameterizedTypeReference<List<Group>>() {}
+                    )
+                    .block();
 
-                Map<String, String> mandates = groups.stream()
-                        .collect(Collectors.toMap(
-                                Group::getGroup_id,
-                                Group::getGroup_name));
+                Map<String, String> mandates = groups
+                    .stream()
+                    .collect(
+                        Collectors.toMap(
+                            Group::getGroup_id,
+                            Group::getGroup_name
+                        )
+                    );
 
-                Map<String, Object> attributes = new HashMap<>(user.getClaims());
+                Map<String, Object> attributes = new HashMap<>(
+                    user.getClaims()
+                );
 
                 attributes.put("mandates", mandates);
 
                 return new DefaultOidcUser(
-                        mappedAuthorities,
-                        user.getIdToken(),
-                        new OidcUserInfo(attributes));
+                    mappedAuthorities,
+                    user.getIdToken(),
+                    new OidcUserInfo(attributes)
+                );
             }
         };
     }
