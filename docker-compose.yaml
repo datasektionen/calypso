@@ -13,17 +13,21 @@ services:
       JDBC_DATABASE_USERNAME: postgres
       JDBC_DATABASE_PASSWORD: calypso
       APPLICATION_URL: http://localhost:3000
-      LOGIN_FRONTEND_URL: http://localhost:7002/
-      LOGIN_API_URL: http://nyckeln:7002/
-      LOGIN_KEY: asdf
+      OIDC_PROVIDER: http://localhost:7003
+      OIDC_ID: bombo-id
+      OIDC_SECRET: clat-secret
+      REDIRECT_URL: http://localhost:3000/login/oauth2/code/datasektionen
       HIVE_URL: http://nyckeln:7004
       HIVE_API_KEY: skibidi-development
       DARKMODE_URL: false
       PORT: 3000
+    configs:
+      - source: nginx.conf
+        target: /etc/nginx/nginx.conf
   nyckeln:
     image: ghcr.io/datasektionen/nyckeln-under-dorrmattan
     environment:
-      KTH_ID: turetek #set me to switch user! If you want to view everything, use "turetek"
+      KTH_ID: turetek
     configs:
       - source: nyckeln.yaml
         target: /config.yaml
@@ -47,15 +51,14 @@ configs:
         }
       }
   
-  nyckeln.yaml: #To update these perms, remove container `docker ps -a` and `docker rm -vf <image hash>` and remove image with `docker rmi -f ghcr.io/datasektionen/nyckeln-under-dorrmattan`
+  nyckeln.yaml:
     content: |
       clients:
-        - id: "client-id" # use this in your oidc client
-          secret: "client-secret" # use this in your oidc client
+        - id: "bombo-id" # use this in your oidc client
+          secret: "clat-secret" # use this in your oidc client
           redirect_uris: # URIs of your oidc client
             [
-              "http://localhost:4000/oidcc/callback",
-              "http://localhost:4000/oidcc/authorize",
+              "http://localhost:3000/login/oauth2/code/datasektionen",
             ]
 
       users:
@@ -94,4 +97,3 @@ configs:
                 scope: "*"
               - id: mark-important
                 scope: "*"
-

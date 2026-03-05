@@ -1,22 +1,34 @@
 package se.datasektionen.calypso.controllers.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import se.datasektionen.calypso.auth.DAuthUserDetails;
+
+import com.nimbusds.jose.shaded.json.JSONArray;
+
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import se.datasektionen.calypso.models.entities.Item;
 import se.datasektionen.calypso.models.enums.ItemType;
 import se.datasektionen.calypso.models.repositories.ItemRepository;
 import se.datasektionen.calypso.Darkmode;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Controller
 @PreAuthorize("hasAuthority('post')")
@@ -31,30 +43,32 @@ public class ListController {
 
 	@RequestMapping("/admin/list")
 	public String index(@RequestParam(name = "itemType", required = false) String itemType,
-	                    @RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
-	                    @RequestParam(name = "sort", defaultValue = "DESC") String sort,
-	                    @RequestParam(name = "page", defaultValue = "0") int page,
-											@RequestParam(name = "onlyMe", defaultValue = "false") boolean onlyMe,
-	                    Authentication auth, Model model) {
+			@RequestParam(name = "sortBy", defaultValue = "publishDate") String sortBy,
+			@RequestParam(name = "sort", defaultValue = "DESC") String sort,
+			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "onlyMe", defaultValue = "false") boolean onlyMe,
+			Authentication auth, Model model) {
 		// Common objects
 		var type = ItemType.valueOfIgnoreCase(itemType);
 		var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.valueOf(sort), sortBy));
-		var user = (DAuthUserDetails) auth.getPrincipal();
-		var editor = user.isEditor();
+		var user = (DefaultOidcUser) auth.getPrincipal();
+		Set<String> permissions = user.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toSet());
+		var editor = permissions.contains("manage-all");
 		Page<Item> items;
-
 
 		// Items
 		if (type == null)
 			if (!onlyMe && editor)
 				items = itemRepository.findAll(pageable);
 			else
-				items = itemRepository.findAllByAuthor(user.getUser(), pageable);
+				items = itemRepository.findAllByAuthor(auth.getName(), pageable);
+		// searches in the item repository...
+		else if (!onlyMe && editor)
+			items = itemRepository.findAllByItemType(type, pageable);
 		else
-			if (!onlyMe && editor)
-				items = itemRepository.findAllByItemType(type, pageable);
-			else
-				items = itemRepository.findAllByItemTypeAndAuthor(type, user.getUser(), pageable);
+			items = itemRepository.findAllByItemTypeAndAuthor(type, auth.getName(), pageable);
 
 		model.addAttribute("formatter", formatter);
 		model.addAttribute("page", page);

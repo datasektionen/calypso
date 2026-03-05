@@ -1,5 +1,5 @@
 
-package se.datasektionen.calypso.auth.entities.memberships;
+package se.datasektionen.calypso.auth.entities;
 
 import lombok.Data;
 

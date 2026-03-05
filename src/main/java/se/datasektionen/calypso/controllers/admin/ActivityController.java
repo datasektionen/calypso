@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,9 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import lombok.RequiredArgsConstructor;
-import se.datasektionen.calypso.auth.DAuthUserDetails;
 import se.datasektionen.calypso.exceptions.ResourceNotFoundException;
 import se.datasektionen.calypso.models.entities.Activity;
 import se.datasektionen.calypso.models.repositories.ActivityRepository;
@@ -45,12 +47,12 @@ public class ActivityController {
     }
 
     @GetMapping("/new")
-    public String newForm(Authentication auth, Model model) {
-        var user = (DAuthUserDetails) auth.getPrincipal();
+    public String newForm(@AuthenticationPrincipal Authentication auth, Model model) {
+        var user = (DefaultOidcUser) auth.getPrincipal();
 
         var activity = new Activity();
-        activity.setAuthor(user.getUser());
-        activity.setAuthorDisplay(user.getName());
+        activity.setAuthor(user.getName());
+        activity.setAuthorDisplay(user.getFullName());
 
         return this.showEditForm(activity, model);
     }
@@ -69,11 +71,15 @@ public class ActivityController {
             return "activities/edit";
         }
 
-        var user = (DAuthUserDetails) auth.getPrincipal();
-        if (!user.isEditor()) {
+        var user = (DefaultOidcUser) auth.getPrincipal();
+        boolean canManageAll = user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(authority -> authority.equals("manage-all"));
+
+        if (!canManageAll) {
             // prevent spoofing
-            activity.setAuthor(user.getUser());
-            activity.setAuthorDisplay(user.getName());
+            activity.setAuthor(user.getName());
+            activity.setAuthorDisplay(user.getFullName());
         }
 
         activity = activityRepository.save(activity);
@@ -94,12 +100,16 @@ public class ActivityController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "author", defaultValue = "") String author,
             Authentication auth, Model model) {
+        var user = (DefaultOidcUser) auth.getPrincipal();
 
         var pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sort, sortBy));
 
-        var user = (DAuthUserDetails) auth.getPrincipal();
-        if (!user.isEditor()) {
-            author = user.getUser();
+        boolean canManageAll = user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(authority -> authority.equals("manage-all"));
+
+        if (!canManageAll) {
+            author = user.getName();
         }
 
         Page<Activity> activities;

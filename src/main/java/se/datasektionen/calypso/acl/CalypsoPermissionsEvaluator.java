@@ -2,7 +2,8 @@ package se.datasektionen.calypso.acl;
 
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
-import se.datasektionen.calypso.auth.DAuthUserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -11,7 +12,11 @@ public class CalypsoPermissionsEvaluator implements PermissionEvaluator {
 
 	@Override
 	public boolean hasPermission(Authentication auth, Object maybeTarget, Object permission) {
-		var user = (DAuthUserDetails) auth.getPrincipal();
+		var user = (DefaultOidcUser) auth.getPrincipal();
+
+		boolean canManageAll = user.getAuthorities().stream()
+			.map(GrantedAuthority::getAuthority)
+			.anyMatch(authority -> authority.equals("manage-all"));
 
 		// it may or may not be in an Optional
 		if (maybeTarget instanceof Optional opt && opt.isPresent()) {
@@ -20,10 +25,10 @@ public class CalypsoPermissionsEvaluator implements PermissionEvaluator {
 
 		if (maybeTarget instanceof SecurityTarget target) {
 			// Editors always have access
-			if (user.isEditor())
+			if (canManageAll)
 				return true;
 
-			return user.getUser().equals(target.getAuthor());
+			return user.getName().equals(target.getAuthor());
 		}
 
 		return false;
