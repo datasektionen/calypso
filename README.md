@@ -7,9 +7,18 @@ Spring Boot with Spring MVC + Spring Data JPA + Spring Security + Thymeleaf + Po
 
 ## Development
 
+Run with container (recommended): `docker compose up --build`
+
+> [!NOTE]
+> Docker watch functionality is not yet configured.
+
+Or:
+
 1. Configure environment variables
 2. `mvn -DskipTests clean dependency:list install`
 3. `java -jar target/calypso-1.0-SNAPSHOT.jar`
+
+The web UI runs on `localhost:3000`.
 
 -----------
 
