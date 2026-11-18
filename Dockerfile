@@ -1,4 +1,4 @@
-FROM amazoncorretto:17-alpine3.19 AS base
+FROM amazoncorretto:21-alpine3.24 AS base
 
 WORKDIR /app
 ENV TZ=Europe/Stockholm
