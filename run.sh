@@ -1,7 +1,7 @@
 #!/bin/sh
 
-java -jar calypso-1.0-SNAPSHOT.jar &
 nginx -g 'daemon off;' &
+java -jar calypso-1.0-SNAPSHOT.jar &
 
 wait -n
 exit $?
